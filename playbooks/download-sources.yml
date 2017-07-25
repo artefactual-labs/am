@@ -1,0 +1,16 @@
+---
+
+- hosts: "localhost"
+  connection: "local"
+  tasks:
+
+  - include_vars: "./inc/repos-1.7.yml"
+    name: "repos"
+
+  - name: "Clone repositories"
+    git:
+      accept_hostkey: "yes"
+      repo: "{{ item.repo }}"
+      dest: "../src/{{ item.dirname }}"
+      version: "{{ item.version }}"
+    with_items: "{{ repos }}"
