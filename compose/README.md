@@ -12,18 +12,20 @@ These are the command you need to run when starting from scratch:
     $ make bootstrap
     $ make restart-services
 
-### Web interfaces
+### Web UIs
 
-    - Archivematica Dashboard: http://127.0.0.1:62080/
-    - Archivematica Storage Service: http://127.0.0.1:62081/
+- Archivematica Dashboard: http://127.0.0.1:62080/
+- Archivematica Storage Service: http://127.0.0.1:62081/
 
 ### Ports
 
-- `62001`: mysql (`tcp/3306`)
-- `62002`: elasticsearch (`tcp/9200`)
-- `62003`: redis (`tcp/6379`)
-- `62004`: gearman (`tcp/4730`)
-- `62005`: fits (`tcp/2113`)
-- `62006`: clamavd (`tcp/3310`)
-- `62080`: nginx (`tcp/80`) » proxy to `archivematica-dashboard`
-- `62081`: nginx (`tcp/8000`) » proxy to `archivematica-storage-service`
+| Service                                 | Container port | Host port   |
+| --------------------------------------- | -------------- | ----------- |
+| mysql                                   | `tcp/3306`     | `tcp/62001` |
+| elasticsearch                           | `tcp/9200`     | `tcp/62002` |
+| redis                                   | `tcp/6379`     | `tcp/62003` |
+| gearman                                 | `tcp/4730`     | `tcp/62004` |
+| fits                                    | `tcp/2113`     | `tcp/62005` |
+| clamavd                                 | `tcp/3310`     | `tcp/62006` |
+| nginx » archivematica-dashboard         | `tcp/80`       | `tcp/62080` |
+| nginx » archivematica-storage-service   | `tcp/8000`     | `tcp/62081` |
