@@ -19,11 +19,11 @@ These are the command you need to run when starting from scratch:
 
 ### Ports
 
-- 62001: mysql (`tcp/3306`)
-- 62002: elasticsearch (`tcp/9200`)
-- 62003: redis (`tcp/6379`)
-- 62004: gearman (`tcp/4730`)
-- 62005: fits (`tcp/2113`)
-- 62006: clamavd (`tcp/3310`)
-- 62080: nginx (`tcp/80`) » proxy to `archivematica-dashboard`
-- 62081: nginx (`tcp/8000`) » proxy to `archivematica-storage-service`
+- `62001`: mysql (`tcp/3306`)
+- `62002`: elasticsearch (`tcp/9200`)
+- `62003`: redis (`tcp/6379`)
+- `62004`: gearman (`tcp/4730`)
+- `62005`: fits (`tcp/2113`)
+- `62006`: clamavd (`tcp/3310`)
+- `62080`: nginx (`tcp/80`) » proxy to `archivematica-dashboard`
+- `62081`: nginx (`tcp/8000`) » proxy to `archivematica-storage-service`
