@@ -9,6 +9,7 @@ These are the command you need to run when starting from scratch:
     $ ansible-playbook ../playbooks/download-sources.yml
     $ make create-volumes
     $ docker-compose build
+    $ docker-compose up -d
     $ make bootstrap
     $ make restart-services
 

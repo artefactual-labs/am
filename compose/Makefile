@@ -30,16 +30,15 @@ bootstrap-storage-service:
 		--entrypoint /src/storage_service/manage.py \
 			archivematica-storage-service \
 				migrate --noinput
-	# @@@ create_user not merged yet!
-	# docker-compose run \
-	# 	--rm \
-	# 	--entrypoint /src/storage_service/manage.py \
-	# 		archivematica-storage-service \
-	# 			create_user \
-	# 				--username="test" \
-	# 				--password="test" \
-	# 				--email="test@test.com" \
-	# 				--api-key="test"
+	docker-compose run \
+		--rm \
+		--entrypoint /src/storage_service/manage.py \
+			archivematica-storage-service \
+				create_user \
+					--username="test" \
+					--password="test" \
+					--email="test@test.com" \
+					--api-key="test"
 
 bootstrap-dashboard:
 	docker-compose exec mysql mysql -hlocalhost -uroot -p12345 -e "\
@@ -51,21 +50,20 @@ bootstrap-dashboard:
 		--entrypoint /src/dashboard/src/manage.py \
 			archivematica-dashboard \
 				migrate --noinput
-	# @@@ install not merged yet!
-	# docker-compose run \
-	# 	--rm \
-	# 	--entrypoint /src/dashboard/src/manage.py \
-	# 		archivematica-dashboard \
-	# 			install \
-	# 				--username="test" \
-	# 				--password="test" \
-	# 				--email="test@test.com" \
-	# 				--org-name="test" \
-	# 				--org-id="test" \
-	# 				--api-key="test" \
-	# 				--ss-url="http://archivematica-storage-service:8000" \
-	# 				--ss-user="test" \
-	# 				--ss-api-key="test"
+	docker-compose run \
+		--rm \
+		--entrypoint /src/dashboard/src/manage.py \
+			archivematica-dashboard \
+				install \
+					--username="test" \
+					--password="test" \
+					--email="test@test.com" \
+					--org-name="test" \
+					--org-id="test" \
+					--api-key="test" \
+					--ss-url="http://archivematica-storage-service:8000" \
+					--ss-user="test" \
+					--ss-api-key="test"
 
 restart-services:
 	docker-compose restart archivematica-mcp-server

@@ -3,10 +3,10 @@ repos:
 
 - name: "Archivematica repository"
   repo: "https://github.com/artefactual/archivematica"
-  version: "dev/docker-integration" # Based on qa/1.x
+  version: "qa/1.x"
   dirname: "archivematica"
 
 - name: "Archivematica Storage Service repository"
   repo: "https://github.com/artefactual/archivematica-storage-service"
-  version: "dev/issue-208-docker-integration" # Based on qa/0.x
+  version: "qa/0.x"
   dirname: "archivematica-storage-service"
