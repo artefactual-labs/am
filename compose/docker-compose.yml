@@ -76,7 +76,7 @@ services:
     ports:
       - "62005:2113"
     volumes:
-      - "archivematica_pipeline_data:/var/archivematica/sharedDirectory:ro"
+      - "archivematica_pipeline_data:/var/archivematica/sharedDirectory:rw"  # Read and write needed!
 
   clamavd:
     image: "dinkel/clamavd:latest"
