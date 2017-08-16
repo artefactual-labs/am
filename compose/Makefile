@@ -65,9 +65,18 @@ bootstrap-dashboard:
 					--ss-user="test" \
 					--ss-api-key="test"
 
-restart-services:
+restart-am-services:
 	docker-compose restart archivematica-mcp-server
 	docker-compose restart archivematica-mcp-client
+	docker-compose restart archivematica-dashboard
+	docker-compose restart archivematica-storage-service
 
 db:
 	mysql -h127.0.0.1 --port=62001 -uroot -p12345
+
+flush-shared-dir-mcp-configs:
+	rm -f ${AM_PIPELINE_DATA}/sharedMicroServiceTasksConfigs/processingMCPConfigs/defaultProcessingMCP.xml
+	rm -f ${AM_PIPELINE_DATA}/sharedMicroServiceTasksConfigs/processingMCPConfigs/automatedProcessingMCP.xml
+
+flush-shared-dir:
+	rm -rf ${AM_PIPELINE_DATA}/*

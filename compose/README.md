@@ -11,7 +11,7 @@ These are the command you need to run when starting from scratch:
     $ docker-compose build
     $ docker-compose up -d
     $ make bootstrap
-    $ make restart-services
+    $ make restart-am-services
 
 ### Web UIs
 
