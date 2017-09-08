@@ -18,7 +18,7 @@ create-volumes:
 		--opt device=$(SS_LOCATION_DATA) \
 			ss-location-data
 
-bootstrap: bootstrap-storage-service bootstrap-dashboard
+bootstrap: bootstrap-storage-service bootstrap-dashboard-db bootstrap-dashboard-frontend
 
 bootstrap-storage-service:
 	docker-compose exec mysql mysql -hlocalhost -uroot -p12345 -e "\
@@ -40,7 +40,7 @@ bootstrap-storage-service:
 					--email="test@test.com" \
 					--api-key="test"
 
-bootstrap-dashboard:
+bootstrap-dashboard-db:
 	docker-compose exec mysql mysql -hlocalhost -uroot -p12345 -e "\
 		DROP DATABASE IF EXISTS MCP; \
 		CREATE DATABASE MCP; \
@@ -64,6 +64,18 @@ bootstrap-dashboard:
 					--ss-url="http://archivematica-storage-service:8000" \
 					--ss-user="test" \
 					--ss-api-key="test"
+
+bootstrap-dashboard-frontend:
+	docker-compose run --rm --no-deps \
+		--entrypoint npm \
+		--workdir /src/dashboard/frontend/transfer-browser \
+			archivematica-dashboard \
+				install
+	docker-compose run --rm --no-deps \
+		--entrypoint npm \
+		--workdir /src/dashboard/frontend/appraisal-tab \
+			archivematica-dashboard \
+				install
 
 restart-am-services:
 	docker-compose restart archivematica-mcp-server
