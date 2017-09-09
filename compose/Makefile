@@ -67,15 +67,17 @@ bootstrap-dashboard-db:
 
 bootstrap-dashboard-frontend:
 	docker-compose run --rm --no-deps \
+		--user root \
 		--entrypoint npm \
 		--workdir /src/dashboard/frontend/transfer-browser \
 			archivematica-dashboard \
-				install
+				install --unsafe-perm
 	docker-compose run --rm --no-deps \
+		--user root \
 		--entrypoint npm \
 		--workdir /src/dashboard/frontend/appraisal-tab \
 			archivematica-dashboard \
-				install
+				install --unsafe-perm
 
 restart-am-services:
 	docker-compose restart archivematica-mcp-server
