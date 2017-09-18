@@ -79,7 +79,7 @@ services:
       - "archivematica_pipeline_data:/var/archivematica/sharedDirectory:rw"  # Read and write needed!
 
   clamavd:
-    image: "dinkel/clamavd:latest"
+    image: "artefactual/clamav:latest"
     expose:
       - "3310"
     ports:
