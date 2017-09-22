@@ -117,16 +117,19 @@ are connected to Gearman:
 | clamavd                                 | `tcp/3310`     | `tcp/62006` |
 | nginx » archivematica-dashboard         | `tcp/80`       | `tcp/62080` |
 | nginx » archivematica-storage-service   | `tcp/8000`     | `tcp/62081` |
+| selenium-hub                            | `tcp/4444`     | `tcp/62100` |
 
 ## Tests
 
-At the moment the acceptance tests can't run in this environment. You can run
-unit and integration tests though. The `Makefile` offers some shortcuts that
-you can list with the following command:
+The `Makefile` includes many useful targets for testing. List them all with:
 
     $ make 2>&1 | grep test-
 
-For example, run `make test-storage-service` to run the Storage Service tests.
+The sources of the [acceptance tests](../src/archivematica-acceptance-tests)
+have been made available inside Docker using volumes so you can edit them and
+the changes will apply immediately.
+
+**TODO**: INTERACTING WITH BEHAVE, PASS TAGS, ETC? :construction:
 
 ## Resetting the environment
 

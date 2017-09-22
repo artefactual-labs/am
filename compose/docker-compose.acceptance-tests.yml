@@ -1,0 +1,49 @@
+---
+version: "2"
+
+# Based on "Getting Started with Docker Compose" (https://goo.gl/pBpyyY)
+# More notes here: https://goo.gl/yDLK7f (incl. debugging instructions).
+
+services:
+
+  selenium-hub:
+    image: "selenium/hub:3.7.1-beryllium"
+    expose:
+      - "4444"
+    ports:
+      - "62100:4444"
+    environment:
+      GRID_BROWSER_TIMEOUT: "10"
+      GRID_DEBUG: "false"
+
+  selenium-firefox:
+    image: "selenium/node-firefox:3.7.1-beryllium"
+    links:
+      - "selenium-hub"
+      - "nginx"
+    shm_size: 2g  # See https://goo.gl/dkZzHh
+    environment:
+      HUB_PORT_4444_TCP_ADDR: "selenium-hub"
+      HUB_PORT_4444_TCP_PORT: "4444"
+
+  selenium-chrome:
+    image: "selenium/node-chrome:3.7.1-beryllium"
+    links:
+      - "selenium-hub"
+      - "nginx"
+    volumes:
+      - /dev/shm:/dev/shm  # See https://goo.gl/fBzwcm
+    environment:
+      HUB_PORT_4444_TCP_ADDR: "selenium-hub"
+      HUB_PORT_4444_TCP_PORT: "4444"
+
+  archivematica-acceptance-tests:
+    build:
+      context: "../src/archivematica-acceptance-tests"
+      dockerfile: "Dockerfile"
+    links:
+      - "selenium-hub:hub"
+    volumes:
+      - "../src/archivematica-acceptance-tests:/home/archivematica/acceptance-tests:rw"
+    environment:
+      HUB_ADDRESS: "http://hub:4444/wd/hub"
