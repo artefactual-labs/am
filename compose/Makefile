@@ -88,9 +88,14 @@ restart-am-services:
 db:
 	mysql -h127.0.0.1 --port=62001 -uroot -p12345
 
+flush: flush-shared-dir flush-elasticsearch-indices bootstrap restart-am-services
+
 flush-shared-dir-mcp-configs:
 	rm -f ${AM_PIPELINE_DATA}/sharedMicroServiceTasksConfigs/processingMCPConfigs/defaultProcessingMCP.xml
 	rm -f ${AM_PIPELINE_DATA}/sharedMicroServiceTasksConfigs/processingMCPConfigs/automatedProcessingMCP.xml
 
 flush-shared-dir:
 	rm -rf ${AM_PIPELINE_DATA}/*
+
+flush-elasticsearch-indices:
+	docker-compose exec archivematica-mcp-client curl -XDELETE "http://elasticsearch:9200/aips,transfers"
