@@ -1,8 +1,23 @@
-### Requirements
+# Archivematica on Docker Compose
+
+- [Audience](#audience)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Web UIs](#web-uis)
+- [Source code auto-reloading](#source-code-auto-reloading)
+- [Ports](#ports)
+
+## Audience
+
+This Archivematica environment is based on Docker Compose and it is specifically
+**designed for developers**. Compose can be used in production but that is
+beyond the scope of this recipe.
+
+## Requirements
 
 Ansible, docker-py, Docker, Docker Compose, git, make.
 
-### Installation
+## Installation
 
 These are the command you need to run when starting from scratch:
 
@@ -13,12 +28,24 @@ These are the command you need to run when starting from scratch:
     $ make bootstrap
     $ make restart-am-services
 
-### Web UIs
+## Web UIs
 
 - Archivematica Dashboard: http://127.0.0.1:62080/
 - Archivematica Storage Service: http://127.0.0.1:62081/
 
-### Ports
+## Source code auto-reloading
+
+Dashboard and Storage Service are both served by Gunicorn. We set up Gunicorn
+with the [reload](http://docs.gunicorn.org/en/stable/settings.html#reload)
+setting enabled meaning that the Gunicorn workers will be restarted as soon as
+code changes.
+
+Other components in the stack like the `MCPServer` don't offer this option and
+they need to be restarted manually, e.g.:
+
+    $ docker-compose up -d --force-recreate --no-deps archivematica-mcp-server
+
+## Ports
 
 | Service                                 | Container port | Host port   |
 | --------------------------------------- | -------------- | ----------- |
