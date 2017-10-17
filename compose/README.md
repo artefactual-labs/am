@@ -6,6 +6,7 @@
 - [Web UIs](#web-uis)
 - [Source code auto-reloading](#source-code-auto-reloading)
 - [Ports](#ports)
+- [Cleaning up](#cleaning-up)
 
 ## Audience
 
@@ -23,8 +24,7 @@ These are the command you need to run when starting from scratch:
 
     $ ansible-playbook ../playbooks/download-sources.yml
     $ make create-volumes
-    $ docker-compose build
-    $ docker-compose up -d
+    $ docker-compose up -d --build
     $ make bootstrap
     $ make restart-am-services
 
@@ -57,3 +57,20 @@ they need to be restarted manually, e.g.:
 | clamavd                                 | `tcp/3310`     | `tcp/62006` |
 | nginx » archivematica-dashboard         | `tcp/80`       | `tcp/62080` |
 | nginx » archivematica-storage-service   | `tcp/8000`     | `tcp/62081` |
+
+## Cleaning up
+
+The most effective way is:
+
+    $ docker-compose down --volumes
+
+But most of the times you don't want to do that unless you want to delete all
+the things. If you just need to clean up the data but rely on the same
+containers you can run the following instead:
+
+    $ make flush
+
+If you want to try new code, run:
+
+    $ docker-compose up -d --build --force-recreate
+    $ make flush
