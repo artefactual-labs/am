@@ -28,6 +28,12 @@ These are the command you need to run when starting from scratch:
     $ make bootstrap
     $ make restart-am-services
 
+`make create-volumes` creates two external volumes. They're heavily used in our
+containers but they are provided in the host machine:
+
+- `/tmp/am-pipeline-data` - the shared directory.
+- `/tmp/ss-location-data` - the transfer source location.
+
 ## Web UIs
 
 - Archivematica Dashboard: http://127.0.0.1:62080/
@@ -58,19 +64,35 @@ they need to be restarted manually, e.g.:
 | nginx » archivematica-dashboard         | `tcp/80`       | `tcp/62080` |
 | nginx » archivematica-storage-service   | `tcp/8000`     | `tcp/62081` |
 
+## Resetting the environment
+
+In many cases, as a tester or a developer, you want to restart all the
+containers at once and make sure the latest version of the images are built.
+But also, you don't want to lose your data like the search index or the
+database. If this is case, run the following command:
+
+    $ docker-compose up -d --force-recreate --build
+
+Additionally you may want to delete all the deta including the stuff in the
+external volumes:
+
+    $ make flush
+
+Both snippets can be combined or used separately.
+
 ## Cleaning up
 
 The most effective way is:
 
     $ docker-compose down --volumes
 
-But most of the times you don't want to do that unless you want to delete all
-the things. If you just need to clean up the data but rely on the same
-containers you can run the following instead:
+It doesn't delete the external volumes described in the
+[Installation](#installation) section of this document. You have to delete the
+volumes manually with:
 
-    $ make flush
+    $ docker volume rm am-pipeline-data
+    $ docker volume rm ss-location-data
 
-If you want to try new code, run:
+Optionally you may also want to delete the directories:
 
-    $ docker-compose up -d --build --force-recreate
-    $ make flush
+    $ rm -rf /tmp/am-pipeline-data /tmp/ss-location-data
