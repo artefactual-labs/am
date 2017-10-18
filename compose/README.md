@@ -18,6 +18,16 @@ beyond the scope of this recipe.
 
 Ansible, docker-py, Docker, Docker Compose, git, make.
 
+It is beyond the scope of this document to explain how these dependencies are
+installed in your computer. If you're using Ubuntu 16.04 the following commands
+may work:
+
+    $ sudo apt update
+    $ sudo apt install -y build-essential python-dev git
+    $ sudo pip install -U ansible docker-compose
+
+And install Docker CE following [https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/](these instructions).
+
 ## Installation
 
 These are the command you need to run when starting from scratch:
