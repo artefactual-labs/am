@@ -1,6 +1,3 @@
-# Sources
-/src/
-
 # Terraform compiled files
 *.tfstate
 *.tfstate.backup

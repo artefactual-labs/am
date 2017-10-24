@@ -32,7 +32,7 @@ And install Docker CE following [https://docs.docker.com/engine/installation/lin
 
 These are the command you need to run when starting from scratch:
 
-    $ ansible-playbook ../playbooks/download-sources.yml
+    $ git submodule update --init --recursive
     $ make create-volumes
     $ docker-compose up -d --build
     $ make bootstrap
