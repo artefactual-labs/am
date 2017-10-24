@@ -1,0 +1,3 @@
+[submodule "archivematica"]
+	path = src/archivematica
+	url = https://github.com/artefactual/archivematica
