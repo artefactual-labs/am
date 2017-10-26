@@ -7,6 +7,7 @@
 - [Source code auto-reloading](#source-code-auto-reloading)
 - [Ports](#ports)
 - [Cleaning up](#cleaning-up)
+- [Troubleshooting](#troubleshooting)
 
 ## Audience
 
@@ -112,3 +113,29 @@ volumes manually with:
 Optionally you may also want to delete the directories:
 
     $ rm -rf /tmp/am-pipeline-data /tmp/ss-location-data
+
+## Troubleshooting
+
+##### Nginx returns 502 Bad Gateway
+
+We're using Nginx as a proxy. Likely the underlying issue is that either the
+Dashboard or the Storage Service died. Run `docker-compose ps` to confirm it:
+
+                     Name                    State
+    -------------------------------------------------
+    compose_archivematica-storage-service_1  Exit 3
+
+You want to see what's in the logs, e.g.:
+
+    $ docker-compose logs -f archivematica-storage-service
+
+    ImportError: No module named storage_service.wsgi
+    [2017-10-26 19:28:24 +0000] [11] [INFO] Worker exiting (pid: 11)
+    [2017-10-26 19:28:24 +0000] [7] [INFO] Shutting down: Master
+    [2017-10-26 19:28:24 +0000] [7] [INFO] Reason: Worker failed to boot.
+
+Now we know why -  I had deleted the `wsgi` module. The worker crashed and
+Gunicorn gave up. This could happen for example when we're rebasing a branch
+and git is not atomically moving things around. But it's fixed now and you want
+to give it another shot so we run `docker-compose up -d` to ensure that all the
+services are up again. Next run `docker-compose ps` to verify that it's all up.
