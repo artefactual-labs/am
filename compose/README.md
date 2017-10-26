@@ -8,6 +8,7 @@
 - [Ports](#ports)
 - [Cleaning up](#cleaning-up)
 - [Troubleshooting](#troubleshooting)
+  - [Nginx returns 502 Bad Gateway](#nginx-returns-502-bad-gateway)
 
 ## Audience
 
