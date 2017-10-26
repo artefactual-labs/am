@@ -4,7 +4,7 @@ AM_PIPELINE_DATA ?= /tmp/am-pipeline-data
 SS_LOCATION_DATA ?= /tmp/ss-location-data
 
 
-create-volumes:
+create-volumes:  ## Create external data volumes.
 	mkdir -p ${AM_PIPELINE_DATA}
 	docker volume create \
 		--opt type=none \
@@ -18,9 +18,9 @@ create-volumes:
 		--opt device=$(SS_LOCATION_DATA) \
 			ss-location-data
 
-bootstrap: bootstrap-storage-service bootstrap-dashboard-db bootstrap-dashboard-frontend
+bootstrap: bootstrap-storage-service bootstrap-dashboard-db bootstrap-dashboard-frontend  ## Full bootstrap.
 
-bootstrap-storage-service:
+bootstrap-storage-service:  ## Boostrap Storage Service (new database).
 	docker-compose exec mysql mysql -hlocalhost -uroot -p12345 -e "\
 		DROP DATABASE IF EXISTS SS; \
 		CREATE DATABASE SS; \
@@ -40,7 +40,7 @@ bootstrap-storage-service:
 					--email="test@test.com" \
 					--api-key="test"
 
-bootstrap-dashboard-db:
+bootstrap-dashboard-db:  ## Bootstrap Dashboard (new database).
 	docker-compose exec mysql mysql -hlocalhost -uroot -p12345 -e "\
 		DROP DATABASE IF EXISTS MCP; \
 		CREATE DATABASE MCP; \
@@ -65,7 +65,7 @@ bootstrap-dashboard-db:
 					--ss-user="test" \
 					--ss-api-key="test"
 
-bootstrap-dashboard-frontend:
+bootstrap-dashboard-frontend:  ## Build front-end assets.
 	docker-compose run --rm --no-deps \
 		--user root \
 		--entrypoint npm \
@@ -79,23 +79,30 @@ bootstrap-dashboard-frontend:
 			archivematica-dashboard \
 				install --unsafe-perm
 
-restart-am-services:
+restart-am-services:  ## Restart Archivematica services: MCPServer, MCPClient, Dashboard and Storage Service.
 	docker-compose restart archivematica-mcp-server
 	docker-compose restart archivematica-mcp-client
 	docker-compose restart archivematica-dashboard
 	docker-compose restart archivematica-storage-service
 
-db:
+db:  ## Connect to the MySQL server using the CLI.
 	mysql -h127.0.0.1 --port=62001 -uroot -p12345
 
-flush: flush-shared-dir flush-elasticsearch-indices bootstrap restart-am-services
+flush: flush-shared-dir flush-elasticsearch-indices bootstrap restart-am-services  ## Delete ALL user data.
 
-flush-shared-dir-mcp-configs:
+flush-shared-dir-mcp-configs:  ## Delete processing configurations - it restarts MCPServer.
 	rm -f ${AM_PIPELINE_DATA}/sharedMicroServiceTasksConfigs/processingMCPConfigs/defaultProcessingMCP.xml
 	rm -f ${AM_PIPELINE_DATA}/sharedMicroServiceTasksConfigs/processingMCPConfigs/automatedProcessingMCP.xml
+	docker-compose restart archivematica-mcp-server
 
-flush-shared-dir:
+flush-shared-dir:  # Delete contents of the shared directory data volume.
 	rm -rf ${AM_PIPELINE_DATA}/*
 
-flush-elasticsearch-indices:
+flush-elasticsearch-indices:  # Deletes Elasticsearch indices.
 	docker-compose exec archivematica-mcp-client curl -XDELETE "http://elasticsearch:9200/aips,transfers"
+
+help:  # Print this help message.
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+
+.DEFAULT_GOAL := help
