@@ -31,9 +31,9 @@ may work:
 
     $ sudo apt update
     $ sudo apt install -y build-essential python-dev git
-    $ sudo pip install -U ansible docker-compose
+    $ sudo pip install -U docker-compose
 
-And install Docker CE following [https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/](these instructions).
+And install Docker CE following [these instructions](https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/).
 
 ## Installation
 
