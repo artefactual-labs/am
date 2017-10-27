@@ -23,7 +23,7 @@ Please read the [documentation](https://docs.docker.com/compose/reference/overvi
 
 ## Requirements
 
-Ansible, docker-py, Docker, Docker Compose, git, make.
+Docker, Docker Compose, git and make.
 
 It is beyond the scope of this document to explain how these dependencies are
 installed in your computer. If you're using Ubuntu 16.04 the following commands
