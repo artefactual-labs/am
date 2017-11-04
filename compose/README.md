@@ -8,6 +8,7 @@
 - [Logs](#logs)
 - [Scaling](#scaling)
 - [Ports](#ports)
+- [Tests](#tests)
 - [Cleaning up](#cleaning-up)
 - [Troubleshooting](#troubleshooting)
   - [Nginx returns 502 Bad Gateway](#nginx-returns-502-bad-gateway)
@@ -116,6 +117,16 @@ are connected to Gearman:
 | clamavd                                 | `tcp/3310`     | `tcp/62006` |
 | nginx » archivematica-dashboard         | `tcp/80`       | `tcp/62080` |
 | nginx » archivematica-storage-service   | `tcp/8000`     | `tcp/62081` |
+
+## Tests
+
+At the moment the acceptance tests can't run in this environment. You can run
+unit and integration tests though. The `Makefile` offers some shortcuts that
+you can list with the following command:
+
+    $ make 2>&1 | grep test-
+
+For example, run `make test-storage-service` to run the Storage Service tests.
 
 ## Resetting the environment
 
