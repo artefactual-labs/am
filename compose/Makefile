@@ -95,29 +95,27 @@ flush-shared-dir-mcp-configs:  ## Delete processing configurations - it restarts
 	rm -f ${AM_PIPELINE_DATA}/sharedMicroServiceTasksConfigs/processingMCPConfigs/automatedProcessingMCP.xml
 	docker-compose restart archivematica-mcp-server
 
-flush-shared-dir:  # Delete contents of the shared directory data volume.
+flush-shared-dir:  ## Delete contents of the shared directory data volume.
 	rm -rf ${AM_PIPELINE_DATA}/*
 
-flush-elasticsearch-indices:  # Deletes Elasticsearch indices.
+flush-elasticsearch-indices:  ## Deletes Elasticsearch indices.
 	docker-compose exec archivematica-mcp-client curl -XDELETE "http://elasticsearch:9200/aips,transfers"
 
-test-all: test-mcp-server test-mcp-client test-dashboard test-storage-service
+test-all: test-mcp-server test-mcp-client test-dashboard test-storage-service  ## Run all tests.
 
-test-mcp-server:
+test-mcp-server:  ## Run MCPServer tests.
 	docker-compose run --workdir /src/MCPServer --rm --user=root --entrypoint=py.test archivematica-mcp-server
 
-test-mcp-client:
+test-mcp-client:  ## Run MCPClient tests.
 	docker-compose run --workdir /src/MCPClient --rm --user=root --entrypoint=py.test archivematica-mcp-client
 
-test-dashboard:
+test-dashboard:  ## Run Dashboard tests.
 	docker-compose run --workdir /src/dashboard --rm --user=root --entrypoint=py.test archivematica-dashboard
 
-test-storage-service:
-	docker-compose run --rm --no-deps --entrypoint py.test \
-		-e "DJANGO_SETTINGS_MODULE=storage_service.settings.test" \
-			archivematica-storage-service
+test-storage-service:  ## Run Storage Service tests.
+	docker-compose run --workdir /src --rm --no-deps --entrypoint py.test -e "DJANGO_SETTINGS_MODULE=storage_service.settings.test" archivematica-storage-service
 
-help:  # Print this help message.
+help:  ## Print this help message.
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 
