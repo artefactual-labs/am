@@ -101,6 +101,22 @@ flush-shared-dir:  # Delete contents of the shared directory data volume.
 flush-elasticsearch-indices:  # Deletes Elasticsearch indices.
 	docker-compose exec archivematica-mcp-client curl -XDELETE "http://elasticsearch:9200/aips,transfers"
 
+test-all: test-mcp-server test-mcp-client test-dashboard test-storage-service
+
+test-mcp-server:
+	docker-compose run --workdir /src/MCPServer --rm --user=root --entrypoint=py.test archivematica-mcp-server
+
+test-mcp-client:
+	docker-compose run --workdir /src/MCPClient --rm --user=root --entrypoint=py.test archivematica-mcp-client
+
+test-dashboard:
+	docker-compose run --workdir /src/dashboard --rm --user=root --entrypoint=py.test archivematica-dashboard
+
+test-storage-service:
+	docker-compose run --rm --no-deps --entrypoint py.test \
+		-e "DJANGO_SETTINGS_MODULE=storage_service.settings.test" \
+			archivematica-storage-service
+
 help:  # Print this help message.
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
