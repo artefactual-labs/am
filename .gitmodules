@@ -9,4 +9,4 @@
 [submodule "archivematica-acceptance-tests"]
 	path = src/archivematica-acceptance-tests
 	url = https://github.com/artefactual-labs/archivematica-acceptance-tests
-	branch = qa/1.x
+	branch = master
