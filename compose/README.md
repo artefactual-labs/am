@@ -46,6 +46,21 @@ These are the command you need to run when starting from scratch:
     $ make bootstrap
     $ make restart-am-services
 
+With indexing turned off:
+
+    $ git clone https://github.com/artefactual-labs/am.git
+    $ cd am
+    $ git submodule update --init --recursive
+    $ cd src/archivematica
+    $ git checkout -b dev/1.8.x origin/dev/1.8.x
+    $ cd ../archivematica-storage-service
+    $ git checkout qa/0.x
+    $ cd ../../compose/
+    $ make create-volumes
+    $ docker-compose -f docker-compose-no-indexing.yml up -d --build
+    $ make bootstrap
+    $ make restart-am-services
+
 `make create-volumes` creates two external volumes. They're heavily used in our
 containers but they are provided in the host machine:
 
