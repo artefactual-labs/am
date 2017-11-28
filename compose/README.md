@@ -16,10 +16,10 @@
 ## Audience
 
 This Archivematica environment is based on Docker Compose and it is specifically
-**designed for developers**. Compose can be used in production but that is
+**designed for developers**. Compose can be used in a production environment but that is
 beyond the scope of this recipe.
 
-We use Docker Compose heavily so it's important that you're familiar with it.
+Artefactual developers use Docker Compose heavily so it's important that you're familiar with it.
 Please read the [documentation](https://docs.docker.com/compose/reference/overview/).
 
 ## Requirements
@@ -35,6 +35,26 @@ may work:
     $ sudo pip install -U docker-compose
 
 And install Docker CE following [these instructions](https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/).
+
+### Docker and Linux
+
+Docker will provide instructions on how to use it as a non-root user. This may not be desirable for all. 
+
+	If you would like to use Docker as a non-root user, you should now consider
+	adding your user to the "docker" group with something like:
+
+	  sudo usermod -aG docker <user>
+
+	Remember that you will have to log out and back in for this to take effect!
+
+	WARNING: Adding a user to the "docker" group will grant the ability to run
+			 containers which can be used to obtain root privileges on the
+			 docker host.
+			 Refer to https://docs.docker.com/engine/security/security/#docker-daemon-attack-surface
+			 for more information.
+       
+The impact to those following this recipe is that any of the commands below which call Docker will need to be
+run as a root user using 'sudo'. 
 
 ## Installation
 
@@ -52,6 +72,13 @@ containers but they are provided in the host machine:
 - `/tmp/am-pipeline-data` - the shared directory.
 - `/tmp/ss-location-data` - the transfer source location.
 
+### GNU make
+
+Make commands above, and any subsequent calls to it below can be reviewed using the following command
+from the compose directory:
+
+    $ make help
+    
 ## Web UIs
 
 - Archivematica Dashboard: http://127.0.0.1:62080/
@@ -128,8 +155,6 @@ The `Makefile` includes many useful targets for testing. List them all with:
 The sources of the [acceptance tests](../src/archivematica-acceptance-tests)
 have been made available inside Docker using volumes so you can edit them and
 the changes will apply immediately.
-
-**TODO**: INTERACTING WITH BEHAVE, PASS TAGS, ETC? :construction:
 
 ## Resetting the environment
 
