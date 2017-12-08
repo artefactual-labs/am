@@ -46,6 +46,13 @@ bootstrap-storage-service:  ## Boostrap Storage Service (new database).
 		chown -R archivematica:archivematica \
 		/home/archivematica/archivematica-sampledata
 
+makemigrations-ss:
+	docker-compose run \
+		--rm \
+		--entrypoint /src/storage_service/manage.py \
+			archivematica-storage-service \
+				makemigrations
+
 bootstrap-dashboard-db:  ## Bootstrap Dashboard (new database).
 	docker-compose exec mysql mysql -hlocalhost -uroot -p12345 -e "\
 		DROP DATABASE IF EXISTS MCP; \
