@@ -10,3 +10,7 @@
 	path = src/archivematica-acceptance-tests
 	url = https://github.com/artefactual-labs/archivematica-acceptance-tests
 	branch = master
+[submodule "src/archivematica-sampledata"]
+	path = src/archivematica-sampledata
+	url = https://github.com/artefactual/archivematica-sampledata
+	branch = master

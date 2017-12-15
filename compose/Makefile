@@ -39,12 +39,6 @@ bootstrap-storage-service:  ## Boostrap Storage Service (new database).
 					--password="test" \
 					--email="test@test.com" \
 					--api-key="test"
-	docker-compose exec --user root archivematica-storage-service \
-		git clone https://github.com/artefactual/archivematica-sampledata.git \
-		/home/archivematica/archivematica-sampledata
-	docker-compose exec --user root archivematica-storage-service \
-		chown -R archivematica:archivematica \
-		/home/archivematica/archivematica-sampledata
 
 makemigrations-ss:
 	docker-compose run \
