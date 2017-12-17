@@ -120,7 +120,7 @@ test-dashboard:  ## Run Dashboard tests.
 	docker-compose run --workdir /src/dashboard --rm --user=root --entrypoint=py.test archivematica-dashboard
 
 test-storage-service:  ## Run Storage Service tests.
-	docker-compose run --workdir /src --rm --no-deps --entrypoint py.test -e "DJANGO_SETTINGS_MODULE=storage_service.settings.test" archivematica-storage-service
+	docker-compose run --workdir /src --rm --user=root --no-deps --entrypoint py.test -e "DJANGO_SETTINGS_MODULE=storage_service.settings.test" archivematica-storage-service
 
 test-at-up:
 	docker-compose -f docker-compose.yml -f docker-compose.acceptance-tests.yml up -d
