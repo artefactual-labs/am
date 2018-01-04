@@ -122,6 +122,15 @@ test-dashboard:  ## Run Dashboard tests.
 test-storage-service:  ## Run Storage Service tests.
 	docker-compose run --workdir /src --rm --user=root --no-deps --entrypoint py.test -e "DJANGO_SETTINGS_MODULE=storage_service.settings.test" archivematica-storage-service
 
+test-storage-service-mysql:  ## Run Storage Service tests with MySQL.
+	docker-compose exec mysql mysql -hlocalhost -uroot -p12345 -e "\
+		DROP DATABASE IF EXISTS SSTEST; \
+		CREATE DATABASE SSTEST; \
+		GRANT ALL ON SS.* TO 'archivematica'@'%' IDENTIFIED BY 'demo';"
+	docker-compose run --workdir /src --rm --user=root --no-deps --entrypoint py.test -e "DJANGO_SETTINGS_MODULE=storage_service.settings.testmysql" archivematica-storage-service
+	docker-compose exec mysql mysql -hlocalhost -uroot -p12345 -e "\
+		DROP DATABASE IF EXISTS SSTEST;"
+
 test-at-up:
 	docker-compose -f docker-compose.yml -f docker-compose.acceptance-tests.yml up -d
 
