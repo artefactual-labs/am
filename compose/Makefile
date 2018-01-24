@@ -39,6 +39,9 @@ bootstrap-storage-service:  ## Boostrap Storage Service (new database).
 					--password="test" \
 					--email="test@test.com" \
 					--api-key="test"
+	# SS needs to be restarted so the local space is created.
+	# See #303 (https://git.io/vNKlM) for more details.
+	docker-compose restart archivematica-storage-service
 
 makemigrations-ss:
 	docker-compose run \
