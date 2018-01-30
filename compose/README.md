@@ -52,9 +52,9 @@ Docker will provide instructions on how to use it as a non-root user. This may n
 			 docker host.
 			 Refer to https://docs.docker.com/engine/security/security/#docker-daemon-attack-surface
 			 for more information.
-       
+
 The impact to those following this recipe is that any of the commands below which call Docker will need to be
-run as a root user using 'sudo'. 
+run as a root user using 'sudo'.
 
 ## Installation
 
@@ -78,7 +78,7 @@ Make commands above, and any subsequent calls to it below can be reviewed using 
 from the compose directory:
 
     $ make help
-    
+
 ## Web UIs
 
 - Archivematica Dashboard: http://127.0.0.1:62080/
