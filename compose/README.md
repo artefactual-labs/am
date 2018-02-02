@@ -165,7 +165,7 @@ database. If this is case, run the following command:
 
     $ docker-compose up -d --force-recreate --build
 
-Additionally you may want to delete all the deta including the stuff in the
+Additionally you may want to delete all the data including the stuff in the
 external volumes:
 
     $ make flush
