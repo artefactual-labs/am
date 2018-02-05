@@ -66,6 +66,17 @@ These are the command you need to run when starting from scratch:
     $ make bootstrap
     $ make restart-am-services
 
+If you want to perform a headless Archivematica installation, i.e., without
+Elasticsearch installed, use the following `docker-compose` command instead
+of the above one. This command explicitly references the Docker Compose config
+file and does not also silently include the .override.yml file which installs
+Elasticsearch:
+
+    $ docker-compose -f docker-compose.yml up -d --build
+
+(Note: if you want to remove Elasticsearch from an existing installation, add
+the `--remove-orphans` flag to the above command.)
+
 `make create-volumes` creates two external volumes. They're heavily used in our
 containers but they are provided in the host machine:
 
@@ -165,7 +176,7 @@ database. If this is case, run the following command:
 
     $ docker-compose up -d --force-recreate --build
 
-Additionally you may want to delete all the deta including the stuff in the
+Additionally you may want to delete all the data including the stuff in the
 external volumes:
 
     $ make flush
