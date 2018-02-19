@@ -12,6 +12,7 @@
 - [Cleaning up](#cleaning-up)
 - [Troubleshooting](#troubleshooting)
   - [Nginx returns 502 Bad Gateway](#nginx-returns-502-bad-gateway)
+  - [MCPClient osdeps cannot be updated](#mcpclient-osdeps-cannot-be-updated)
 
 ## Audience
 
@@ -214,3 +215,39 @@ Gunicorn gave up. This could happen for example when we're rebasing a branch
 and git is not atomically moving things around. But it's fixed now and you want
 to give it another shot so we run `docker-compose up -d` to ensure that all the
 services are up again. Next run `docker-compose ps` to verify that it's all up.
+
+##### MCPClient osdeps cannot be updated
+
+The MCPClient Docker image bundles a number of tools that are used by
+Archivematica. They're listed in the [osdeps files][0] but the
+[MCPClient.Dockerfile][1] is not making use of it yet. If you need to
+introduce dependency changes in MCPClient you will need to update both.
+
+In [#931][2] we started publishing a MCPClient base Docker image to speed up
+development workflows. This means that the dependencies listed in the osdeps
+files are now included in [MCPClient-base.Dockerfile][3]. Once the file is
+updated you would publish the corresponding image as follows:
+
+```
+$ docker build -f MCPClient-base.Dockerfile -t artefactual/archivematica-mcp-client-base:20180219.01.52dc9959 .
+$ docker push artefactual/archivematica-mcp-client-base:20180219.01.52dc9959
+```
+
+Where the tag `20180219.01.52dc9959` is a combination of the date, build number
+that day and the commit that updates the Dockerfile.
+
+As a developer you may want to build the image and test it before publishing it,
+e.g.:
+
+1. Edit `MCPClient-base.Dockerfile`.
+2. Build image with new tag.
+3. Update the `FROM` instruciton in `MCPClient.Dockerfile` to use it.
+4. Build the image of the `archivematica-mcp-client` service.
+5. Test it.
+6. Publish image.
+
+[0]: https://github.com/artefactual/archivematica/tree/qa/1.x/src/MCPClient/osdeps
+[1]: https://github.com/artefactual/archivematica/blob/qa/1.x/src/MCPClient.Dockerfile
+[2]: https://github.com/artefactual/archivematica/pull/931
+[3]: https://github.com/artefactual/archivematica/blob/qa/1.x/src/MCPClient-base.Dockerfile
+
