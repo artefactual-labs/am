@@ -13,6 +13,7 @@
 - [Troubleshooting](#troubleshooting)
   - [Nginx returns 502 Bad Gateway](#nginx-returns-502-bad-gateway)
   - [MCPClient osdeps cannot be updated](#mcpclient-osdeps-cannot-be-updated)
+  - [Error while mounting volume](#error-while-mounting-volume)
 
 ## Audience
 
@@ -251,3 +252,28 @@ e.g.:
 [2]: https://github.com/artefactual/archivematica/pull/931
 [3]: https://github.com/artefactual/archivematica/blob/qa/1.x/src/MCPClient-base.Dockerfile
 
+##### Error while mounting volume
+
+Our Docker named volumes are stored under `/tmp` which means that it is
+possible that they will be recycled at some point by the operative system. This
+frequently happens when you restart your machine.
+
+Under this scenario, if you try to bring up the services again you will likely
+see one or more errors like the following:
+
+    ERROR: for compose_archivematica-mcp-server_1  Cannot create container for service archivematica-mcp-server: error while mounting volume with options: type='none' device='/tmp/am-pipeline-data' o='bind': no such file or directory
+
+The solution is simple. You need to create the volumes again:
+
+    $ make create-volumes
+
+And now you're ready to continue as usual:
+
+    $ docker-compose up -d --build
+
+Optionally, you can define new persistent locations for the external volumes.
+The defaults are defined in the `Makefile`:
+
+    # Paths for Docker named volumes
+    AM_PIPELINE_DATA ?= /tmp/am-pipeline-data
+    SS_LOCATION_DATA ?= /tmp/ss-location-data
