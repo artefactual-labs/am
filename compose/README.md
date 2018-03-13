@@ -174,6 +174,10 @@ external volumes:
 
 Both snippets can be combined or used separately.
 
+You may need to update the codebase, and for that you can run this command:
+
+    $ git submodule update --init --recursive
+
 ## Cleaning up
 
 The most effective way is:
