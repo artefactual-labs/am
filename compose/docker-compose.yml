@@ -140,6 +140,7 @@ services:
       ARCHIVEMATICA_MCPCLIENT_MCPCLIENT_CLAMAV_SERVER: "clamavd:3310"
       ARCHIVEMATICA_MCPCLIENT_SEARCH_ENABLED: "${AM_SEARCH_ENABLED:-true}"
       ARCHIVEMATICA_MCPCLIENT_MCPCLIENT_CAPTURE_CLIENT_SCRIPT_OUTPUT: "${AM_CAPTURE_CLIENT_SCRIPT_OUTPUT:-true}"
+      ARCHIVEMATICA_MCPCLIENT_MCPCLIENT_PROFILE_CLIENT_SCRIPTS: "${AM_PROFILE_CLIENT_SCRIPTS:-false}"
     volumes:
       - "../src/archivematica/src/archivematicaCommon/:/src/archivematicaCommon/"
       - "../src/archivematica/src/dashboard/:/src/dashboard/"
@@ -152,6 +153,8 @@ services:
       - "gearmand"
       - "elasticsearch"
       - "archivematica-storage-service"
+    cap_add:
+      - SYS_PTRACE
 
   archivematica-dashboard:
     build:
