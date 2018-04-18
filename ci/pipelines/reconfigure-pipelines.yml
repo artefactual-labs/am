@@ -1,0 +1,74 @@
+---
+
+resource_types:
+
+- name: concourse-pipeline
+  type: docker-image
+  source:
+    repository: concourse/concourse-pipeline-resource
+
+- name: slack-notification
+  type: docker-image
+  source:
+    repository: cfcommunity/slack-notification-resource
+
+resources:
+
+- name: pipelines
+  type: git
+  check_every: 60s
+  source:
+    uri: https://github.com/artefactual-labs/am
+    branch: dev/pipeline-stable-1.7.x
+    paths:
+      - "ci/pipelines/*.yml"
+
+- name: ci.archivematica.org
+  type: concourse-pipeline
+  source:
+    target: https://ci.archivematica.org
+    teams:
+    - name: main
+      username: ((concourse_basic_auth.username))
+      password: ((concourse_basic_auth.password))
+
+- name: slack-notification
+  type: slack-notification
+  source:
+    url: ((slack_webhook))
+
+jobs:
+
+- name: reconfigure
+  plan:
+  - get: pipelines
+    trigger: true
+    params:
+      submodules: none
+  - put: ci.archivematica.org
+    params:
+      pipelines:
+      - name: main
+        team: main
+        config_file: pipelines/ci/pipelines/main.yml
+      - name: main-upgrades
+        team: main
+        config_file: pipelines/ci/pipelines/main-upgrades.yml
+      - name: experiment-release-version
+        team: main
+        config_file: pipelines/ci/pipelines/experiment-release-version.yml
+      - name: reconfigure-pipelines
+        team: main
+        config_file: pipelines/ci/pipelines/reconfigure-pipelines.yml
+      - name: storage-service
+        team: main
+        config_file: pipelines/ci/pipelines/storage-service.yml
+    on_failure:
+      put: slack-notification
+      params:
+        channel: "@sevein"
+        username: "qubot"
+        icon_emoji: ":artefactual:"
+        text: |
+          Pipeline **reconfigure-pipelines** failed!
+          https://ci.archivematica.org/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME

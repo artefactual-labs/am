@@ -1,0 +1,203 @@
+---
+
+# ---------------------------------------------------------------------------- #
+#
+# Officially supported permutations by its job name:
+#
+# - "acceptance-tests-pkg-centos-7"
+# - "acceptance-tests-ansible-ubuntu-14-04"
+# - "acceptance-tests-ansible-ubuntu-16-04"
+#
+# Not supported so ignored for now:
+#
+# - "acceptance-tests-pkg-ubuntu-16-04"
+# - "acceptance-tests-pkg-ubuntu-14-04"
+# - "acceptance-tests-ansible-centos-7"
+#
+# ---------------------------------------------------------------------------- #
+
+resource_types:
+
+- name: slack-notification
+  type: docker-image
+  source:
+    repository: cfcommunity/slack-notification-resource
+
+resources:
+
+- name: archivematica
+  type: git
+  source:
+    uri: "https://github.com/artefactual-labs/am"
+    branch: "dev/pipeline-stable-1.7.x"
+
+- name: slack-notification
+  type: slack-notification
+  source:
+    url: ((slack_webhook))
+
+jobs:
+
+- name: start-testing
+  plan:
+  - get: archivematica
+    params:
+      submodules: none
+      depth: 1
+
+- name: acceptance-tests-pkg-centos-7
+  interruptible: true
+  serial: true
+  plan:
+  - get: archivematica
+    trigger: true
+    passed: [start-testing]
+  - task: setup-tugboat
+    file: archivematica/ci/acceptance-tests/setup-tugboat.yml
+    params:
+      ACCESS_TOKEN: ((digitalocean_api.access_token))
+      SSH_USER: ((digitalocean_api.ssh_user))
+      SSH_KEY: ((digitalocean_api.ssh_key))
+      IMAGE: centos-7-x64
+  - task: create-droplet
+    file: archivematica/ci/acceptance-tests/create-droplet.yml
+    params:
+      DROPLET_NAME: "archivematica-ci-tests-pkg-centos-7"
+    timeout: 5m
+  - ensure:
+      task: teardown
+      file: archivematica/ci/acceptance-tests/teardown-droplet.yml
+      params:
+        DROPLET_NAME: "archivematica-ci-tests-pkg-centos-7"
+      timeout: 5m
+    do:
+    - task: install-archivematica
+      file: archivematica/ci/acceptance-tests/install-archivematica-pkg.yml
+      params:
+        SCRIPT: archivematica/ci/acceptance-tests/install-archivematica-pkg-centos-7.sh
+      timeout: 1h
+    - task: install-default-user
+      file: archivematica/ci/acceptance-tests/install-default-user.yml
+      params:
+        SS_URL: "http://127.0.0.1:8001"
+        SS_PIPELINE_REMOTE: "http://127.0.0.1:81"
+      timeout: 10m
+    - task: install-sampledata
+      file: archivematica/ci/acceptance-tests/install-sampledata.yml
+      timeout: 30m
+    - task: run-acceptance-tests
+      file: archivematica/ci/acceptance-tests/run-acceptance-tests.yml
+      privileged: true
+      params:
+        SELENIUM_HUB_HOST: ((selenium_hub.private))
+        SELENIUM_HUB_PORT: ((selenium_hub.port))
+        AM_PORT: "81"
+        SS_PORT: "8001"
+      timeout: 2h
+
+- name: acceptance-tests-ansible-ubuntu-16-04
+  interruptible: true
+  serial: true
+  plan:
+  - get: archivematica
+    trigger: true
+    passed: [start-testing]
+  - task: setup-tugboat
+    file: archivematica/ci/acceptance-tests/setup-tugboat.yml
+    params:
+      ACCESS_TOKEN: ((digitalocean_api.access_token))
+      SSH_USER: ((digitalocean_api.ssh_user))
+      SSH_KEY: ((digitalocean_api.ssh_key))
+      IMAGE: ubuntu-16-04-x64
+  - task: create-droplet
+    file: archivematica/ci/acceptance-tests/create-droplet.yml
+    params:
+      DROPLET_NAME: "archivematica-ci-tests-ansible-ubuntu-16-04"
+    timeout: 5m
+  - ensure:
+      task: teardown
+      file: archivematica/ci/acceptance-tests/teardown-droplet.yml
+      params:
+        DROPLET_NAME: "archivematica-ci-tests-ansible-ubuntu-16-04"
+      timeout: 5m
+    do:
+    - task: install-archivematica
+      file: archivematica/ci/acceptance-tests/install-archivematica-ansible-ubuntu.yml
+      timeout: 1h
+    - task: install-default-user
+      file: archivematica/ci/acceptance-tests/install-default-user.yml
+      timeout: 10m
+    - task: install-sampledata
+      file: archivematica/ci/acceptance-tests/install-sampledata.yml
+      timeout: 30m
+    - task: run-acceptance-tests
+      file: archivematica/ci/acceptance-tests/run-acceptance-tests.yml
+      privileged: true
+      params:
+        SELENIUM_HUB_HOST: ((selenium_hub.private))
+        SELENIUM_HUB_PORT: ((selenium_hub.port))
+        AM_PORT: "81"
+        SS_PORT: "8001"
+      timeout: 2h
+
+- name: acceptance-tests-ansible-ubuntu-14-04
+  interruptible: true
+  serial: true
+  plan:
+  - get: archivematica
+    trigger: true
+    passed: [start-testing]
+  - task: setup-tugboat
+    file: archivematica/ci/acceptance-tests/setup-tugboat.yml
+    params:
+      ACCESS_TOKEN: ((digitalocean_api.access_token))
+      SSH_USER: ((digitalocean_api.ssh_user))
+      SSH_KEY: ((digitalocean_api.ssh_key))
+      IMAGE: ubuntu-14-04-x64
+  - task: create-droplet
+    file: archivematica/ci/acceptance-tests/create-droplet.yml
+    params:
+      DROPLET_NAME: "archivematica-ci-tests-ansible-ubuntu-14-04"
+    timeout: 5m
+  - ensure:
+      task: teardown
+      file: archivematica/ci/acceptance-tests/teardown-droplet.yml
+      params:
+        DROPLET_NAME: "archivematica-ci-tests-ansible-ubuntu-14-04"
+      timeout: 5m
+    do:
+    - task: install-archivematica
+      file: archivematica/ci/acceptance-tests/install-archivematica-ansible-ubuntu.yml
+      timeout: 1h
+    - task: install-default-user
+      file: archivematica/ci/acceptance-tests/install-default-user.yml
+      timeout: 10m
+    - task: install-sampledata
+      file: archivematica/ci/acceptance-tests/install-sampledata.yml
+      timeout: 30m
+    - task: run-acceptance-tests
+      file: archivematica/ci/acceptance-tests/run-acceptance-tests.yml
+      privileged: true
+      params:
+        SELENIUM_HUB_HOST: ((selenium_hub.private))
+        SELENIUM_HUB_PORT: ((selenium_hub.port))
+        AM_PORT: "81"
+        SS_PORT: "8001"
+      timeout: 2h
+
+- name: done
+  plan:
+  - get: archivematica
+    passed:
+    - "acceptance-tests-pkg-centos-7"
+    - "acceptance-tests-ansible-ubuntu-14-04"
+    - "acceptance-tests-ansible-ubuntu-16-04"
+    trigger: true
+  - put: slack-notification
+    params:
+      channel: "@sevein"
+      username: "qubot"
+      icon_emoji: ":artefactual:"
+      text: |
+        The build has finished successfully! Check it out at:
+        https://ci.archivematica.org/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME

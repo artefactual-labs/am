@@ -1,0 +1,81 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: ubuntu
+    tag: "16.04"
+
+inputs:
+- name: instance
+- name: keys
+
+params:
+  SS_URL: "http://127.0.0.1:8000"
+  SS_PIPELINE_REMOTE: "http://127.0.0.1:80"
+
+run:
+  path: bash
+  args:
+  - -xec
+  - |
+
+    #
+    # install-default-user.sh
+    #
+    cat <<EOC > install-default-user.sh
+    #!/usr/bin/env bash
+    set -o errexit
+    set -o nounset
+    set -o xtrace
+
+    # Install management commands (shortcuts)
+    curl -Ls https://git.io/vpC3m | sudo bash -
+
+    # Create SS user
+    sudo -u archivematica \
+      archivematica-storage-service-manage create_user \
+        --username=test123 \
+        --password=test123 \
+        --api-key=test123 \
+        --email=test123@example.com \
+        --superuser
+
+    # Create AM user
+    sudo -u archivematica \
+      archivematica-dashboard-manage install \
+        --username=test123 \
+        --password=test123 \
+        --email=test123@example.com \
+        --org-name=orgNameTest123 \
+        --org-id=orgIdTest123 \
+        --api-key=test123 \
+        --ss-url=$SS_URL \
+        --ss-user=test123 \
+        --ss-api-key=test123 \
+        --whitelist=""
+
+    cat update-pipeline-host.py | sudo -u archivematica \
+      archivematica-storage-service-manage shell
+    EOC
+
+    #
+    # update-pipeline-host.py
+    #
+    cat <<EOC > update-pipeline-host.py
+    from locations.models.pipeline import Pipeline
+    n = Pipeline.objects.all().update(remote_name="$SS_PIPELINE_REMOTE")
+    EOC
+
+    chmod +x install-default-user.sh
+
+    ip=$(cat instance/private_ip)
+
+    apt-get -q update && apt-get install -q -y openssh-client
+
+    scp -q -i keys/id_rsa -o StrictHostKeyChecking=no \
+      install-default-user.sh update-pipeline-host.py artefactual@${ip}:
+
+    ssh -q -i keys/id_rsa -o StrictHostKeyChecking=no \
+      artefactual@${ip} ./install-default-user.sh

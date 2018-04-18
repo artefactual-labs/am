@@ -1,0 +1,54 @@
+---
+resource_types:
+
+- name: github-status
+  type: docker-image
+  source:
+    repository: resource/github-status
+
+- name: slack-notification
+  type: docker-image
+  source:
+    repository: cfcommunity/slack-notification-resource
+
+resources:
+
+- name: version
+  type: semver
+  source:
+    initial_version: "1.7.0-rc.0"
+    driver: s3
+    bucket: archivematica-releases
+    key: current-version
+    access_key_id: ((digitalocean_space.access_key_id))
+    secret_access_key: ((digitalocean_space.secret_access_key))
+    endpoint: ((digitalocean_space.endpoint))
+
+- name: slack-notification
+  type: slack-notification
+  source:
+    url: ((slack_webhook))
+
+jobs:
+
+- name: create-release
+  plan:
+  - put: version
+    params:
+      pre: rc
+
+# See https://concoursetutorial.com/miscellaneous/slack-notifications/.
+
+- name: done
+  plan:
+  - get: version
+    passed: [create-release]
+    trigger: true
+  - put: slack-notification
+    params:
+      channel: "@sevein"
+      username: "qubot"
+      icon_emoji: ":artefactual:"
+      text: |
+        The build had a result. Check it out at:
+        https://ci.archivematica.org/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME

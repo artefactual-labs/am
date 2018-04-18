@@ -1,0 +1,41 @@
+---
+
+resources:
+
+- name: archivematica-storage-service
+  type: git
+  source:
+    uri: "https://github.com/artefactual/archivematica-storage-service"
+    branch: "qa/0.x"
+
+jobs:
+
+- name: build
+  plan:
+  - get: archivematica-storage-service
+    trigger: true
+  - task: unit-tests
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: python
+          tag: "2.7-stretch"
+      inputs:
+      - name: archivematica-storage-service
+      run:
+        path: bash
+        args:
+        - -xec
+        - |
+          apt-get --quiet update
+          apt-get --quiet install --yes p7zip-full unar
+          pip install -q tox
+          mkdir -p /var/archivematica/storage_service
+          # chown -R $USER /var/archivematica/storage_service
+
+          cd archivematica-storage-service
+          env TOXENV=flake8 tox
+          env TOXENV=checkformigrations tox
+          env TOXENV=py27 tox
