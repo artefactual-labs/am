@@ -60,7 +60,7 @@ run:
     # We think that behave needs sampledata available locally as well.
     #
     if command -v apt-get; then
-      sudo apt-get -q update && sudo apt-get install -q -y git
+      sudo apt-get -q update && sudo apt-get install -q -y git python-minimal
     elif command -v yum; then
       sudo yum -y install git
     fi
