@@ -51,6 +51,26 @@ run:
     am_url=http://${private_ip}:$AM_PORT/
     ss_url=http://${private_ip}:$SS_PORT/
 
+    #
+    # WIP
+    # We think that behave needs sampledata available locally as well.
+    #
+    if command -v apt-get; then
+      sudo apt-get -q update && sudo apt-get install -q -y git
+    elif command -v yum; then
+      sudo yum -y install git
+    fi
+    cd /home/seluser
+    git clone --depth 1 --recurse-submodules \
+      https://github.com/artefactual/archivematica-sampledata
+    pushd /home/seluser/archivematica-sampledata
+      python createtransfers/createtransfers.py create-variously-encoded-files
+      python createtransfers/createtransfers.py create-deep-transfers
+    popd
+    #
+    # /WIP
+    #
+
     cd /home/seluser/acceptance-tests
 
     # Do not remove this! The default is "artefactual" for
