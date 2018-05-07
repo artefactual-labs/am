@@ -23,9 +23,6 @@ params:
   AM_PORT: "80"
   SS_PORT: "8000"
 
-  TRANSFER_SOURCE_PATH: "artefactual/archivematica-sampledata/TestTransfers/acceptance-tests"
-  HOME: "artefactual"
-
   # Firefox (relies on env variable HEADLESS=1)
   # Firefox-Hub (relies on env variable HUB_ADDRESS=...)
   # Chrome (relies on env variable HEADLESS=1)
@@ -51,48 +48,35 @@ run:
     am_url=http://${private_ip}:$AM_PORT/
     ss_url=http://${private_ip}:$SS_PORT/
 
-    # Do not remove this! The default is "artefactual" for
-    # unknown reasons.
-    export HOME=/home/seluser
-
-    #
-    # WIP
-    # We think that behave needs sampledata available locally as well.
-    #
-    if command -v apt-get; then
-      sudo apt-get -q update && sudo apt-get install -q -y git python-minimal
-    elif command -v yum; then
-      sudo yum -y install git
-    fi
-    cd /home/seluser
-    git clone --depth 1 --recurse-submodules \
-      https://github.com/artefactual/archivematica-sampledata
-    pushd /home/seluser/archivematica-sampledata
+    # Build sampledata, it needs to be available in the environment where behave
+    # is executed in addition to the machine where Archivematica runs.
+    pushd /home/artefactual
+      git clone --depth 1 --recurse-submodules \
+        https://github.com/artefactual/archivematica-sampledata
+    popd
+    pushd /home/artefactual/archivematica-sampledata
       python createtransfers/createtransfers.py create-variously-encoded-files
       python createtransfers/createtransfers.py create-deep-transfers
     popd
-    #
-    # /WIP
-    #
 
-    cd /home/seluser/acceptance-tests
-
-    env \
-      HUB_ADDRESS=http://$SELENIUM_HUB_HOST:$SELENIUM_HUB_PORT/wd/hub \
-      HEADLESS=1 \
-        behave \
-            --tags=mo-aip-reingest \
-            --stop --no-skipped -v \
-            -D driver_name=$DRIVER_NAME \
-            -D ssh_accessible=yes \
-            -D am_username=$AM_DASHBOARD_USERNAME \
-            -D am_password=$AM_DASHBOARD_PASSWORD \
-            -D am_url=${am_url} \
-            -D am_version=$AM_VERSION \
-            -D am_api_key=$AM_DASHBOARD_API_KEY \
-            -D ss_username=$AM_SS_USERNAME \
-            -D ss_password=$AM_SS_PASSWORD \
-            -D ss_url=${ss_url} \
-            -D ss_api_key=$AM_SS_API_KEY \
-            -D transfer_source_path=$TRANSFER_SOURCE_PATH \
-            -D home=$HOME
+    pushd /home/artefactual/acceptance-tests
+      env \
+        HUB_ADDRESS=http://$SELENIUM_HUB_HOST:$SELENIUM_HUB_PORT/wd/hub \
+        HEADLESS=1 \
+          behave \
+              --tags=mo-aip-reingest \
+              --stop --no-skipped -v \
+              -D driver_name=$DRIVER_NAME \
+              -D ssh_accessible=yes \
+              -D am_username=$AM_DASHBOARD_USERNAME \
+              -D am_password=$AM_DASHBOARD_PASSWORD \
+              -D am_url=${am_url} \
+              -D am_version=$AM_VERSION \
+              -D am_api_key=$AM_DASHBOARD_API_KEY \
+              -D ss_username=$AM_SS_USERNAME \
+              -D ss_password=$AM_SS_PASSWORD \
+              -D ss_url=${ss_url} \
+              -D ss_api_key=$AM_SS_API_KEY \
+              -D transfer_source_path=artefactual/archivematica-sampledata/TestTransfers/acceptance-tests \
+              -D home=artefactual
+    popd
