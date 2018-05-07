@@ -51,6 +51,10 @@ run:
     am_url=http://${private_ip}:$AM_PORT/
     ss_url=http://${private_ip}:$SS_PORT/
 
+    # Do not remove this! The default is "artefactual" for
+    # unknown reasons.
+    export HOME=/home/seluser
+
     #
     # WIP
     # We think that behave needs sampledata available locally as well.
@@ -72,10 +76,6 @@ run:
     #
 
     cd /home/seluser/acceptance-tests
-
-    # Do not remove this! The default is "artefactual" for
-    # unknown reasons.
-    export HOME=/home/seluser
 
     env \
       HUB_ADDRESS=http://$SELENIUM_HUB_HOST:$SELENIUM_HUB_PORT/wd/hub \
