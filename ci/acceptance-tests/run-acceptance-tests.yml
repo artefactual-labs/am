@@ -55,8 +55,8 @@ run:
         https://github.com/artefactual/archivematica-sampledata
     popd
     pushd /home/artefactual/archivematica-sampledata
-      python createtransfers/createtransfers.py create-variously-encoded-files
-      python createtransfers/createtransfers.py create-deep-transfers
+      ./createtransfers/createtransfers.py create-variously-encoded-files
+      ./createtransfers/createtransfers.py create-deep-transfers
     popd
 
     pushd /home/artefactual/acceptance-tests

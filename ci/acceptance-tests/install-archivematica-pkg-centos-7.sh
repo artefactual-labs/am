@@ -100,6 +100,7 @@ fi
 #
 
 yum --assumeyes install firewalld
+systemctl restart dbus
 systemctl start firewalld
 systemctl enable firewalld
 firewall-cmd --permanent --add-port=22/tcp
@@ -107,7 +108,6 @@ firewall-cmd --permanent --add-port=81/tcp
 firewall-cmd --permanent --add-port=8001/tcp
 firewall-cmd --permanent --list-all
 firewall-cmd --reload
-
 
 #
 # Install MariaDB and Gearman
