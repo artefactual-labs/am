@@ -1,0 +1,141 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: ubuntu
+    tag: "16.04"
+
+inputs:
+- name: instance
+- name: keys
+
+run:
+  path: bash
+  args:
+  - -xec
+  - |
+
+    #
+    # ansible.cfg
+    #
+    cat <<EOC > ansible.cfg
+    [defaults]
+    nocows = 1
+    allow_world_readable_tmpfiles = 1
+    EOC
+
+    #
+    # requirements.yml
+    #
+    cat <<EOC > requirements.yml
+    ---
+    - src: "https://github.com/artefactual-labs/ansible-elasticsearch"
+      version: "master"
+      name: "artefactual.elasticsearch"
+    - src: "https://github.com/artefactual-labs/ansible-percona"
+      version: "master"
+      name: "artefactual.percona"
+    - src: "https://github.com/artefactual-labs/ansible-gearman"
+      version: "master"
+      name: "artefactual.gearman"
+    - src: "https://github.com/artefactual-labs/ansible-nginx"
+      version: "master"
+      name: "artefactual.nginx"
+    - src: "https://github.com/artefactual-labs/ansible-clamav"
+      version: "master"
+      name: "artefactual.clamav"
+    - src: "https://github.com/artefactual-labs/ansible-archivematica-src"
+      version: "stable/1.7.x"
+      name: "artefactual.archivematica-src"
+    EOC
+
+    #
+    # playbook.yml
+    #
+    cat <<EOC > playbook.yml
+    ---
+    - hosts: "all"
+      vars:
+        mysql_databases:
+        - name: "MCP"
+        mysql_users:
+        - name: "archivematica"
+          pass: "demo"
+          priv: "MCP.*:ALL,GRANT"
+          host: "localhost"
+        mysql_root_password: "ChangeMe"
+      roles:
+      - role: "artefactual.elasticsearch"
+        become: "yes"
+      - role: "artefactual.percona"
+        become: "yes"
+      - role: "artefactual.gearman"
+        become: "yes"
+      - role: "artefactual.clamav"
+        become: "yes"
+      - role: "artefactual.archivematica-src"
+        archivematica_src_am_version: "stable/1.7.x"
+        archivematica_src_ss_version: "stable/0.11.x"
+        archivematica_src_install_sample_data: "no"
+        archivematica_src_install_acceptance_tests: "no"
+        become: "yes"
+    EOC
+
+    #
+    # bootstrap.sh
+    #
+    cat <<EOC > bootstrap.sh
+    #!/usr/bin/env bash
+    set -o errexit
+    set -o nounset
+    set -o xtrace
+    apt-get -q update && apt-get install -q -y ufw git python build-essential python-dev
+    ufw allow 22/tcp
+    ufw allow 80/tcp
+    ufw allow 8000/tcp
+    ufw --force enable
+    curl -s https://bootstrap.pypa.io/get-pip.py | python -
+    pip install "ansible<2.4.0"
+
+    # Create artefactual user
+    id -u artefactual || {
+      useradd -m -d /home/artefactual -s /bin/bash -U artefactual
+      mkdir /home/artefactual/.ssh
+      cat id_rsa.pub > /home/artefactual/.ssh/authorized_keys
+      chown -R artefactual:artefactual /home/artefactual/.ssh && chmod 700 /home/artefactual/.ssh
+      echo "artefactual ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+      chmod 755 /home/artefactual
+    }
+    EOC
+
+    #
+    # install.sh
+    #
+    cat <<EOC > install.sh
+    #!/usr/bin/env bash
+    set -o errexit
+    set -o nounset
+    set -o xtrace
+    ansible-galaxy install -f -p roles/ -r requirements.yml
+    ansible-playbook -i "localhost," -c local playbook.yml
+    EOC
+
+    chmod +x bootstrap.sh install.sh
+
+    ip=$(cat instance/private_ip)
+
+    apt-get -q update && apt-get install -q -y openssh-client
+
+    # Boostrap
+    scp -q -i keys/id_rsa -o StrictHostKeyChecking=no \
+      bootstrap.sh keys/id_rsa.pub root@${ip}:
+    ssh -q -i keys/id_rsa -o StrictHostKeyChecking=no \
+      root@${ip} ./bootstrap.sh
+
+    # Install
+    scp -q -i keys/id_rsa -o StrictHostKeyChecking=no \
+      ansible.cfg requirements.yml playbook.yml install.sh artefactual@${ip}:
+    ssh -q -i keys/id_rsa -o StrictHostKeyChecking=no \
+      artefactual@${ip} ./install.sh

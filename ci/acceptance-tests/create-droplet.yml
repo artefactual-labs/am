@@ -1,0 +1,57 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: ruby
+    tag: '2.1'
+
+inputs:
+- name: config
+- name: keys
+
+outputs:
+- name: instance
+
+params:
+  USER_NAME: 'root'
+  DROPLET_NAME:
+
+run:
+  path: bash
+  args:
+  - -c
+  - |
+    set -ex
+
+    cp config/.tugboat .
+
+    gem install --silent tugboat
+
+    droplets=$(tugboat droplets | grep "^$DROPLET_NAME" | grep -Eo 'id: [0-9]+' | cut -c 5-)
+    if [ -n "$droplets" ]; then
+      echo $droplets | xargs -n 1 tugboat destroy -y -i
+    fi
+
+    sleep 2
+
+    until [ -z "$(tugboat droplets | grep "^$DROPLET_NAME")" ]; do
+      echo "waiting for droplets to be destroyed..."
+      sleep 2
+    done
+
+    tugboat create $DROPLET_NAME
+    trap "tugboat destroy --confirm $DROPLET_NAME" ERR TERM INT
+
+    tugboat wait $DROPLET_NAME
+
+    tugboat info $DROPLET_NAME | grep IP4 | awk '{print $NF}' > instance/ip
+    tugboat info $DROPLET_NAME | grep "Private IP" | awk '{print $NF}' > instance/private_ip
+
+    ip=$(cat instance/private_ip)
+
+    until ssh -q -i keys/id_rsa -o StrictHostKeyChecking=no ${USER_NAME}@${ip} "exit 0"; do
+      echo "waiting for ssh to become available..."
+      sleep 1
+    done

@@ -1,0 +1,61 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: ubuntu
+    tag: "16.04"
+
+inputs:
+- name: archivematica
+- name: instance
+- name: keys
+
+params:
+  SCRIPT:
+
+run:
+  path: bash
+  args:
+  - -xec
+  - |
+
+    #
+    # bootstrap.sh
+    #
+    cat <<EOC > bootstrap.sh
+    #!/usr/bin/env bash
+    set -o errexit
+    set -o nounset
+    set -o xtrace
+
+    # Create artefactual user
+    id -u artefactual || {
+      useradd -m -d /home/artefactual -s /bin/bash -U artefactual
+      mkdir /home/artefactual/.ssh
+      cat id_rsa.pub > /home/artefactual/.ssh/authorized_keys
+      chown -R artefactual:artefactual /home/artefactual/.ssh && chmod 700 /home/artefactual/.ssh
+      echo "artefactual ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+      chmod 755 /home/artefactual
+    }
+    EOC
+
+    chmod +x bootstrap.sh
+
+    ip=$(cat instance/private_ip)
+
+    apt-get -q update && apt-get install -q -y openssh-client
+
+    scp -q -i keys/id_rsa -o StrictHostKeyChecking=no \
+      bootstrap.sh keys/id_rsa.pub root@${ip}:
+    scp -q -i keys/id_rsa -o StrictHostKeyChecking=no \
+      $SCRIPT root@${ip}:~/install.sh
+
+    ssh -q -i keys/id_rsa -o StrictHostKeyChecking=no root@${ip} ~/bootstrap.sh
+
+    ssh -q -i keys/id_rsa -o StrictHostKeyChecking=no root@${ip} \
+      env \
+        LOCAL_REPOSITORY=false \
+        SEARCH_ENABLED=true \
+          ~/install.sh

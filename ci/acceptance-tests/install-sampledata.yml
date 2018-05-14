@@ -1,0 +1,53 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: ubuntu
+    tag: "16.04"
+
+inputs:
+- name: instance
+- name: keys
+
+run:
+  path: bash
+  args:
+  - -xec
+  - |
+
+    #
+    # install-sampledata.sh
+    #
+    cat <<EOC > install-sampledata.sh
+    #!/usr/bin/env bash
+    set -o errexit
+    set -o nounset
+    set -o xtrace
+    if command -v apt-get; then
+      sudo apt-get -q update && sudo apt-get install -q -y git
+    elif command -v yum; then
+      sudo yum -y install git
+    else
+      exit "Package manager not found."
+    fi
+    git clone --depth 1 --recurse-submodules \
+      https://github.com/artefactual/archivematica-sampledata
+    pushd ~/archivematica-sampledata
+      python createtransfers/createtransfers.py create-variously-encoded-files
+      python createtransfers/createtransfers.py create-deep-transfers
+    popd
+    EOC
+
+    chmod +x install-sampledata.sh
+
+    ip=$(cat instance/private_ip)
+
+    apt-get -q update && apt-get install -q -y openssh-client
+
+    scp -q -i keys/id_rsa -o StrictHostKeyChecking=no \
+      install-sampledata.sh artefactual@${ip}:
+
+    ssh -q -i keys/id_rsa -o StrictHostKeyChecking=no \
+      artefactual@${ip} ./install-sampledata.sh

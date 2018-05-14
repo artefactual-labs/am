@@ -1,0 +1,68 @@
+---
+
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: ruby
+    tag: '2.1'
+
+outputs:
+- name: config
+- name: keys
+
+params:
+  ACCESS_TOKEN:
+  SSH_USER:
+  SSH_KEY:
+
+  # Options with 4096MB
+  # - Disk: 80GB, Memory: 4096MB (slug: s-2vcpu-4gb)   | $0.030/hr
+  # - Disk: 60GB, Memory: 4096MB (slug: 4gb)           | $0.022/hr
+  # - Disk: 25GB, Memory: 4096MB (slug: c-2)           | $0.060/hr
+
+  SIZE: c-2
+  REGION: sfo2
+  IMAGE: ""
+  PRIVATE_NETWORKING: 'true'
+  BACKUPS_ENABLED: 'false'
+  IP6: 'false'
+  USER_NAME: 'root'
+
+run:
+  path: bash
+  args:
+  - -ec
+  - |
+    echo "writing ssh key"
+    cat <<EOF > keys/id_rsa
+    $SSH_KEY
+    EOF
+
+    echo "chmodding ssh key"
+    chmod 0600 keys/id_rsa
+
+    echo "creating pub key"
+    ssh-keygen -y -f keys/id_rsa > keys/id_rsa.pub
+
+    fingerprint=$(ssh-keygen -lf keys/id_rsa.pub | cut -d' ' -f2)
+
+    echo "writing .tugboat"
+    cat << EOF > config/.tugboat
+    ---
+    authentication:
+      access_token: $ACCESS_TOKEN
+    ssh:
+      ssh_user: $SSH_USER
+      ssh_key_path: keys/id_rsa
+      ssh_port: '22'
+    defaults:
+      region: $REGION
+      image: $IMAGE
+      size: $SIZE
+      ssh_key: ["$fingerprint"]
+      private_networking: $PRIVATE_NETWORKING
+      backups_enabled: $BACKUPS_ENABLED
+      ip6: $IP6
+    EOF

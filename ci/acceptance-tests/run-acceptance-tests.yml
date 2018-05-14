@@ -1,0 +1,83 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: artefactual/archivematica-acceptance-tests
+    tag: latest
+
+inputs:
+- name: instance
+- name: keys
+
+params:
+  AM_DASHBOARD_USERNAME: "test123"
+  AM_DASHBOARD_PASSWORD: "test123"
+  AM_VERSION: "1.7"
+  AM_DASHBOARD_API_KEY: "test123"
+  AM_SS_USERNAME: "test123"
+  AM_SS_PASSWORD: "test123"
+  AM_SS_API_KEY: "test123"
+
+  AM_PORT: "80"
+  SS_PORT: "8000"
+
+  # Firefox (relies on env variable HEADLESS=1)
+  # Firefox-Hub (relies on env variable HUB_ADDRESS=...)
+  # Chrome (relies on env variable HEADLESS=1)
+  # Chrome-Hub (relies on env variable HUB_ADDRESS=...)
+  DRIVER_NAME: "Firefox"
+
+  SELENIUM_HUB_HOST:
+  SELENIUM_HUB_PORT:
+
+run:
+  path: bash
+  args:
+  - -xec
+  - |
+
+    public_ip=$(cat instance/ip)
+    echo "@@@@ Public IP: ${public_ip}"
+
+    private_ip=$(cat instance/private_ip)
+    echo "@@@@ Private IP: ${private_ip}"
+
+    # The ending slash matters.
+    am_url=http://${private_ip}:$AM_PORT/
+    ss_url=http://${private_ip}:$SS_PORT/
+
+    # Build sampledata, it needs to be available in the environment where behave
+    # is executed in addition to the machine where Archivematica runs.
+    pushd /home/artefactual
+      git clone --depth 1 --recurse-submodules \
+        https://github.com/artefactual/archivematica-sampledata
+    popd
+    pushd /home/artefactual/archivematica-sampledata
+      ./createtransfers/createtransfers.py create-variously-encoded-files
+      ./createtransfers/createtransfers.py create-deep-transfers
+    popd
+
+    pushd /home/artefactual/acceptance-tests
+      env \
+        HUB_ADDRESS=http://$SELENIUM_HUB_HOST:$SELENIUM_HUB_PORT/wd/hub \
+        HEADLESS=1 \
+          behave \
+              --tags=mo-aip-reingest \
+              --stop --no-skipped -v \
+              --no-logcapture \
+              -D driver_name=$DRIVER_NAME \
+              -D ssh_accessible=yes \
+              -D am_username=$AM_DASHBOARD_USERNAME \
+              -D am_password=$AM_DASHBOARD_PASSWORD \
+              -D am_url=${am_url} \
+              -D am_version=$AM_VERSION \
+              -D am_api_key=$AM_DASHBOARD_API_KEY \
+              -D ss_username=$AM_SS_USERNAME \
+              -D ss_password=$AM_SS_PASSWORD \
+              -D ss_url=${ss_url} \
+              -D ss_api_key=$AM_SS_API_KEY \
+              -D transfer_source_path=artefactual/archivematica-sampledata/TestTransfers/acceptance-tests \
+              -D home=artefactual
+    popd
