@@ -66,6 +66,7 @@ run:
           behave \
               --tags=mo-aip-reingest \
               --stop --no-skipped -v \
+              --no-logcapture \
               -D driver_name=$DRIVER_NAME \
               -D ssh_accessible=yes \
               -D am_username=$AM_DASHBOARD_USERNAME \
