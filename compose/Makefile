@@ -51,6 +51,20 @@ makemigrations-ss:
 			archivematica-storage-service \
 				makemigrations
 
+manage-dashboard:  ## Run Django /manage.py on Dashbaord, suppling <command> [options] as value to ARG, e.g., `make manage-ss ARG=shell`
+	docker-compose run \
+		--rm \
+		--entrypoint /src/dashboard/src/manage.py \
+			archivematica-dashboard \
+				$(ARG)
+
+manage-ss:  ## Run Django /manage.py on Storage Service, suppling <command> [options] as value to ARG, e.g., `make manage-ss ARG='shell --help'`
+	docker-compose run \
+		--rm \
+		--entrypoint /src/storage_service/manage.py \
+			archivematica-storage-service \
+				$(ARG)
+
 bootstrap-dashboard-db:  ## Bootstrap Dashboard (new database).
 	docker-compose exec mysql mysql -hlocalhost -uroot -p12345 -e "\
 		DROP DATABASE IF EXISTS MCP; \
