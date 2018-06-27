@@ -14,6 +14,7 @@
   - [Nginx returns 502 Bad Gateway](#nginx-returns-502-bad-gateway)
   - [MCPClient osdeps cannot be updated](#mcpclient-osdeps-cannot-be-updated)
   - [Error while mounting volume](#error-while-mounting-volume)
+  - [Tests are too slow](#tests-are-too-slow)
 
 ## Audience
 
@@ -281,3 +282,11 @@ The defaults are defined in the `Makefile`:
     # Paths for Docker named volumes
     AM_PIPELINE_DATA ?= /tmp/am-pipeline-data
     SS_LOCATION_DATA ?= /tmp/ss-location-data
+
+##### Tests are too slow
+
+Running tests with `make test-mcp-client` and such can be very slow because the database is re-created on each attempt. When the tests are done the database is removed unless you use `--reuse-db`, e.g.: you can use the following command to run the MCPClient tests.
+
+    docker-compose run --no-deps --user=root --workdir /src/MCPClient --rm --entrypoint=py.test archivematica-mcp-client --reuse-db --exitfirst
+
+The difference is noticeable.
