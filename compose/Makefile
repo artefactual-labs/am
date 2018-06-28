@@ -88,7 +88,8 @@ bootstrap-dashboard-db:  ## Bootstrap Dashboard (new database).
 					--api-key="test" \
 					--ss-url="http://archivematica-storage-service:8000" \
 					--ss-user="test" \
-					--ss-api-key="test"
+					--ss-api-key="test" \
+					--site-url="http://archivematica-dashboard:8000"
 
 bootstrap-dashboard-frontend:  ## Build front-end assets.
 	docker-compose run --rm --no-deps \
