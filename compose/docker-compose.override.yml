@@ -1,0 +1,41 @@
+---
+version: "2.1"
+
+volumes:
+
+  # Internal named volumes.
+  # These are not accessible outside of the docker host and are maintained by
+  # Docker.
+  elasticsearch_data:
+
+
+services:
+
+  elasticsearch:
+    image: "elasticsearch:1.7-alpine"
+    command: "elasticsearch -Des.node.name=TestNode -Des.network.host=0.0.0.0"
+    privileged: yes
+    volumes:
+      - "elasticsearch_data:/usr/share/elasticsearch/data"
+    expose:
+      - "9200"
+    ports:
+      - "62002:9200"
+
+  archivematica-mcp-server:
+    environment:
+      ARCHIVEMATICA_MCPSERVER_MCPSERVER_SEARCH_ENABLED: "${AM_SEARCH_ENABLED:-true}"
+
+  archivematica-mcp-client:
+    environment:
+      ARCHIVEMATICA_MCPCLIENT_MCPCLIENT_ELASTICSEARCHSERVER: "elasticsearch:9200"
+      ARCHIVEMATICA_MCPCLIENT_MCPCLIENT_SEARCH_ENABLED: "${AM_SEARCH_ENABLED:-true}"
+    links:
+      - "elasticsearch"
+
+  archivematica-dashboard:
+    environment:
+      ARCHIVEMATICA_DASHBOARD_DASHBOARD_ELASTICSEARCH_SERVER: "elasticsearch:9200"
+      ARCHIVEMATICA_DASHBOARD_DASHBOARD_SEARCH_ENABLED: "${AM_SEARCH_ENABLED:-true}"
+    links:
+      - "elasticsearch"
