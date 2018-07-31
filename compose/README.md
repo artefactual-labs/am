@@ -60,9 +60,17 @@ The impact to those following this recipe is that any of the commands below whic
 run as a root user using 'sudo'.
 
 ## Installation
+If you haven't already, create a directory to store this repository using git clone: 
+    
+    $ git clone https://github.com/artefactual-labs/am.git
 
-These are the command you need to run when starting from scratch:
+Run the installation (and all Docker Compose) commands from within the compose directory: 
 
+    $ cd ./am/compose
+
+These are the commands you need to run when starting from scratch:
+
+    $ git pull --rebase
     $ git submodule update --init --recursive
     $ make create-volumes
     $ docker-compose up -d --build
@@ -81,6 +89,19 @@ Make commands above, and any subsequent calls to it below can be reviewed using 
 from the compose directory:
 
     $ make help
+    
+## Upgrading to the latest version of Archivematica
+
+The installation instructions above will install the submodules defined in https://github.com/artefactual-labs/am/tree/master/src which are from the qa/1.x branches of Archivematica and the Storage Service
+
+To upgrade your installation to include the most recent changes in the qa/1.x branches, use the following commands: 
+
+    $ git pull --rebase
+    $ git submodule update --init --recursive
+    $ docker-compose build
+    $ docker-compose up -d
+    $ make bootstrap
+    $ make restart-am-services
 
 ## Web UIs
 
