@@ -1,8 +1,7 @@
 
 # Paths for Docker named volumes
-AM_PIPELINE_DATA ?= /tmp/am-pipeline-data
-SS_LOCATION_DATA ?= /tmp/ss-location-data
-
+AM_PIPELINE_DATA ?= $(HOME)/.am/am-pipeline-data
+SS_LOCATION_DATA ?= $(HOME)/.am/ss-location-data
 
 create-volumes:  ## Create external data volumes.
 	mkdir -p ${AM_PIPELINE_DATA}
