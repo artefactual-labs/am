@@ -124,8 +124,11 @@ flush-shared-dir-mcp-configs:  ## Delete processing configurations - it restarts
 flush-shared-dir:  ## Delete contents of the shared directory data volume.
 	rm -rf ${AM_PIPELINE_DATA}/*
 
-flush-elasticsearch-indices:  ## Deletes Elasticsearch indices.
+flush-elasticsearch-indices:  ## Delete Elasticsearch indices.
 	docker-compose exec archivematica-mcp-client curl -XDELETE "http://elasticsearch:9200/aips,transfers"
+
+flush-logs:  ## Delete container logs - requires root privileges.
+	@./helpers/flush-docker-logs.sh
 
 test-all: test-mcp-server test-mcp-client test-dashboard test-storage-service  ## Run all tests.
 
