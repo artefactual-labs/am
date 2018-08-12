@@ -140,6 +140,14 @@ place. Some examples:
 - `docker-compose logs -f archivematica-storage-service`
 - `docker-compose logs -f nginx archivematica-dashboard`
 
+Docker keeps the logs in files using the [JSON File logging driver][logs-0].
+If you want to clear them, we provide a simple script that can do it for us
+quickly but it needs root privileges, e.g.:
+
+    $ sudo make flush-logs
+
+[logs-0]: https://docs.docker.com/config/containers/logging/json-file/
+
 ## Scaling
 
 With Docker Compose we can run as many containers as we want for a service,
