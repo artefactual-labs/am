@@ -156,7 +156,7 @@ test-at-build:  ## AMAUAT: build image.
 
 test-at-check:  ## AMAUAT: test browsers.
 	$(call compose_amauat, \
-		run --rm --no-deps archivematica-acceptance-tests /home/archivematica/acceptance-tests/simplehubtest.py)
+		run --rm --no-deps archivematica-acceptance-tests /home/archivematica/acceptance-tests/simplebrowsertest.py)
 
 TAGS ?= mo-aip-reingest
 BROWSER ?= Firefox
