@@ -12,6 +12,8 @@
 - [Cleaning up](#cleaning-up)
 - [Troubleshooting](#troubleshooting)
   - [Nginx returns 502 Bad Gateway](#nginx-returns-502-bad-gateway)
+  - [Error while mounting volume](#error-while-mounting-volume)
+  - [Tests are too slow](#tests-are-too-slow)
 
 ## Audience
 
@@ -52,14 +54,22 @@ Docker will provide instructions on how to use it as a non-root user. This may n
 			 docker host.
 			 Refer to https://docs.docker.com/engine/security/security/#docker-daemon-attack-surface
 			 for more information.
-       
+
 The impact to those following this recipe is that any of the commands below which call Docker will need to be
-run as a root user using 'sudo'. 
+run as a root user using 'sudo'.
 
 ## Installation
+If you haven't already, create a directory to store this repository using git clone: 
+    
+    $ git clone https://github.com/artefactual-labs/am.git
 
-These are the command you need to run when starting from scratch:
+Run the installation (and all Docker Compose) commands from within the compose directory: 
 
+    $ cd ./am/compose
+
+These are the commands you need to run when starting from scratch:
+
+    $ git pull --rebase
     $ git submodule update --init --recursive
     $ make create-volumes
     $ docker-compose up -d --build
@@ -69,8 +79,8 @@ These are the command you need to run when starting from scratch:
 `make create-volumes` creates two external volumes. They're heavily used in our
 containers but they are provided in the host machine:
 
-- `/tmp/am-pipeline-data` - the shared directory.
-- `/tmp/ss-location-data` - the transfer source location.
+- `$HOME/.am/am-pipeline-data` - the shared directory.
+- `$HOME/.am/ss-location-data` - the transfer source location.
 
 ### GNU make
 
@@ -79,6 +89,19 @@ from the compose directory:
 
     $ make help
     
+## Upgrading to the latest version of Archivematica
+
+The installation instructions above will install the submodules defined in https://github.com/artefactual-labs/am/tree/master/src which are from the qa/1.x branches of Archivematica and the Storage Service
+
+To upgrade your installation to include the most recent changes in the qa/1.x branches, use the following commands: 
+
+    $ git pull --rebase
+    $ git submodule update --init --recursive
+    $ docker-compose build
+    $ docker-compose up -d
+    $ make bootstrap
+    $ make restart-am-services
+
 ## Web UIs
 
 - Archivematica Dashboard: http://127.0.0.1:62080/
@@ -115,6 +138,14 @@ place. Some examples:
 - `docker-compose logs -f`
 - `docker-compose logs -f archivematica-storage-service`
 - `docker-compose logs -f nginx archivematica-dashboard`
+
+Docker keeps the logs in files using the [JSON File logging driver][logs-0].
+If you want to clear them, we provide a simple script that can do it for us
+quickly but it needs root privileges, e.g.:
+
+    $ sudo make flush-logs
+
+[logs-0]: https://docs.docker.com/config/containers/logging/json-file/
 
 ## Scaling
 
@@ -172,6 +203,10 @@ external volumes:
 
 Both snippets can be combined or used separately.
 
+You may need to update the codebase, and for that you can run this command:
+
+    $ git submodule update --init --recursive
+
 ## Cleaning up
 
 The most effective way is:
@@ -187,7 +222,7 @@ volumes manually with:
 
 Optionally you may also want to delete the directories:
 
-    $ rm -rf /tmp/am-pipeline-data /tmp/ss-location-data
+    $ rm -rf $HOME/.am/am-pipeline-data $HOME/.am/ss-location-data
 
 ## Troubleshooting
 
@@ -214,3 +249,37 @@ Gunicorn gave up. This could happen for example when we're rebasing a branch
 and git is not atomically moving things around. But it's fixed now and you want
 to give it another shot so we run `docker-compose up -d` to ensure that all the
 services are up again. Next run `docker-compose ps` to verify that it's all up.
+
+##### Error while mounting volume
+
+Our Docker named volumes are stored under `/tmp` which means that it is
+possible that they will be recycled at some point by the operative system. This
+frequently happens when you restart your machine.
+
+Under this scenario, if you try to bring up the services again you will likely
+see one or more errors like the following:
+
+    ERROR: for compose_archivematica-mcp-server_1  Cannot create container for service archivematica-mcp-server: error while mounting volume with options: type='none' device='/home/user/.am/am-pipeline-data' o='bind': no such file or directory
+
+The solution is simple. You need to create the volumes again:
+
+    $ make create-volumes
+
+And now you're ready to continue as usual:
+
+    $ docker-compose up -d --build
+
+Optionally, you can define new persistent locations for the external volumes.
+The defaults are defined in the `Makefile`:
+
+    # Paths for Docker named volumes
+    AM_PIPELINE_DATA ?= $(HOME)/.am/am-pipeline-data
+    SS_LOCATION_DATA ?= $(HOME)/.am/ss-location-data
+
+##### Tests are too slow
+
+Running tests with `make test-mcp-client` and such can be very slow because the database is re-created on each attempt. When the tests are done the database is removed unless you use `--reuse-db`, e.g.: you can use the following command to run the MCPClient tests.
+
+    docker-compose run --no-deps --user=root --workdir /src/MCPClient --rm --entrypoint=py.test archivematica-mcp-client --reuse-db --exitfirst
+
+The difference is noticeable.
