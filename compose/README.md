@@ -167,15 +167,14 @@ are connected to Gearman:
 
 | Service                                 | Container port | Host port   |
 | --------------------------------------- | -------------- | ----------- |
-| mysql                                   | `tcp/3306`     | `tcp/62001` |
-| elasticsearch                           | `tcp/9200`     | `tcp/62002` |
-| redis                                   | `tcp/6379`     | `tcp/62003` |
-| gearman                                 | `tcp/4730`     | `tcp/62004` |
-| fits                                    | `tcp/2113`     | `tcp/62005` |
-| clamavd                                 | `tcp/3310`     | `tcp/62006` |
-| nginx » archivematica-dashboard         | `tcp/80`       | `tcp/62080` |
-| nginx » archivematica-storage-service   | `tcp/8000`     | `tcp/62081` |
-| selenium-hub                            | `tcp/4444`     | `tcp/62100` |
+| mysql                                   | `tcp/3306`     | `tcp/61701` |
+| elasticsearch                           | `tcp/9200`     | `tcp/61702` |
+| redis                                   | `tcp/6379`     | `tcp/61703` |
+| gearman                                 | `tcp/4730`     | `tcp/61704` |
+| fits                                    | `tcp/2113`     | `tcp/61705` |
+| clamavd                                 | `tcp/3310`     | `tcp/61706` |
+| nginx » archivematica-dashboard         | `tcp/80`       | `tcp/61700` |
+| nginx » archivematica-storage-service   | `tcp/8000`     | `tcp/61701` |
 
 ## Tests
 
