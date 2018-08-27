@@ -59,6 +59,10 @@ Docker will provide instructions on how to use it as a non-root user. This may n
 The impact to those following this recipe is that any of the commands below which call Docker will need to be
 run as a root user using 'sudo'.
 
+### Docker and Mac 
+
+Installation of Archivematica on machines running macOS using Docker is possible, but still in development and may require some extra steps. If you are new to Archivematica and/or Docker, or have an older machine, it may be better to instead use a Linux machine.
+
 ## Installation
 If you haven't already, create a directory to store this repository using git clone: 
     
@@ -319,3 +323,20 @@ Running tests with `make test-mcp-client` and such can be very slow because the 
     docker-compose run --no-deps --user=root --workdir /src/MCPClient --rm --entrypoint=py.test archivematica-mcp-client --reuse-db --exitfirst
 
 The difference is noticeable.
+
+##### `make bootstrap` fails to run
+
+In the event that `make bootstrap` fails to run while installing, the Bootstrap components may need to be installed individually inside the application. This error message is more likely if you are attemping to install Archivematica on a Mac. 
+
+First, go into the Makefile and comment out everything in the `bootstrap-dashboard-frontend` section of the script, then run `make bootstrap` again and continue with the install process.
+
+To install frontend Bootstrap dependencies manually:
+
+```
+cd src/archivematica/src/dashboard/frontend/transfer-browser
+yarn install 
+cd ../appraisal-tab
+yarn install
+```
+
+Instead of `yarn`, `npm` can also be used, using the same commands.
