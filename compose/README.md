@@ -2,8 +2,11 @@
 
 - [Audience](#audience)
 - [Requirements](#requirements)
+  - [Docker and Linux](#docker-and-linux)
+  - [Docker and Mac](#docker-and-mac)
 - [Installation](#installation)
 - [Web UIs](#web-uis)
+- [Upgrading to the latest version of Archivematica](#upgrading-to-the-latest-version-of-archivematica)
 - [Source code auto-reloading](#source-code-auto-reloading)
 - [Logs](#logs)
 - [Scaling](#scaling)
@@ -15,6 +18,7 @@
   - [MCPClient osdeps cannot be updated](#mcpclient-osdeps-cannot-be-updated)
   - [Error while mounting volume](#error-while-mounting-volume)
   - [Tests are too slow](#tests-are-too-slow)
+  - [make bootstrap fails to run](#make-bootstrap-fails-to-run)
 
 ## Audience
 
@@ -324,7 +328,7 @@ Running tests with `make test-mcp-client` and such can be very slow because the 
 
 The difference is noticeable.
 
-##### `make bootstrap` fails to run
+##### make bootstrap fails to run
 
 In the event that `make bootstrap` fails to run while installing, the Bootstrap components may need to be installed individually inside the application. This error message is more likely if you are attemping to install Archivematica on a Mac. 
 
