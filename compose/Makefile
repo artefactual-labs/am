@@ -154,13 +154,13 @@ test-at-build:  ## AMAUAT: build image.
 	$(call compose_amauat, \
 		build archivematica-acceptance-tests)
 
-test-at-check:  ## AMAUAT: test browsers.
+test-at-check: test-at-build  ## AMAUAT: test browsers.
 	$(call compose_amauat, \
 		run --rm --no-deps archivematica-acceptance-tests /home/archivematica/acceptance-tests/simplebrowsertest.py)
 
 TAGS ?= mo-aip-reingest
 BROWSER ?= Firefox
-test-at-behave: ## AMAUAT: run behave, default is `make test-at-behave TAGS=mo-aip-reingest BROWSER=Firefox`.
+test-at-behave: test-at-build  ## AMAUAT: run behave, default is `make test-at-behave TAGS=mo-aip-reingest BROWSER=Firefox`.
 	$(call compose_amauat, \
 		run --rm -e HEADLESS=1 --no-deps archivematica-acceptance-tests /usr/local/bin/behave \
 			--tags=$(TAGS) --no-skipped -v --stop \
