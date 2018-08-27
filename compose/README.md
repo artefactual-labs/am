@@ -79,8 +79,8 @@ These are the commands you need to run when starting from scratch:
 `make create-volumes` creates two external volumes. They're heavily used in our
 containers but they are provided in the host machine:
 
-- `$HOME/.am/am-pipeline-data` - the shared directory.
-- `$HOME/.am/ss-location-data` - the transfer source location.
+- `$HOME/.am/v17x/am-pipeline-data` - the shared directory.
+- `$HOME/.am/v17x/ss-location-data` - the transfer source location.
 
 ### GNU make
 
@@ -221,7 +221,7 @@ volumes manually with:
 
 Optionally you may also want to delete the directories:
 
-    $ rm -rf $HOME/.am/am-pipeline-data $HOME/.am/ss-location-data
+    $ rm -rf $HOME/.am/v17x/am-pipeline-data $HOME/.am/v17x/ss-location-data
 
 ## Troubleshooting
 
@@ -258,7 +258,7 @@ frequently happens when you restart your machine.
 Under this scenario, if you try to bring up the services again you will likely
 see one or more errors like the following:
 
-    ERROR: for compose_archivematica-mcp-server_1  Cannot create container for service archivematica-mcp-server: error while mounting volume with options: type='none' device='/home/user/.am/am-pipeline-data' o='bind': no such file or directory
+    ERROR: for compose_archivematica-mcp-server_1  Cannot create container for service archivematica-mcp-server: error while mounting volume with options: type='none' device='/home/user/.am/v17x/am-pipeline-data' o='bind': no such file or directory
 
 The solution is simple. You need to create the volumes again:
 
@@ -272,8 +272,8 @@ Optionally, you can define new persistent locations for the external volumes.
 The defaults are defined in the `Makefile`:
 
     # Paths for Docker named volumes
-    AM_PIPELINE_DATA ?= $(HOME)/.am/am-pipeline-data
-    SS_LOCATION_DATA ?= $(HOME)/.am/ss-location-data
+    AM_PIPELINE_DATA ?= $(HOME)/.am/v17x/am-pipeline-data
+    SS_LOCATION_DATA ?= $(HOME)/.am/v17x/ss-location-data
 
 ##### Tests are too slow
 
