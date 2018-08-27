@@ -5,7 +5,7 @@ services:
   archivematica-acceptance-tests:
     build:
       context: "../src/archivematica-acceptance-tests"
-      dockerfile: "Dockerfile"
+      dockerfile: "Dockerfile.legacy"
     security_opt:
       - "seccomp:./etc/docker/seccomp/chrome.json"
     volumes:

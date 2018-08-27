@@ -152,29 +152,19 @@ test-at-build:  ## AMAUAT: build image.
 	$(call compose_amauat, \
 		build archivematica-acceptance-tests)
 
-test-at-check:  ## AMAUAT: test browsers.
+test-at-check: test-at-build  ## AMAUAT: test browsers.
 	$(call compose_amauat, \
 		run --rm --no-deps archivematica-acceptance-tests /home/archivematica/acceptance-tests/simplebrowsertest.py)
 
 TAGS ?= mo-aip-reingest
 BROWSER ?= Firefox
-test-at-behave: ## AMAUAT: run behave, default is `make test-at-behave TAGS=mo-aip-reingest BROWSER=Firefox`.
+test-at-behave: test-at-build  ## AMAUAT: run behave, default is `make test-at-behave TAGS=mo-aip-reingest BROWSER=Firefox`.
 	$(call compose_amauat, \
-		run --rm -e HEADLESS=1 --no-deps archivematica-acceptance-tests /usr/local/bin/behave \
-			--tags=$(TAGS) --no-skipped -v --stop \
-			-D driver_name=$(BROWSER) \
-			-D ssh_accessible=no \
-			-D am_url=http://nginx/ \
-			-D am_username=test \
-			-D am_password=test \
-			-D am_api_key=test \
-			-D am_version=1.7 \
-			-D ss_url=http://nginx:8000/ \
-			-D ss_username=test \
-			-D ss_password=test \
-			-D ss_api_key=test \
-			-D transfer_source_path=archivematica/archivematica-sampledata/TestTransfers/acceptance-tests \
-			-D home=archivematica)
+		run --rm -e TAGS=$(TAGS) -e BROWSER=$(BROWSER) --no-deps archivematica-acceptance-tests)
+
+test-at-behave-shell: test-at-build
+	$(call compose_amauat, \
+		run --rm --no-deps archivematica-acceptance-tests bash)
 
 help:  ## Print this help message.
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
