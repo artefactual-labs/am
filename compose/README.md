@@ -68,6 +68,7 @@ run as a root user using 'sudo'.
 Installation of Archivematica on machines running macOS using Docker is possible, but still in development and may require some extra steps. If you are new to Archivematica and/or Docker, or have an older machine, it may be better to instead use a Linux machine.
 
 ## Installation
+
 If you haven't already, create a directory to store this repository using git clone: 
     
     $ git clone https://github.com/artefactual-labs/am.git
@@ -78,7 +79,6 @@ Run the installation (and all Docker Compose) commands from within the compose d
 
 These are the commands you need to run when starting from scratch:
 
-    $ git pull --rebase
     $ git submodule update --init --recursive
     $ make create-volumes
     $ docker-compose up -d --build
@@ -100,14 +100,13 @@ from the compose directory:
     
 ## Upgrading to the latest version of Archivematica
 
-The installation instructions above will install the submodules defined in https://github.com/artefactual-labs/am/tree/master/src which are from the qa/1.x branches of Archivematica and the Storage Service
+The installation instructions above will install the submodules defined in https://github.com/artefactual-labs/am/tree/master/src which are from the `qa/1.x` branch of Archivematica and the `qa/0.x` branch of Archivematica Storage Service.
 
-To upgrade your installation to include the most recent changes in the qa/1.x branches, use the following commands: 
+To upgrade your installation to include the most recent changes in the submodules, use the following commands:
 
     $ git pull --rebase
     $ git submodule update --init --recursive
-    $ docker-compose build
-    $ docker-compose up -d
+    $ docker-compose up -d --force-recreate --build
     $ make bootstrap
     $ make restart-am-services
 
