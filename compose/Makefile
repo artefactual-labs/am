@@ -98,13 +98,13 @@ bootstrap-dashboard-db:  ## Bootstrap Dashboard (new database).
 bootstrap-dashboard-frontend:  ## Build front-end assets.
 	docker-compose run --rm --no-deps \
 		--user root \
-		--entrypoint npm \
+		--entrypoint yarn \
 		--workdir /src/dashboard/frontend/transfer-browser \
 			archivematica-dashboard \
 				install --unsafe-perm
 	docker-compose run --rm --no-deps \
 		--user root \
-		--entrypoint npm \
+		--entrypoint yarn \
 		--workdir /src/dashboard/frontend/appraisal-tab \
 			archivematica-dashboard \
 				install --unsafe-perm
