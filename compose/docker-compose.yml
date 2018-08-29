@@ -17,10 +17,10 @@ volumes:
   # filesystems from elsewhere.
   archivematica_pipeline_data:
     external:
-      name: "am-pipeline-data"
+      name: "am17_am-pipeline-data"
   archivematica_storage_service_location_data:
     external:
-      name: "ss-location-data"
+      name: "am17_ss-location-data"
 
 
 services:

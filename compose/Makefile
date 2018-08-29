@@ -16,13 +16,13 @@ create-volumes:  ## Create external data volumes.
 		--opt type=none \
 		--opt o=bind \
 		--opt device=$(AM_PIPELINE_DATA) \
-			am-pipeline-data
+			am17_am-pipeline-data
 	mkdir -p ${SS_LOCATION_DATA}
 	docker volume create \
 		--opt type=none \
 		--opt o=bind \
 		--opt device=$(SS_LOCATION_DATA) \
-			ss-location-data
+			am17_ss-location-data
 
 bootstrap: bootstrap-storage-service bootstrap-dashboard-db bootstrap-dashboard-frontend  ## Full bootstrap.
 
