@@ -31,7 +31,24 @@ Please read the [documentation](https://docs.docker.com/compose/reference/overvi
 
 ## Requirements
 
-Docker, Docker Compose, git and make.
+[System requirements](https://www.archivematica.org/docs/latest/getting-started/overview/system-requirements/). Memory usage when the environment is initialized (obtained using `docker stats`):
+
+```
+CONTAINER NAME                  MEM USAGE (MiB)
+archivematica-mcp-server         60.6
+archivematica-mcp-client         32.5
+archivematica-dashboard          60.0
+archivematica-storage-service    74.6
+clamavd                         545.6
+gearmand                          1.6
+mysql                           530.4
+redis                             1.8
+nginx                             2.5
+elasticsearch                   229.3
+fits                             70.7
+```
+
+Software dependencies: Docker, Docker Compose, git and make.
 
 It is beyond the scope of this document to explain how these dependencies are
 installed in your computer. If you're using Ubuntu 16.04 the following commands
