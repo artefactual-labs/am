@@ -19,6 +19,7 @@
   - [Error while mounting volume](#error-while-mounting-volume)
   - [Tests are too slow](#tests-are-too-slow)
   - [make bootstrap fails to run](#make-bootstrap-fails-to-run)
+  - [My environment is still broken](#my-environment-is-still-broken)
 
 ## Audience
 
@@ -360,3 +361,20 @@ yarn install
 ```
 
 Instead of `yarn`, `npm` can also be used, using the same commands.
+
+##### My environment is still broken
+
+You've read this far but you haven't yet figured out why your development
+environment is not working? Here are some tips:
+
+- Make sure that you've checked out the
+  [latest](https://github.com/artefactual-labs/am/commit/HEAD) commit of this
+  repository.
+- Make sure that your repositories under `/src` (submodules) are up to date. If
+  you are working off your own branches, make sure they are not outdated.
+  Rebase often!
+- This repo has dedicated branches to support released versions of
+  Archivematica, e.g.
+  [stable/1.7.x](https://github.com/artefactual-labs/am/commit/stable/1.7.x) is
+  the recommended branch if you're doing work that targets a potential v1.7.x
+  patch release.
