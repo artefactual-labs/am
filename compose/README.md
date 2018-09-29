@@ -367,6 +367,8 @@ Instead of `yarn`, `npm` can also be used, using the same commands.
 You've read this far but you haven't yet figured out why your development
 environment is not working? Here are some tips:
 
+- Does your system meet the [requirements](#requirements)? Some services like
+  Elasticsearch or ClamAV need a lot of memory!
 - Make sure that you've checked out the
   [latest](https://github.com/artefactual-labs/am/commit/HEAD) commit of this
   repository.
@@ -378,3 +380,11 @@ environment is not working? Here are some tips:
   [stable/1.7.x](https://github.com/artefactual-labs/am/commit/stable/1.7.x) is
   the recommended branch if you're doing work that targets a potential v1.7.x
   patch release.
+- Look for open/closed issues that may relate to your problem! A few repos
+  where you may find them: [artefactual/archivematica][am1-issues],
+  [artefactual-labs/am][am2-issues] and [archivematica/issues][am3-issues].
+- [Get support](https://www.archivematica.org/community/support/).
+
+[am1-issues]: https://github.com/artefactual/archivematica/issues
+[am2-issues]: https://github.com/artefactual-labs/am/issues
+[am3-issues]: https://github.com/archivematica/issues/issues
