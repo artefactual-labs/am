@@ -170,7 +170,7 @@ test-at-behave: test-at-build  ## AMAUAT: run behave, default is `make test-at-b
 			-D am_username=test \
 			-D am_password=test \
 			-D am_api_key=test \
-			-D am_version=1.7 \
+			-D am_version=1.8 \
 			-D ss_url=http://nginx:8000/ \
 			-D ss_username=test \
 			-D ss_password=test \
