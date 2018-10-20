@@ -10,5 +10,6 @@ services:
       - "seccomp:./etc/docker/seccomp/chrome.json"
     volumes:
       - "../src/archivematica-acceptance-tests:/home/archivematica/acceptance-tests:rw"
+      - "../src/archivematica-sampledata:/home/archivematica/archivematica-sampledata:ro"
     links:
       - "nginx"
