@@ -61,6 +61,8 @@ may work:
 
 And install Docker CE following [these instructions](https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/).
 
+Install the `rng-tools` daemon if you want to set up GPG encrypted spaces. The Storage Service container should have access to the `/dev/random` device.
+
 ### Docker and Linux
 
 Docker will provide instructions on how to use it as a non-root user. This may not be desirable for all. 
