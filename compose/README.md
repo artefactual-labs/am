@@ -130,6 +130,19 @@ To upgrade your installation to include the most recent changes in the submodule
     $ make bootstrap
     $ make restart-am-services
 
+The submodules are not always up to date, i.e. they may not be pointing to the latest commits of their tracking branches. They can be updated manually using `git pull --rebase`:
+
+    $ cd ../src/archivematica && git pull --rebase
+    $ cd ../src/archivematica-storage-service && git pull --rebase
+
+Once you're done, run:
+
+    $ docker-compose up -d --force-recreate --build
+    $ make bootstrap
+    $ make restart-am-services
+
+Working with submodules can be a little confusing. GitHub's [Working with submodules](https://blog.github.com/2016-02-01-working-with-submodules/) blog post is a good introduction.
+
 ## Web UIs
 
 - Archivematica Dashboard: http://127.0.0.1:62080/
