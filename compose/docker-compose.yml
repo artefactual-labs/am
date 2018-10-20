@@ -200,7 +200,7 @@ services:
       SS_GUNICORN_RELOAD_ENGINE: "auto"
       DJANGO_SETTINGS_MODULE: "storage_service.settings.local"
       SS_DB_URL: "mysql://archivematica:demo@mysql/SS"
-      SS_GNUPG_HOME_PATH: "/src/"
+      SS_GNUPG_HOME_PATH: "/var/archivematica/storage_service/.gnupg"
     volumes:
       - "../src/archivematica-storage-service/:/src/"
       - "../src/archivematica-sampledata/:/home/archivematica/archivematica-sampledata/:ro"
