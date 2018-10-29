@@ -11,5 +11,6 @@ services:
     volumes:
       - "../src/archivematica-acceptance-tests:/home/archivematica/acceptance-tests:rw"
       - "../src/archivematica-sampledata:/home/archivematica/archivematica-sampledata:ro"
+      - "archivematica_pipeline_data:/var/archivematica/sharedDirectory:ro"
     links:
       - "nginx"
