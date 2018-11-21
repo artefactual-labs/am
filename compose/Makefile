@@ -1,9 +1,14 @@
 .DEFAULT_GOAL := help
 
-# Paths for Docker named volumes
-AM_PIPELINE_DATA ?= $(HOME)/.am/am-pipeline-data
-SS_LOCATION_DATA ?= $(HOME)/.am/ss-location-data
 
+COMPOSE_PROJECT_NAME ?= $(shell basename ${PWD})
+
+# Paths for Docker named volumes
+AM_PIPELINE_DATA ?= $(HOME)/.am/$(COMPOSE_PROJECT_NAME)/am-pipeline-data
+SS_LOCATION_DATA ?= $(HOME)/.am/$(COMPOSE_PROJECT_NAME)/ss-location-data
+SS_STAGING_DATA ?= $(HOME)/.am/$(COMPOSE_PROJECT_NAME)ss-staging-data
+MYSQL_DATA ?= $(HOME)/.am/$(COMPOSE_PROJECT_NAME)/mysql-data
+ELASTICSEARCH_DATA ?= $(HOME)/.am/$(COMPOSE_PROJECT_NAME)/elasticsearch-data
 
 define compose_amauat
 	docker-compose -f docker-compose.yml -f docker-compose.acceptance-tests.yml $(1)
@@ -16,13 +21,34 @@ create-volumes:  ## Create external data volumes.
 		--opt type=none \
 		--opt o=bind \
 		--opt device=$(AM_PIPELINE_DATA) \
-			am-pipeline-data
+			$(COMPOSE_PROJECT_NAME)-am-pipeline-data
 	mkdir -p ${SS_LOCATION_DATA}
 	docker volume create \
 		--opt type=none \
 		--opt o=bind \
 		--opt device=$(SS_LOCATION_DATA) \
-			ss-location-data
+			$(COMPOSE_PROJECT_NAME)-ss-location-data
+	mkdir -p ${SS_STAGING_DATA}
+	docker volume create \
+		--opt type=none \
+		--opt o=bind \
+		--opt device=$(SS_STAGING_DATA) \
+			$(COMPOSE_PROJECT_NAME)-ss-staging-data
+	mkdir -p ${MYSQL_DATA}
+	docker volume create \
+		--opt type=none \
+		--opt o=bind \
+		--opt device=$(MYSQL_DATA) \
+			$(COMPOSE_PROJECT_NAME)-mysql-data
+	mkdir -p ${ELASTICSEARCH_DATA}
+	docker volume create \
+		--opt type=none \
+		--opt o=bind \
+		--opt device=$(ELASTICSEARCH_DATA) \
+			$(COMPOSE_PROJECT_NAME)-elasticsearch-data
+
+
+
 
 bootstrap: bootstrap-storage-service bootstrap-dashboard-db bootstrap-dashboard-frontend  ## Full bootstrap.
 
