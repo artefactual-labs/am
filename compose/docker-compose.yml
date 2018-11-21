@@ -44,7 +44,7 @@ services:
     expose:
       - "3306"
     ports:
-      - "127.0.0.1:52001:3306"
+      - "127.0.0.1:${PORT:-520}01:3306"
 
   elasticsearch:
     image: "elasticsearch:1.7-alpine"
@@ -55,7 +55,7 @@ services:
     expose:
       - "9200"
     ports:
-      - "127.0.0.1:52002:9200"
+      - "127.0.0.1:${PORT:-520}02:9200"
 
 
   redis:
@@ -65,7 +65,7 @@ services:
     expose:
       - "6379"
     ports:
-      - "127.0.0.1:52003:6379"
+      - "127.0.0.1:${PORT:-520}03:6379"
 
   gearmand:
     image: "artefactual/gearmand:1.1.17-alpine"
@@ -74,7 +74,7 @@ services:
     expose:
       - "4730"
     ports:
-      - "127.0.0.1:52004:4730"
+      - "127.0.0.1:${PORT:-520}04:4730"
     links:
       - "redis"
 
@@ -83,7 +83,7 @@ services:
     expose:
       - "2113"
     ports:
-      - "127.0.0.1:52005:2113"
+      - "127.0.0.1:${PORT:-520}05:2113"
     volumes:
       - "archivematica_pipeline_data:/var/archivematica/sharedDirectory:rw"  # Read and write needed!
 
@@ -96,7 +96,7 @@ services:
     expose:
       - "3310"
     ports:
-      - "127.0.0.1:52006:3310"
+      - "127.0.0.1:${PORT:-520}06:3310"
     volumes:
       - "archivematica_pipeline_data:/var/archivematica/sharedDirectory:ro"
 
@@ -110,8 +110,8 @@ services:
       - "80"
       - "8000"
     ports:
-      - "52080:80"
-      - "52081:8000"
+      - "${PORT:-520}80:80"
+      - "${PORT:-520}81:8000"
 
   archivematica-mcp-server:
     build:
