@@ -28,25 +28,22 @@ spec:
         volumeMounts:
         - mountPath: /etc/nginx/nginx.conf
           name: nginx-claim0
-          readOnly: true
+          subPath: nginx.conf
         - mountPath: /etc/nginx/conf.d/archivematica.conf
           name: nginx-claim1
-          readOnly: true
+          subPath: archivematica.conf
         - mountPath: /etc/nginx/conf.d/default.conf
           name: nginx-claim2
-          readOnly: true
+          subPath: default.conf
       restartPolicy: Always
       volumes:
       - name: nginx-claim0
-        persistentVolumeClaim:
-          claimName: nginx-claim0
-          readOnly: true
+        configMap:
+          name: nginx-claim0
       - name: nginx-claim1
-        persistentVolumeClaim:
-          claimName: nginx-claim1
-          readOnly: true
+        configMap:
+          name: nginx-claim1
       - name: nginx-claim2
-        persistentVolumeClaim:
-          claimName: nginx-claim2
-          readOnly: true
+        configMap:
+          name: nginx-claim2
 status: {}
