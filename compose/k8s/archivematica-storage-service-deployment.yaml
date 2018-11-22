@@ -1,0 +1,70 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: archivematica-storage-service
+  name: archivematica-storage-service
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: archivematica-storage-service
+    spec:
+      containers:
+      - env:
+        - name: DJANGO_SETTINGS_MODULE
+          value: storage_service.settings.local
+        - name: FORWARDED_ALLOW_IPS
+          value: '*'
+        - name: SS_DB_URL
+          value: mysql://archivematica:demo@mysql/SS
+        - name: SS_GNUPG_HOME_PATH
+          value: /var/archivematica/storage_service/.gnupg
+        - name: SS_GUNICORN_ACCESSLOG
+          value: /dev/null
+        - name: SS_GUNICORN_RELOAD
+          value: "true"
+        - name: SS_GUNICORN_RELOAD_ENGINE
+          value: auto
+        image: sevein/archivematica-storage-service
+        name: archivematica-storage-service
+        resources: {}
+        volumeMounts:
+        - mountPath: /src/
+          name: archivematica-storage-service-claim0
+        - mountPath: /home/archivematica/archivematica-sampledata/
+          name: archivematica-storage-service-claim1
+          readOnly: true
+        - mountPath: /var/archivematica/sharedDirectory
+          name: am-pipeline-data
+        - mountPath: /var/archivematica/storage-service
+          name: archivematica-storage-service-staging-data
+        - mountPath: /home
+          name: ss-location-data
+      restartPolicy: Always
+      volumes:
+      - name: archivematica-storage-service-claim0
+        persistentVolumeClaim:
+          claimName: archivematica-storage-service-claim0
+      - name: archivematica-storage-service-claim1
+        persistentVolumeClaim:
+          claimName: archivematica-storage-service-claim1
+          readOnly: true
+      - name: am-pipeline-data
+        persistentVolumeClaim:
+          claimName: am-pipeline-data
+      - name: archivematica-storage-service-staging-data
+        persistentVolumeClaim:
+          claimName: archivematica-storage-service-staging-data
+      - name: ss-location-data
+        persistentVolumeClaim:
+          claimName: ss-location-data
+status: {}

@@ -1,0 +1,83 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: archivematica-mcp-client
+  name: archivematica-mcp-client
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: archivematica-mcp-client
+    spec:
+      containers:
+      - env:
+        - name: ARCHIVEMATICA_MCPCLIENT_CLIENT_DATABASE
+          value: MCP
+        - name: ARCHIVEMATICA_MCPCLIENT_CLIENT_HOST
+          value: mysql
+        - name: ARCHIVEMATICA_MCPCLIENT_CLIENT_PASSWORD
+          value: demo
+        - name: ARCHIVEMATICA_MCPCLIENT_CLIENT_USER
+          value: archivematica
+        - name: ARCHIVEMATICA_MCPCLIENT_MCPCLIENT_CAPTURE_CLIENT_SCRIPT_OUTPUT
+          value: "true"
+        - name: ARCHIVEMATICA_MCPCLIENT_MCPCLIENT_CLAMAV_CLIENT_BACKEND
+          value: clamdscanner
+        - name: ARCHIVEMATICA_MCPCLIENT_MCPCLIENT_CLAMAV_CLIENT_MAX_FILE_SIZE
+          value: "42"
+        - name: ARCHIVEMATICA_MCPCLIENT_MCPCLIENT_CLAMAV_CLIENT_MAX_SCAN_SIZE
+          value: "42"
+        - name: ARCHIVEMATICA_MCPCLIENT_MCPCLIENT_CLAMAV_CLIENT_MAX_STREAM_LENGTH
+          value: "100"
+        - name: ARCHIVEMATICA_MCPCLIENT_MCPCLIENT_CLAMAV_SERVER
+          value: clamavd:3310
+        - name: ARCHIVEMATICA_MCPCLIENT_MCPCLIENT_ELASTICSEARCHSERVER
+          value: elasticsearch:9200
+        - name: ARCHIVEMATICA_MCPCLIENT_MCPCLIENT_MCPARCHIVEMATICASERVER
+          value: gearmand:4730
+        - name: ARCHIVEMATICA_MCPCLIENT_MCPCLIENT_SEARCH_ENABLED
+          value: "true"
+        - name: DJANGO_SECRET_KEY
+          value: "12345"
+        - name: DJANGO_SETTINGS_MODULE
+          value: settings.common
+        - name: NAILGUN_PORT
+          value: "2113"
+        - name: NAILGUN_SERVER
+          value: fits
+        image: sevein/archivematica-mcp-client
+        name: archivematica-mcp-client
+        resources: {}
+        volumeMounts:
+        - mountPath: /src/archivematicaCommon/
+          name: archivematica-mcp-client-claim0
+        - mountPath: /src/dashboard/
+          name: archivematica-mcp-client-claim1
+        - mountPath: /src/MCPClient/
+          name: archivematica-mcp-client-claim2
+        - mountPath: /var/archivematica/sharedDirectory
+          name: am-pipeline-data
+      restartPolicy: Always
+      volumes:
+      - name: archivematica-mcp-client-claim0
+        persistentVolumeClaim:
+          claimName: archivematica-mcp-client-claim0
+      - name: archivematica-mcp-client-claim1
+        persistentVolumeClaim:
+          claimName: archivematica-mcp-client-claim1
+      - name: archivematica-mcp-client-claim2
+        persistentVolumeClaim:
+          claimName: archivematica-mcp-client-claim2
+      - name: am-pipeline-data
+        persistentVolumeClaim:
+          claimName: am-pipeline-data
+status: {}

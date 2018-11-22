@@ -1,0 +1,68 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: archivematica-dashboard
+  name: archivematica-dashboard
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: archivematica-dashboard
+    spec:
+      containers:
+      - env:
+        - name: AM_GUNICORN_ACCESSLOG
+          value: /dev/null
+        - name: AM_GUNICORN_RELOAD
+          value: "true"
+        - name: AM_GUNICORN_RELOAD_ENGINE
+          value: auto
+        - name: ARCHIVEMATICA_DASHBOARD_CLIENT_DATABASE
+          value: MCP
+        - name: ARCHIVEMATICA_DASHBOARD_CLIENT_HOST
+          value: mysql
+        - name: ARCHIVEMATICA_DASHBOARD_CLIENT_PASSWORD
+          value: demo
+        - name: ARCHIVEMATICA_DASHBOARD_CLIENT_USER
+          value: archivematica
+        - name: ARCHIVEMATICA_DASHBOARD_DASHBOARD_ELASTICSEARCH_SERVER
+          value: elasticsearch:9200
+        - name: ARCHIVEMATICA_DASHBOARD_DASHBOARD_GEARMAN_SERVER
+          value: gearmand:4730
+        - name: ARCHIVEMATICA_DASHBOARD_SEARCH_ENABLED
+          value: "true"
+        - name: DJANGO_SETTINGS_MODULE
+          value: settings.local
+        - name: FORWARDED_ALLOW_IPS
+          value: '*'
+        image: sevein/archivematica-dashboard
+        name: archivematica-dashboard
+        resources: {}
+        volumeMounts:
+        - mountPath: /src/archivematicaCommon/
+          name: archivematica-dashboard-claim0
+        - mountPath: /src/dashboard/
+          name: archivematica-dashboard-claim1
+        - mountPath: /var/archivematica/sharedDirectory
+          name: am-pipeline-data
+      restartPolicy: Always
+      volumes:
+      - name: archivematica-dashboard-claim0
+        persistentVolumeClaim:
+          claimName: archivematica-dashboard-claim0
+      - name: archivematica-dashboard-claim1
+        persistentVolumeClaim:
+          claimName: archivematica-dashboard-claim1
+      - name: am-pipeline-data
+        persistentVolumeClaim:
+          claimName: am-pipeline-data
+status: {}

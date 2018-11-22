@@ -1,0 +1,45 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: clamavd
+  name: clamavd
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: clamavd
+    spec:
+      containers:
+      - env:
+        - name: CLAMAV_MAX_FILE_SIZE
+          value: "42"
+        - name: CLAMAV_MAX_SCAN_SIZE
+          value: "42"
+        - name: CLAMAV_MAX_STREAM_LENGTH
+          value: "100"
+        image: artefactual/clamav:latest
+        name: clamavd
+        ports:
+        - containerPort: 3310
+          hostIP: 127.0.0.1
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/archivematica/sharedDirectory
+          name: am-pipeline-data
+          readOnly: true
+      restartPolicy: Always
+      volumes:
+      - name: am-pipeline-data
+        persistentVolumeClaim:
+          claimName: am-pipeline-data
+          readOnly: true
+status: {}

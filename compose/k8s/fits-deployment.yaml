@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: fits
+  name: fits
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: fits
+    spec:
+      containers:
+      - image: artefactual/fits-ngserver:0.8.4
+        name: fits
+        ports:
+        - containerPort: 2113
+          hostIP: 127.0.0.1
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/archivematica/sharedDirectory
+          name: am-pipeline-data
+      restartPolicy: Always
+      volumes:
+      - name: am-pipeline-data
+        persistentVolumeClaim:
+          claimName: am-pipeline-data
+status: {}
