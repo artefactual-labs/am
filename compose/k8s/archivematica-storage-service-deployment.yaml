@@ -34,9 +34,10 @@ spec:
           value: "true"
         - name: SS_GUNICORN_RELOAD_ENGINE
           value: auto
-        image: sevein/archivematica-storage-service
+        image: archivematica-storage-service:local
         name: archivematica-storage-service
         resources: {}
+        imagePullPolicy: Never
         volumeMounts:
         - mountPath: /src/
           name: archivematica-storage-service-claim0

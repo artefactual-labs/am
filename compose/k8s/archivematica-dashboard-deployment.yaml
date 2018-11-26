@@ -44,9 +44,10 @@ spec:
           value: settings.local
         - name: FORWARDED_ALLOW_IPS
           value: '*'
-        image: sevein/archivematica-dashboard
+        image: archivematica-dashboard:local
         name: archivematica-dashboard
         resources: {}
+        imagePullPolicy: Never
         volumeMounts:
         - mountPath: /src/archivematicaCommon/
           name: archivematica-dashboard-claim0

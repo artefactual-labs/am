@@ -54,9 +54,10 @@ spec:
           value: "2113"
         - name: NAILGUN_SERVER
           value: fits
-        image: sevein/archivematica-mcp-client
+        image: archivematica-mcp-client:local
         name: archivematica-mcp-client
         resources: {}
+        imagePullPolicy: Never
         volumeMounts:
         - mountPath: /src/archivematicaCommon/
           name: archivematica-mcp-client-claim0
