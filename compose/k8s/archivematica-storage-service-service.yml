@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.17.0 (a74acad)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: archivematica-storage-service
+  name: archivematica-storage-service
+spec:
+  ports:
+  - name: "62002"
+    port: 62002
+    targetPort: 8000
+  selector:
+    io.kompose.service: archivematica-storage-service
+status:
+  loadBalancer: {}
