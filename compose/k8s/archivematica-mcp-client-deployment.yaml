@@ -24,10 +24,12 @@ spec:
           value: MCP
         - name: ARCHIVEMATICA_MCPCLIENT_CLIENT_HOST
           value: mysql
+        - name: ARCHIVEMATICA_MCPCLIENT_CLIENT_PORT
+          value: "62001"
         - name: ARCHIVEMATICA_MCPCLIENT_CLIENT_PASSWORD
           value: demo
         - name: ARCHIVEMATICA_MCPCLIENT_CLIENT_USER
-          value: archivematica
+          value: archivematica2
         - name: ARCHIVEMATICA_MCPCLIENT_MCPCLIENT_CAPTURE_CLIENT_SCRIPT_OUTPUT
           value: "true"
         - name: ARCHIVEMATICA_MCPCLIENT_MCPCLIENT_CLAMAV_CLIENT_BACKEND
@@ -59,12 +61,8 @@ spec:
         resources: {}
         imagePullPolicy: Never
         volumeMounts:
-        - mountPath: /src/archivematicaCommon/
-          name: archivematica-mcp-client-claim0
         - mountPath: /src/dashboard/
           name: archivematica-mcp-client-claim1
-        - mountPath: /src/MCPClient/
-          name: archivematica-mcp-client-claim2
         - mountPath: /var/archivematica/sharedDirectory
           name: am-pipeline-data
       restartPolicy: Always

@@ -25,7 +25,7 @@ spec:
         - name: FORWARDED_ALLOW_IPS
           value: '*'
         - name: SS_DB_URL
-          value: mysql://archivematica:demo@mysql/SS
+          value: mysql://archivematica:demo@mysql:62001/SS
         - name: SS_GNUPG_HOME_PATH
           value: /var/archivematica/storage_service/.gnupg
         - name: SS_GUNICORN_ACCESSLOG
@@ -39,8 +39,6 @@ spec:
         resources: {}
         imagePullPolicy: Never
         volumeMounts:
-        - mountPath: /src/
-          name: archivematica-storage-service-claim0
         - mountPath: /home/archivematica/archivematica-sampledata/
           name: archivematica-storage-service-claim1
           readOnly: true
@@ -51,6 +49,28 @@ spec:
         - mountPath: /home
           name: ss-location-data
       restartPolicy: Always
+      containers:
+      - env:
+        - name: DJANGO_SETTINGS_MODULE
+          value: storage_service.settings.local
+        - name: FORWARDED_ALLOW_IPS
+          value: '*'
+        - name: SS_DB_URL
+          value: mysql://archivematica:demo@mysql:62001/SS
+        - name: SS_GNUPG_HOME_PATH
+          value: /var/archivematica/storage_service/.gnupg
+        - name: SS_GUNICORN_ACCESSLOG
+          value: /dev/null
+        - name: SS_GUNICORN_RELOAD
+          value: "true"
+        - name: SS_GUNICORN_RELOAD_ENGINE
+          value: auto
+        image: archivematica-storage-service:local
+        name: update-ss-db
+        command:
+          - /src/storage_service/manage.py
+          - "migrate"
+          - "--noinput"
       volumes:
       - name: archivematica-storage-service-claim0
         persistentVolumeClaim:
