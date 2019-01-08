@@ -88,6 +88,39 @@ spec:
           - /src/dashboard/src/manage.py
           - "migrate"
           - "--noinput"  
+      - env:
+        - name: AM_GUNICORN_ACCESSLOG
+          value: /dev/null
+        - name: AM_GUNICORN_RELOAD
+          value: "true"
+        - name: AM_GUNICORN_RELOAD_ENGINE
+          value: auto
+        - name: ARCHIVEMATICA_DASHBOARD_CLIENT_DATABASE
+          value: MCP
+        - name: ARCHIVEMATICA_DASHBOARD_CLIENT_HOST
+          value: mysql
+        - name: ARCHIVEMATICA_DASHBOARD_CLIENT_PORT
+          value: "62001"
+        - name: ARCHIVEMATICA_DASHBOARD_CLIENT_PASSWORD
+          value: demo
+        - name: ARCHIVEMATICA_DASHBOARD_CLIENT_USER
+          value: archivematica
+        - name: ARCHIVEMATICA_DASHBOARD_DASHBOARD_ELASTICSEARCH_SERVER
+          value: elasticsearch:9200
+        - name: ARCHIVEMATICA_DASHBOARD_DASHBOARD_GEARMAN_SERVER
+          value: gearmand:4730
+        - name: ARCHIVEMATICA_DASHBOARD_SEARCH_ENABLED
+          value: "true"
+        - name: DJANGO_SETTINGS_MODULE
+          value: settings.local
+        - name: FORWARDED_ALLOW_IPS
+          value: '*'
+        name: provision-db2
+        image: archivematica-dashboard:local
+        command:
+          - /src/dashboard/src/manage.py
+          - "migrate"
+          - "--noinput"  
 
       volumes:
       - name: archivematica-dashboard-claim0
