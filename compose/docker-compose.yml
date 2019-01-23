@@ -36,9 +36,17 @@ services:
       - "127.0.0.1:62001:3306"
 
   elasticsearch:
-    image: "elasticsearch:1.7-alpine"
-    command: "elasticsearch -Des.node.name=TestNode -Des.network.host=0.0.0.0"
-    privileged: yes
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
+    environment:
+      - cluster.name=am-cluster
+      - node.name=am-node
+      - network.host=0.0.0.0
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     volumes:
       - "elasticsearch_data:/usr/share/elasticsearch/data"
     ports:
