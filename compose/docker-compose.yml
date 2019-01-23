@@ -32,8 +32,6 @@ services:
       MYSQL_ROOT_PASSWORD: "12345"
     volumes:
       - "mysql_data:/var/lib/mysql"
-    expose:
-      - "3306"
     ports:
       - "127.0.0.1:62001:3306"
 
@@ -43,8 +41,6 @@ services:
     privileged: yes
     volumes:
       - "elasticsearch_data:/usr/share/elasticsearch/data"
-    expose:
-      - "9200"
     ports:
       - "127.0.0.1:62002:9200"
 
@@ -53,8 +49,6 @@ services:
     image: "redis:3.2-alpine"
     command: '--save "" --appendonly no'  # Persistency disabled
     user: "redis"
-    expose:
-      - "6379"
     ports:
       - "127.0.0.1:62003:6379"
 
@@ -62,8 +56,6 @@ services:
     image: "artefactual/gearmand:1.1.17-alpine"
     command: "--queue-type=redis --redis-server=redis --redis-port=6379"
     user: "gearman"
-    expose:
-      - "4730"
     ports:
       - "127.0.0.1:62004:4730"
     links:
@@ -71,8 +63,6 @@ services:
 
   fits:
     image: "artefactual/fits-ngserver:0.8.4"
-    expose:
-      - "2113"
     ports:
       - "127.0.0.1:62005:2113"
     volumes:
@@ -84,8 +74,6 @@ services:
       CLAMAV_MAX_FILE_SIZE: "${CLAMAV_MAX_FILE_SIZE}"
       CLAMAV_MAX_SCAN_SIZE: "${CLAMAV_MAX_SCAN_SIZE}"
       CLAMAV_MAX_STREAM_LENGTH: "${CLAMAV_MAX_STREAM_LENGTH}"
-    expose:
-      - "3310"
     ports:
       - "127.0.0.1:62006:3310"
     volumes:
@@ -97,9 +85,6 @@ services:
       - "./etc/nginx/nginx.conf:/etc/nginx/nginx.conf:ro"
       - "./etc/nginx/conf.d/archivematica.conf:/etc/nginx/conf.d/archivematica.conf:ro"
       - "./etc/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro"
-    expose:
-      - "80"
-      - "8000"
     ports:
       - "62080:80"
       - "62081:8000"
@@ -182,8 +167,6 @@ services:
       - "../src/archivematica/src/archivematicaCommon/:/src/archivematicaCommon/"
       - "../src/archivematica/src/dashboard/:/src/dashboard/"
       - "archivematica_pipeline_data:/var/archivematica/sharedDirectory:rw"
-    expose:
-      - "8000"
     links:
       - "mysql"
       - "gearmand"
@@ -207,7 +190,5 @@ services:
       - "archivematica_pipeline_data:/var/archivematica/sharedDirectory:rw"
       - "archivematica_storage_service_staging_data:/var/archivematica/storage_service:rw"
       - "archivematica_storage_service_location_data:/home:rw"
-    expose:
-      - "8000"
     links:
       - "mysql"
