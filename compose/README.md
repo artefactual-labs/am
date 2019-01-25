@@ -4,9 +4,10 @@
 - [Requirements](#requirements)
   - [Docker and Linux](#docker-and-linux)
   - [Docker and Mac](#docker-and-mac)
+  - [Elasticsearch container](#elasticsearch-container)
 - [Installation](#installation)
 - [Web UIs](#web-uis)
-- [Upgrading to the latest version of Archivematica](#upgrading-to-the-latest-version-of-archivematica)
+- [Upgrading to the latest version of Archivematica][intro-0]
 - [Source code auto-reloading](#source-code-auto-reloading)
 - [Logs](#logs)
 - [Scaling](#scaling)
@@ -19,20 +20,27 @@
   - [Error while mounting volume](#error-while-mounting-volume)
   - [Tests are too slow](#tests-are-too-slow)
   - [make bootstrap fails to run](#make-bootstrap-fails-to-run)
+  - [Bootstrap seems to run but the Dashboard and Elasticsearch are still down][intro-1]
   - [My environment is still broken](#my-environment-is-still-broken)
+
+[intro-0]: #upgrading-to-the-latest-version-of-archivematica
+[intro-1]: #Bootstrap-seems-to-run-but-the-Dashboard-and-Elasticsearch-are-still-down
 
 ## Audience
 
-This Archivematica environment is based on Docker Compose and it is specifically
-**designed for developers**. Compose can be used in a production environment but that is
-beyond the scope of this recipe.
+This Archivematica environment is based on Docker Compose and it is
+specifically **designed for developers**. Compose can be used in a production
+environment but that is beyond the scope of this recipe.
 
-Artefactual developers use Docker Compose heavily so it's important that you're familiar with it.
-Please read the [documentation](https://docs.docker.com/compose/reference/overview/).
+Artefactual developers use Docker Compose heavily so it's important that you're
+familiar with it. Please read the [documentation][audience-0].
+
+[audience-0]: https://docs.docker.com/compose/reference/overview/
 
 ## Requirements
 
-[System requirements](https://www.archivematica.org/docs/latest/getting-started/overview/system-requirements/). Memory usage when the environment is initialized (obtained using `docker stats`):
+[System requirements][requirements-0]. Memory usage when the environment is
+initialized (obtained using `docker stats`):
 
 ```
 CONTAINER NAME                  MEM USAGE (MiB)
@@ -59,13 +67,18 @@ may work:
     $ sudo apt install -y build-essential python-dev git
     $ sudo pip install -U docker-compose
 
-And install Docker CE following [these instructions](https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/).
+And install Docker CE following [these instructions][requirements-1].
 
-Install the `rng-tools` daemon if you want to set up GPG encrypted spaces. The Storage Service container should have access to the `/dev/random` device.
+[requirements-0]: https://www.archivematica.org/docs/latest/getting-started/overview/system-requirements/
+[requirements-1]: https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/
+
+Install the `rng-tools` daemon if you want to set up GPG encrypted spaces. The
+Storage Service container should have access to the `/dev/random` device.
 
 ### Docker and Linux
 
-Docker will provide instructions on how to use it as a non-root user. This may not be desirable for all. 
+Docker will provide instructions on how to use it as a non-root user. This may
+not be desirable for all.
 
 	If you would like to use Docker as a non-root user, you should now consider
 	adding your user to the "docker" group with something like:
@@ -80,20 +93,44 @@ Docker will provide instructions on how to use it as a non-root user. This may n
 			 Refer to https://docs.docker.com/engine/security/security/#docker-daemon-attack-surface
 			 for more information.
 
-The impact to those following this recipe is that any of the commands below which call Docker will need to be
-run as a root user using 'sudo'.
+The impact to those following this recipe is that any of the commands below
+which call Docker will need to be run as a root user using 'sudo'.
 
-### Docker and Mac 
+### Docker and Mac
 
-Installation of Archivematica on machines running macOS using Docker is possible, but still in development and may require some extra steps. If you are new to Archivematica and/or Docker, or have an older machine, it may be better to instead use a Linux machine.
+Installation of Archivematica on machines running macOS using Docker is
+possible, but still in development and may require some extra steps. If you are
+new to Archivematica and/or Docker, or have an older machine, it may be better
+to instead use a Linux machine.
+
+### Elasticsearch container
+
+For the Elasticsearch container to run properly, you may need to increase the
+maximum virtual memory address space `vm.max_map_count` to at least `[262144]`.
+This is a configuration setting on the host machine running Docker, not the
+container itself.
+
+To make this change:
+
+`sudo sysctl -w vm.max_map_count=262144`
+
+To persist this setting, modify `/etc/sysctl.conf` and add:
+`vm.max_map_count=262144`
+
+For more information, please consult the Elasticsearch `6.x`
+[documentation][documentation-0].
+
+[documentation-0]: https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
 
 ## Installation
 
-If you haven't already, create a directory to store this repository using git clone: 
-    
+If you haven't already, create a directory to store this repository using git
+clone:
+
     $ git clone https://github.com/artefactual-labs/am.git
 
-Run the installation (and all Docker Compose) commands from within the compose directory: 
+Run the installation (and all Docker Compose) commands from within the compose
+directory:
 
     $ cd ./am/compose
 
@@ -113,16 +150,20 @@ containers but they are provided in the host machine:
 
 ### GNU make
 
-Make commands above, and any subsequent calls to it below can be reviewed using the following command
-from the compose directory:
+Make commands above, and any subsequent calls to it below can be reviewed using
+the following command from the compose directory:
 
     $ make help
-    
+
 ## Upgrading to the latest version of Archivematica
 
-The installation instructions above will install the submodules defined in https://github.com/artefactual-labs/am/tree/master/src which are from the `qa/1.x` branch of Archivematica and the `qa/0.x` branch of Archivematica Storage Service.
+The installation instructions above will install the submodules defined in
+https://github.com/artefactual-labs/am/tree/master/src which are from the
+`qa/1.x` branch of Archivematica and the `qa/0.x` branch of Archivematica
+Storage Service.
 
-To upgrade your installation to include the most recent changes in the submodules, use the following commands:
+To upgrade your installation to include the most recent changes in the
+submodules, use the following commands:
 
     $ git pull --rebase
     $ git submodule update --init --recursive
@@ -130,7 +171,9 @@ To upgrade your installation to include the most recent changes in the submodule
     $ make bootstrap
     $ make restart-am-services
 
-The submodules are not always up to date, i.e. they may not be pointing to the latest commits of their tracking branches. They can be updated manually using `git pull --rebase`:
+The submodules are not always up to date, i.e. they may not be pointing to the
+latest commits of their tracking branches. They can be updated manually using
+`git pull --rebase`:
 
     $ cd ../src/archivematica && git pull --rebase
     $ cd ../src/archivematica-storage-service && git pull --rebase
@@ -141,7 +184,10 @@ Once you're done, run:
     $ make bootstrap
     $ make restart-am-services
 
-Working with submodules can be a little confusing. GitHub's [Working with submodules](https://blog.github.com/2016-02-01-working-with-submodules/) blog post is a good introduction.
+Working with submodules can be a little confusing. GitHub's
+[Working with submodules][submodules-0] blog post is a good introduction.
+
+[submodules-0]: https://blog.github.com/2016-02-01-working-with-submodules/
 
 ## Web UIs
 
@@ -335,7 +381,10 @@ frequently happens when you restart your machine.
 Under this scenario, if you try to bring up the services again you will likely
 see one or more errors like the following:
 
-    ERROR: for compose_archivematica-mcp-server_1  Cannot create container for service archivematica-mcp-server: error while mounting volume with options: type='none' device='/home/user/.am/am-pipeline-data' o='bind': no such file or directory
+    ERROR: for compose_archivematica-mcp-server_1  Cannot create container for
+    service archivematica-mcp-server: error while mounting volume with options:
+    type='none' device='/home/user/.am/am-pipeline-data' o='bind': no such file
+    or directory
 
 The solution is simple. You need to create the volumes again:
 
@@ -354,7 +403,10 @@ The defaults are defined in the `Makefile`:
 
 ##### Tests are too slow
 
-Running tests with `make test-mcp-client` and such can be very slow because the database is re-created on each attempt. When the tests are done the database is removed unless you use `--reuse-db`, e.g.: you can use the following command to run the MCPClient tests.
+Running tests with `make test-mcp-client` and such can be very slow because the
+database is re-created on each attempt. When the tests are done the database is
+removed unless you use `--reuse-db`, e.g.: you can use the following command to
+run the MCPClient tests.
 
     docker-compose run --no-deps --user=root --workdir /src/MCPClient --rm --entrypoint=py.test archivematica-mcp-client --reuse-db --exitfirst
 
@@ -362,20 +414,53 @@ The difference is noticeable.
 
 ##### make bootstrap fails to run
 
-In the event that `make bootstrap` fails to run while installing, the Bootstrap components may need to be installed individually inside the application. This error message is more likely if you are attemping to install Archivematica on a Mac. 
+In the event that `make bootstrap` fails to run while installing, the Bootstrap
+components may need to be installed individually inside the application. This
+error message is more likely if you are attemping to install Archivematica on a
+Mac.
 
-First, go into the Makefile and comment out everything in the `bootstrap-dashboard-frontend` section of the script, then run `make bootstrap` again and continue with the install process.
+First, go into the Makefile and comment out everything in the
+`bootstrap-dashboard-frontend` section of the script, then run `make bootstrap`
+again and continue with the install process.
 
 To install frontend Bootstrap dependencies manually:
 
 ```
 cd src/archivematica/src/dashboard/frontend/transfer-browser
-yarn install 
+yarn install
 cd ../appraisal-tab
 yarn install
 ```
 
 Instead of `yarn`, `npm` can also be used, using the same commands.
+
+##### Bootstrap seems to run but the Dashboard and Elasticsearch are still down
+
+If after running the bootstrap processes and `docker-compose ps` still shows
+that the dashboard and elasticsearch are still down then check the
+elasticsearch logs using:
+
+`$ docker-compose logs -f elasticsearch`
+
+You may see entries as follows:
+
+```
+[2019-01-25T16:36:43,535][INFO ][o.e.n.Node               ] [am-node] starting ...
+[2019-01-25T16:36:43,671][INFO ][o.e.t.TransportService   ] [am-node] publish_address {172.18.0.7:9300}, bound_addresses {0.0.0.0:9300}
+[2019-01-25T16:36:43,681][INFO ][o.e.b.BootstrapChecks    ] [am-node] bound or publishing to a non-loopback address, enforcing bootstrap checks
+ERROR: [1] bootstrap checks failed
+[1]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+[2019-01-25T16:36:43,688][INFO ][o.e.n.Node               ] [am-node] stopping ...
+[2019-01-25T16:36:43,720][INFO ][o.e.n.Node               ] [am-node] stopped
+[2019-01-25T16:36:43,720][INFO ][o.e.n.Node               ] [am-node] closing ...
+[2019-01-25T16:36:43,730][INFO ][o.e.n.Node
+```
+
+This indicates that you may need to increase the virtual memory available to
+Elasticsearch, as discussed in the section [Elasticsearch container][es-0]
+above.
+
+[es-0]: #elasticsearch-container
 
 ##### My environment is still broken
 
@@ -391,15 +476,14 @@ environment is not working? Here are some tips:
   you are working off your own branches, make sure they are not outdated.
   Rebase often!
 - This repo has dedicated branches to support released versions of
-  Archivematica, e.g.
-  [stable/1.7.x](https://github.com/artefactual-labs/am/commit/stable/1.7.x) is
-  the recommended branch if you're doing work that targets a potential v1.7.x
-  patch release.
+  Archivematica, e.g. [stable/1.7.x][am0-issues] is the recommended branch if
+  you're doing work that targets a potential v1.7.x patch release.
 - Look for open/closed issues that may relate to your problem! A few repos
   where you may find them: [artefactual/archivematica][am1-issues],
   [artefactual-labs/am][am2-issues] and [archivematica/issues][am3-issues].
 - [Get support](https://www.archivematica.org/community/support/).
 
+[am0-issues]: https://github.com/artefactual-labs/am/tree/5984aee49a53d127ec8628747352395d1c6a247f/compose
 [am1-issues]: https://github.com/artefactual/archivematica/issues
 [am2-issues]: https://github.com/artefactual-labs/am/issues
 [am3-issues]: https://github.com/archivematica/issues/issues
