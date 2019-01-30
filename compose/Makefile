@@ -4,6 +4,10 @@
 AM_PIPELINE_DATA ?= $(HOME)/.am/am-pipeline-data
 SS_LOCATION_DATA ?= $(HOME)/.am/ss-location-data
 
+# Instrumentation vars
+
+INSTRUMENTATION_ADMIN_USER ?= admin
+INSTRUMENTATION_ADMIN_PASSWORD ?= admin1234
 
 define compose_amauat
 	docker-compose -f docker-compose.yml -f docker-compose.acceptance-tests.yml $(1)
@@ -111,11 +115,26 @@ bootstrap-dashboard-frontend:  ## Build front-end assets.
 			archivematica-dashboard \
 				install --unsafe-perm
 
+instrumentation: ## Build Instrumentation containers.
+	COMPOSE_FILE=docker-compose.instrumentation.yml \
+		ADMIN_USER=${INSTRUMENTATION_ADMIN_USER} \
+		ADMIN_PASSWORD=${INSTRUMENTATION_ADMIN_PASSWORD}  \
+			docker-compose up -d
+
+instrumentation-rebuild: ## Rebuild Instrumentation containers.
+	COMPOSE_FILE=docker-compose.instrumentation.yml \
+		ADMIN_USER=${INSTRUMENTATION_ADMIN_USER} \
+		ADMIN_PASSWORD=${INSTRUMENTATION_ADMIN_PASSWORD}  \
+			docker-compose up -d --force-recreate --build
+
 restart-am-services:  ## Restart Archivematica services: MCPServer, MCPClient, Dashboard and Storage Service.
 	docker-compose restart archivematica-mcp-server
 	docker-compose restart archivematica-mcp-client
 	docker-compose restart archivematica-dashboard
 	docker-compose restart archivematica-storage-service
+
+restart-instrumentation: ## Restart Instrumentation containers.
+	COMPOSE_FILE=docker-compose.instrumentation.yml docker-compose restart
 
 db:  ## Connect to the MySQL server using the CLI.
 	docker-compose exec mysql mysql -hlocalhost -uroot -p12345
