@@ -403,7 +403,7 @@
           },
           "targets": [
             {
-              "expr": "(node_filesystem_size{fstype=\"aufs\",mountpoint=\"/\"} - node_filesystem_free{fstype=\"aufs\",mountpoint=\"/\"}) / node_filesystem_size{fstype=\"aufs\",mountpoint=\"/\"}  * 100",
+              "expr": "(node_filesystem_size{fstype=\"overlay\",mountpoint=\"/\"} - node_filesystem_free{fstype=\"overlay\",mountpoint=\"/\"}) / node_filesystem_size{fstype=\"overlay\",mountpoint=\"/\"}  * 100",
               "interval": "30s",
               "intervalFactor": 1,
               "legendFormat": "",

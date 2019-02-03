@@ -36,21 +36,32 @@ services:
       - "127.0.0.1:62001:3306"
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
-    environment:
-      - cluster.name=am-cluster
-      - node.name=am-node
-      - network.host=0.0.0.0
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
+    image: "elasticsearch:1.7-alpine"
+    command: "elasticsearch -Des.node.name=TestNode -Des.network.host=0.0.0.0"
+    privileged: yes
     volumes:
       - "elasticsearch_data:/usr/share/elasticsearch/data"
+    expose:
+      - "9200"
     ports:
-      - "127.0.0.1:62002:9200"
+      - "62002:9200"
+
+#  elasticsearch:
+#    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
+#    environment:
+#      - cluster.name=am-cluster
+#      - node.name=am-node
+#      - network.host=0.0.0.0
+#      - bootstrap.memory_lock=true
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#    volumes:
+#      - "elasticsearch_data:/usr/share/elasticsearch/data"
+#    ports:
+#      - "127.0.0.1:62002:9200"
 
 
   redis:
@@ -110,6 +121,8 @@ services:
       ARCHIVEMATICA_MCPSERVER_CLIENT_DATABASE: "MCP"
       ARCHIVEMATICA_MCPSERVER_MCPSERVER_MCPARCHIVEMATICASERVER: "gearmand:4730"
       ARCHIVEMATICA_MCPSERVER_SEARCH_ENABLED: "${AM_SEARCH_ENABLED:-true}"
+      ARCHIVEMATICA_MCPSERVER_MCPSERVER_PROMETHEUS_HTTP_SERVER: "archivematica-mcp-server:7999"
+
     volumes:
       - "../src/archivematica/src/archivematicaCommon/:/src/archivematicaCommon/"
       - "../src/archivematica/src/dashboard/:/src/dashboard/"

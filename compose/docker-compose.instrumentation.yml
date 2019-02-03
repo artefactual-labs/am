@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 
 networks:
   monitor-net:
@@ -170,3 +170,4 @@ services:
       - 8080:8080
     labels:
       org.label-schema.group: "monitoring"
+
