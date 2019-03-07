@@ -101,13 +101,7 @@ bootstrap-dashboard-frontend:  ## Build front-end assets.
 	docker-compose run --rm --no-deps \
 		--user root \
 		--entrypoint npm \
-		--workdir /src/dashboard/frontend/transfer-browser \
-			archivematica-dashboard \
-				install --unsafe-perm
-	docker-compose run --rm --no-deps \
-		--user root \
-		--entrypoint npm \
-		--workdir /src/dashboard/frontend/appraisal-tab \
+		--workdir /src/dashboard/frontend \
 			archivematica-dashboard \
 				install --unsafe-perm
 
@@ -180,6 +174,9 @@ test-at-behave: test-at-build  ## AMAUAT: run behave, default is `make test-at-b
 			-D ss_api_key=test \
 			-D transfer_source_path=archivematica/archivematica-sampledata/TestTransfers/acceptance-tests \
 			-D home=archivematica)
+
+test-frontend: bootstrap-dashboard-frontend  ## Run Dashboard JS tests.
+	docker-compose run --rm --no-deps --user root --entrypoint npm --workdir /src/dashboard/frontend archivematica-dashboard run "test-single-run"
 
 help:  ## Print this help message.
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
