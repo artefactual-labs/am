@@ -120,7 +120,7 @@ restart-am-services:  ## Restart Archivematica services: MCPServer, MCPClient, D
 db:  ## Connect to the MySQL server using the CLI.
 	docker-compose exec mysql mysql -hlocalhost -uroot -p12345
 
-flush: flush-shared-dir flush-elasticsearch-indices bootstrap restart-am-services  ## Delete ALL user data.
+flush: flush-shared-dir flush-search bootstrap restart-am-services  ## Delete ALL user data.
 
 flush-shared-dir-mcp-configs:  ## Delete processing configurations - it restarts MCPServer.
 	rm -f ${AM_PIPELINE_DATA}/sharedMicroServiceTasksConfigs/processingMCPConfigs/defaultProcessingMCP.xml
@@ -130,11 +130,14 @@ flush-shared-dir-mcp-configs:  ## Delete processing configurations - it restarts
 flush-shared-dir:  ## Delete contents of the shared directory data volume.
 	rm -rf ${AM_PIPELINE_DATA}/*
 
-flush-elasticsearch-indices:  ## Delete Elasticsearch indices.
+flush-search:  ## Delete Elasticsearch indices.
 	docker-compose exec archivematica-mcp-client curl -XDELETE "http://elasticsearch:9200/aips,aipfiles,transfers,transferfiles"
 
 flush-logs:  ## Delete container logs - requires root privileges.
 	@./helpers/flush-docker-logs.sh
+
+flush-test-dbs:
+	docker-compose exec mysql mysql -hlocalhost -uroot -p12345 -e "DROP DATABASE IF EXISTS test_MCP; DROP DATABASE IF EXISTS test_SS;"
 
 test-all: test-mcp-server test-mcp-client test-dashboard test-storage-service  ## Run all tests.
 
