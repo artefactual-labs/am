@@ -136,16 +136,16 @@ flush-test-dbs:
 test-all: test-mcp-server test-mcp-client test-dashboard test-storage-service  ## Run all tests.
 
 test-mcp-server:  ## Run MCPServer tests.
-	docker-compose run --workdir /src/MCPServer --rm --user=root --entrypoint=py.test archivematica-mcp-server
+	docker-compose run --workdir /src/MCPServer --rm --entrypoint=py.test archivematica-mcp-server -p no:cacheprovider --reuse-db -v
 
 test-mcp-client:  ## Run MCPClient tests.
-	docker-compose run --workdir /src/MCPClient --rm --user=root --entrypoint=py.test archivematica-mcp-client
+	docker-compose run --workdir /src/MCPClient --rm --entrypoint=py.test archivematica-mcp-client -p no:cacheprovider --reuse-db -v
 
 test-dashboard:  ## Run Dashboard tests.
-	docker-compose run --workdir /src/dashboard --rm --user=root --entrypoint=py.test archivematica-dashboard
+	docker-compose run --workdir /src/dashboard --rm --entrypoint=py.test archivematica-dashboard -p no:cacheprovider --reuse-db -v
 
 test-storage-service:  ## Run Storage Service tests.
-	docker-compose run --workdir /src --rm --user=root --no-deps --entrypoint py.test -e "DJANGO_SETTINGS_MODULE=storage_service.settings.test" archivematica-storage-service
+	docker-compose run --workdir /src --rm --no-deps --entrypoint py.test -e "DJANGO_SETTINGS_MODULE=storage_service.settings.test" archivematica-storage-service -p no:cacheprovider --reuse-db -v
 
 test-at-build:  ## AMAUAT: build image.
 	$(call compose_amauat, \
