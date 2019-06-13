@@ -194,6 +194,9 @@ Working with submodules can be a little confusing. GitHub's
 - Archivematica Dashboard: http://127.0.0.1:62080/
 - Archivematica Storage Service: http://127.0.0.1:62081/
 
+The default credentials for the Archivematica Dashboard and the Storage Service
+are username: `test`, password: `test`.
+
 ## Source code auto-reloading
 
 Dashboard and Storage Service are both served by Gunicorn. We set up Gunicorn
