@@ -14,6 +14,7 @@
 - [Ports](#ports)
 - [Tests](#tests)
 - [Cleaning up](#cleaning-up)
+- [Instrumentation](#instrumentation-running-prometheus-and-grafana)
 - [Troubleshooting](#troubleshooting)
   - [Nginx returns 502 Bad Gateway](#nginx-returns-502-bad-gateway)
   - [MCPClient osdeps cannot be updated](#mcpclient-osdeps-cannot-be-updated)
@@ -313,6 +314,23 @@ volumes manually with:
 Optionally you may also want to delete the directories:
 
     $ rm -rf $HOME/.am/am-pipeline-data $HOME/.am/ss-location-data
+
+## Instrumentation: Running Prometheus and Grafana
+
+[Prometheus][instrumentation-0] and [Grafana][instrumentation-1] can be used
+to monitor Archivematica processes.
+
+To run them, reference the `docker-compose.instrumentation.yml` file:
+
+    $ docker-compose -f docker-compose.yml -f docker-compose.instrumentation.yml up -d
+
+Prometheus will start on [localhost:9090][instrumentation-2]; Grafana on
+[localhost:3000][instrumentation-3].
+
+[instrumentation-0]: https://prometheus.io/
+[instrumentation-1]: https://grafana.com/
+[instrumentation-2]: http://localhost:9090
+[instrumentation-3]: http://localhost:3000
 
 ## Troubleshooting
 

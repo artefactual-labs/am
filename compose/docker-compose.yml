@@ -111,6 +111,8 @@ services:
       ARCHIVEMATICA_MCPSERVER_CLIENT_DATABASE: "MCP"
       ARCHIVEMATICA_MCPSERVER_MCPSERVER_MCPARCHIVEMATICASERVER: "gearmand:4730"
       ARCHIVEMATICA_MCPSERVER_SEARCH_ENABLED: "${AM_SEARCH_ENABLED:-true}"
+      ARCHIVEMATICA_MCPSERVER_MCPSERVER_PROMETHEUS_BIND_PORT: "7999"
+      ARCHIVEMATICA_MCPSERVER_MCPSERVER_PROMETHEUS_BIND_ADDRESS: "0.0.0.0"
     volumes:
       - "../src/archivematica/src/archivematicaCommon/:/src/archivematicaCommon/"
       - "../src/archivematica/src/dashboard/:/src/dashboard/"
@@ -142,6 +144,9 @@ services:
       ARCHIVEMATICA_MCPCLIENT_MCPCLIENT_CLAMAV_CLIENT_MAX_SCAN_SIZE: "${CLAMAV_MAX_SCAN_SIZE}"
       ARCHIVEMATICA_MCPCLIENT_MCPCLIENT_CLAMAV_CLIENT_MAX_STREAM_LENGTH: "${CLAMAV_MAX_STREAM_LENGTH}"
       ARCHIVEMATICA_MCPCLIENT_MCPCLIENT_CLAMAV_CLIENT_BACKEND: "clamdscanner" # Option: clamdscanner or clamscan;
+      ARCHIVEMATICA_MCPCLIENT_MCPCLIENT_PROMETHEUS_BIND_PORT: "7999"
+      ARCHIVEMATICA_MCPCLIENT_MCPCLIENT_PROMETHEUS_BIND_ADDRESS: "0.0.0.0"
+
     volumes:
       - "../src/archivematica/src/archivematicaCommon/:/src/archivematicaCommon/"
       - "../src/archivematica/src/dashboard/:/src/dashboard/"
@@ -167,6 +172,7 @@ services:
       DJANGO_SETTINGS_MODULE: "settings.local"
       ARCHIVEMATICA_DASHBOARD_DASHBOARD_GEARMAN_SERVER: "gearmand:4730"
       ARCHIVEMATICA_DASHBOARD_DASHBOARD_ELASTICSEARCH_SERVER: "elasticsearch:9200"
+      ARCHIVEMATICA_DASHBOARD_DASHBOARD_PROMETHEUS_ENABLED: "1"
       ARCHIVEMATICA_DASHBOARD_CLIENT_USER: "archivematica"
       ARCHIVEMATICA_DASHBOARD_CLIENT_PASSWORD: "demo"
       ARCHIVEMATICA_DASHBOARD_CLIENT_HOST: "mysql"
@@ -193,6 +199,7 @@ services:
       DJANGO_SETTINGS_MODULE: "storage_service.settings.local"
       SS_DB_URL: "mysql://archivematica:demo@mysql/SS"
       SS_GNUPG_HOME_PATH: "/var/archivematica/storage_service/.gnupg"
+      SS_PROMETHEUS_ENABLED: "true"
     volumes:
       - "../src/archivematica-storage-service/:/src/"
       - "../src/archivematica-sampledata/:/home/archivematica/archivematica-sampledata/:ro"
