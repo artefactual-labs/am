@@ -164,6 +164,34 @@ test-at-check: test-at-build  ## AMAUAT: test browsers.
 	$(call compose_amauat, \
 		run --rm --no-deps archivematica-acceptance-tests /home/archivematica/acceptance-tests/simplebrowsertest.py)
 
+define AT_HELP
+
+   Archivematica acceptance tests (Listing).
+
+   The most effective way to run these tests is to run them by tag. For
+   example:
+
+      $ make test-at-behave TAGS=aip-encrypt BROWSER=Firefox
+      $ make test-at-behave TAGS=black-box
+
+   Commonly used acceptance tests in the Archivematica suite:
+
+      * aip-encrypt        :Tests the encryption of AIPs.
+      * aip-encrypt-mirror :Tests the replication of encrypted AIPs.
+      * black-box          :Test Archivematica without Selenium web-driver.
+      * icc                :Conformance check feature on ingest.
+      * ipc                :Policy check feature on ingest.
+      * picc               :Policy check feature for preservation derivatives.
+      * mo-aip-reingest    :Metadata-only reingest.
+      * tpc                :Policy check feature on transfer.
+      * uuids-dirs         :Tests whether UUIDs are assigned to AIP sub-DIRs.
+
+endef
+
+export AT_HELP
+test-at-help:  ## AMAUAT: list commonly used acceptance test tags.
+	@echo "$$AT_HELP"
+
 TAGS ?= mo-aip-reingest
 BROWSER ?= Firefox
 test-at-behave: test-at-build  ## AMAUAT: run behave, default is `make test-at-behave TAGS=mo-aip-reingest BROWSER=Firefox`.
@@ -183,6 +211,9 @@ test-at-behave: test-at-build  ## AMAUAT: run behave, default is `make test-at-b
 			-D ss_api_key=test \
 			-D transfer_source_path=archivematica/archivematica-sampledata/TestTransfers/acceptance-tests \
 			-D home=archivematica)
+
+test-at-black-box: TAGS=black-box  ## AMAUAT: run the black-box automation tests.
+test-at-black-box: test-at-behave
 
 test-frontend: bootstrap-dashboard-frontend  ## Run Dashboard JS tests.
 	docker-compose run --rm --no-deps --user root --entrypoint npm --workdir /src/dashboard/frontend archivematica-dashboard run "test-single-run"
