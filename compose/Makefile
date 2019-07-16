@@ -147,6 +147,9 @@ test-dashboard:  ## Run Dashboard tests.
 test-storage-service:  ## Run Storage Service tests.
 	docker-compose run --workdir /src --rm --no-deps --entrypoint py.test -e "DJANGO_SETTINGS_MODULE=storage_service.settings.test" archivematica-storage-service -p no:cacheprovider --reuse-db -v
 
+test-archivematica-common:  ## Run Archivematica Common tests.
+	docker-compose run --workdir /src/archivematicaCommon --rm --entrypoint py.test archivematica-mcp-client -p no:cacheprovider -p no:warnings --reuse-db -v
+
 test-at-build:  ## AMAUAT: build image.
 	$(call compose_amauat, \
 		build archivematica-acceptance-tests)
