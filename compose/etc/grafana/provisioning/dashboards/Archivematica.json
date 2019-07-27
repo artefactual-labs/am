@@ -198,6 +198,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
+      "description": "Averaged over the selected time range, e.g. per hour",
       "fill": 1,
       "gridPos": {
         "h": 8,
@@ -207,11 +208,12 @@
       },
       "id": 11,
       "legend": {
+        "alignAsTable": false,
         "avg": false,
         "current": false,
         "max": false,
         "min": false,
-        "show": false,
+        "show": true,
         "total": false,
         "values": false
       },
@@ -230,17 +232,40 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(mcpclient_aips_stored_total[60m]) * 3600",
+          "expr": "rate(mcpclient_aips_stored_total[$__range]) * $__range_s",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "AIPs stored ({{instance}})",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(mcpclient_dips_stored_total[$__range]) * $__range_s",
           "format": "time_series",
           "intervalFactor": 1,
-          "refId": "A"
+          "legendFormat": "DIPs stored ({{instance}})",
+          "refId": "B"
+        },
+        {
+          "expr": "rate(mcpclient_sip_started_total[$__range]) * $__range_s",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "SIPs ingested  ({{instance}})",
+          "refId": "C"
+        },
+        {
+          "expr": "rate(mcpclient_transfer_started_total[$__range]) * $__range_s",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "Transfers started ({{instance}})",
+          "refId": "D"
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "AIPs stored / hour",
+      "title": "Units processed",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -256,8 +281,9 @@
       },
       "yaxes": [
         {
+          "decimals": 0,
           "format": "short",
-          "label": null,
+          "label": "",
           "logBase": 1,
           "max": null,
           "min": "0",
@@ -278,98 +304,153 @@
       }
     },
     {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
       "datasource": "Prometheus",
+      "decimals": null,
+      "description": "In progress, failed, or aborted",
+      "format": "short",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
       "gridPos": {
         "h": 3,
-        "w": 4,
+        "w": 3,
         "x": 0,
         "y": 3
       },
-      "id": 4,
+      "id": 31,
+      "interval": null,
       "links": [],
-      "options": {
-        "fieldOptions": {
-          "calcs": [
-            "last"
-          ],
-          "defaults": {
-            "max": 100,
-            "min": 0
-          },
-          "mappings": [],
-          "override": {},
-          "thresholds": [
-            {
-              "color": "green",
-              "index": 0,
-              "value": null
-            },
-            {
-              "color": "red",
-              "index": 1,
-              "value": 80
-            }
-          ],
-          "values": false
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
         },
-        "orientation": "auto",
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": true
       },
-      "pluginVersion": "6.2.2",
+      "tableColumn": "",
       "targets": [
         {
-          "expr": "mcpserver_active_task_groups",
+          "expr": "mcpclient_transfer_started_total - mcpclient_aips_stored_total",
           "format": "time_series",
+          "instant": false,
+          "interval": "",
           "intervalFactor": 1,
           "refId": "A"
         }
       ],
+      "thresholds": "10,20",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Active task groups",
-      "type": "gauge"
+      "title": "Incomplete transfers",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "0",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
     },
     {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
       "datasource": "Prometheus",
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
       "gridPos": {
         "h": 3,
-        "w": 4,
-        "x": 4,
+        "w": 3,
+        "x": 3,
         "y": 3
       },
       "id": 7,
+      "interval": null,
       "links": [],
-      "options": {
-        "fieldOptions": {
-          "calcs": [
-            "last"
-          ],
-          "defaults": {
-            "max": 100,
-            "min": 0
-          },
-          "mappings": [],
-          "override": {},
-          "thresholds": [
-            {
-              "color": "green",
-              "index": 0,
-              "value": null
-            },
-            {
-              "color": "red",
-              "index": 1,
-              "value": 80
-            }
-          ],
-          "values": false
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
         },
-        "orientation": "auto",
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
       "pluginVersion": "6.2.2",
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
       "targets": [
         {
           "expr": "mcpserver_gearman_pending_jobs",
@@ -379,51 +460,82 @@
           "refId": "A"
         }
       ],
+      "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
       "title": "Gearman pending jobs",
-      "type": "gauge"
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
     },
     {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
       "datasource": "Prometheus",
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
       "gridPos": {
         "h": 3,
-        "w": 4,
-        "x": 8,
+        "w": 3,
+        "x": 6,
         "y": 3
       },
       "id": 6,
+      "interval": null,
       "links": [],
-      "options": {
-        "fieldOptions": {
-          "calcs": [
-            "last"
-          ],
-          "defaults": {
-            "max": 100,
-            "min": 0
-          },
-          "mappings": [],
-          "override": {},
-          "thresholds": [
-            {
-              "color": "green",
-              "index": 0,
-              "value": null
-            },
-            {
-              "color": "red",
-              "index": 1,
-              "value": 80
-            }
-          ],
-          "values": false
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
         },
-        "orientation": "auto",
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
       "pluginVersion": "6.2.2",
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
       "targets": [
         {
           "expr": "mcpserver_gearman_active_jobs",
@@ -433,10 +545,104 @@
           "refId": "A"
         }
       ],
+      "thresholds": "",
       "timeFrom": null,
       "timeShift": null,
       "title": "Gearman active jobs",
-      "type": "gauge"
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "datasource": "Prometheus",
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 9,
+        "y": 3
+      },
+      "id": 4,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "pluginVersion": "6.2.2",
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "mcpserver_active_task_groups",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Active task groups",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
     },
     {
       "aliasColors": {},
@@ -453,6 +659,7 @@
       },
       "id": 18,
       "legend": {
+        "alignAsTable": false,
         "avg": false,
         "current": false,
         "max": false,
@@ -476,17 +683,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(django_http_requests_total_by_method_total[1m])",
+          "expr": "rate(django_http_requests_total_by_method_total[30s])",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ method }} ({{ instance }})",
           "refId": "A"
-        },
-        {
-          "expr": "",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "refId": "B"
         }
       ],
       "thresholds": [],
@@ -510,7 +711,7 @@
       "yaxes": [
         {
           "format": "short",
-          "label": "Seconds",
+          "label": "reqs / sec",
           "logBase": 1,
           "max": null,
           "min": null,
@@ -533,6 +734,297 @@
     {
       "aliasColors": {},
       "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Prometheus",
+      "description": "Averaged over the time range given, e.g. per hour",
+      "fill": 1,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "id": 33,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {},
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "rate(mcpclient_sip_error_total[$__range]) * $__range_s",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "SIP error (type: {{ failure_type }}, {{ instance }})",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(mcpclient_transfer_error_total[$__range]) * $__range_s",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "Transfer error (type: {{ failure_type }}, {{ instance }})",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Unit processing errors",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "short",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 14
+      },
+      "id": 14,
+      "links": [],
+      "options": {
+        "displayMode": "gradient",
+        "fieldOptions": {
+          "calcs": [
+            "last"
+          ],
+          "defaults": {
+            "max": 100,
+            "min": 0,
+            "unit": "s"
+          },
+          "mappings": [],
+          "override": {},
+          "thresholds": [
+            {
+              "color": "green",
+              "index": 0,
+              "value": null
+            },
+            {
+              "color": "red",
+              "index": 1,
+              "value": 80
+            }
+          ],
+          "values": false
+        },
+        "orientation": "horizontal"
+      },
+      "targets": [
+        {
+          "expr": "topk(10, sort_desc(sum(mcpserver_task_duration_seconds_sum) by (task_group_name)))",
+          "format": "time_series",
+          "instant": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{task_group_name}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Slowest task groups",
+      "type": "bargauge"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Prometheus",
+      "fill": 1,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "id": 29,
+      "interval": "",
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": true,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {},
+      "percentage": false,
+      "pointradius": 2,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "rate(mcpclient_aip_processing_seconds_sum[30s]) / rate(mcpclient_aip_processing_seconds_count[30s])",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "AIP processing time",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 2,
+          "format": "s",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 22
+      },
+      "id": 34,
+      "links": [],
+      "options": {
+        "displayMode": "gradient",
+        "fieldOptions": {
+          "calcs": [
+            "last"
+          ],
+          "defaults": {
+            "max": 100,
+            "min": 0,
+            "unit": "s"
+          },
+          "mappings": [],
+          "override": {},
+          "thresholds": [
+            {
+              "color": "green",
+              "index": 0,
+              "value": null
+            },
+            {
+              "color": "red",
+              "index": 1,
+              "value": 80
+            }
+          ],
+          "values": false
+        },
+        "orientation": "horizontal"
+      },
+      "targets": [
+        {
+          "expr": "topk(10, sort_desc(sum(mcpserver_task_duration_seconds_sum) by (task_name)))",
+          "format": "time_series",
+          "instant": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{task_name}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Slowest tasks",
+      "type": "bargauge"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
       "cacheTimeout": null,
       "dashLength": 10,
       "dashes": false,
@@ -543,17 +1035,18 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 8
+        "y": 24
       },
       "id": 2,
       "legend": {
-        "avg": false,
+        "alignAsTable": true,
+        "avg": true,
         "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": true,
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -574,7 +1067,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(mcpserver_task_duration_seconds_sum[5m])) by (instance)",
+          "expr": "sum(rate(mcpserver_task_duration_seconds_sum[30s])) by (instance)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ instance }}",
@@ -601,11 +1094,11 @@
       },
       "yaxes": [
         {
-          "format": "short",
+          "format": "s",
           "label": "Seconds",
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
@@ -628,20 +1121,22 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
+      "description": "Difference between mcpclient and mcpserver script duration, in seconds",
       "fill": 1,
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 14
+        "y": 30
       },
-      "id": 16,
+      "id": 35,
       "legend": {
+        "alignAsTable": false,
         "avg": false,
         "current": false,
         "max": false,
         "min": false,
-        "show": true,
+        "show": false,
         "total": false,
         "values": false
       },
@@ -651,6 +1146,7 @@
       "nullPointMode": "null",
       "options": {},
       "percentage": false,
+      "pluginVersion": "6.2.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -660,10 +1156,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(django_http_exceptions_total_by_type_total[1m])) by (instance, type)",
+          "expr": "sum(mcpserver_task_duration_seconds_sum) by (script_name) - sum(mcpclient_task_execution_time_seconds_sum) by (script_name)",
           "format": "time_series",
+          "instant": false,
           "intervalFactor": 1,
-          "legendFormat": "{{ type }} ({{ instance }})",
+          "legendFormat": "{{script_name}}",
           "refId": "A"
         }
       ],
@@ -671,7 +1168,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "HTTP errors",
+      "title": "Client/Server overhead",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -687,11 +1184,11 @@
       },
       "yaxes": [
         {
-          "format": "short",
-          "label": "Errors per minute",
-          "logBase": 1,
+          "format": "s",
+          "label": null,
+          "logBase": 2,
           "max": null,
-          "min": "0",
+          "min": null,
           "show": true
         },
         {
@@ -720,17 +1217,18 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 16
+        "y": 32
       },
       "id": 12,
       "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -813,9 +1311,9 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 22
+        "y": 38
       },
-      "id": 14,
+      "id": 16,
       "legend": {
         "avg": false,
         "current": false,
@@ -830,7 +1328,7 @@
       "links": [],
       "nullPointMode": "null",
       "options": {},
-      "percentage": true,
+      "percentage": false,
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -840,10 +1338,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "topk(5, (sum(mcpserver_task_duration_seconds_sum) by (task_group_name, task_name) / 60))",
+          "expr": "sum(rate(django_http_exceptions_total_by_type_total[30s])) by (instance, type)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "{{task_name}}",
+          "legendFormat": "{{ type }} ({{ instance }})",
           "refId": "A"
         }
       ],
@@ -851,7 +1349,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Slowest microservices",
+      "title": "HTTP errors",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -867,11 +1365,12 @@
       },
       "yaxes": [
         {
+          "decimals": null,
           "format": "short",
-          "label": "Total time in minutes",
+          "label": "Errors",
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
@@ -900,17 +1399,18 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 24
+        "y": 40
       },
       "id": 9,
       "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -962,7 +1462,7 @@
       "yaxes": [
         {
           "format": "short",
-          "label": "Per minute",
+          "label": "tasks / min",
           "logBase": 1,
           "max": null,
           "min": null,
@@ -993,10 +1493,11 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 30
+        "y": 46
       },
       "id": 27,
       "legend": {
+        "alignAsTable": false,
         "avg": false,
         "current": false,
         "max": false,
@@ -1020,7 +1521,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(django_model_save_total[5m])",
+          "expr": "rate(django_model_save_total[30s])",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ model }} ({{ instance }})",
@@ -1047,9 +1548,10 @@
       },
       "yaxes": [
         {
+          "decimals": null,
           "format": "short",
-          "label": "Saves per second",
-          "logBase": 1,
+          "label": "saves / second",
+          "logBase": 2,
           "max": null,
           "min": null,
           "show": true
@@ -1060,7 +1562,7 @@
           "logBase": 1,
           "max": null,
           "min": null,
-          "show": true
+          "show": false
         }
       ],
       "yaxis": {
@@ -1079,7 +1581,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 32
+        "y": 48
       },
       "id": 25,
       "legend": {
@@ -1133,9 +1635,9 @@
       },
       "yaxes": [
         {
-          "format": "short",
+          "format": "s",
           "label": null,
-          "logBase": 1,
+          "logBase": 2,
           "max": null,
           "min": null,
           "show": true
@@ -1164,8 +1666,8 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 12,
-        "y": 40
+        "x": 0,
+        "y": 54
       },
       "id": 24,
       "legend": {
@@ -1219,9 +1721,9 @@
       },
       "yaxes": [
         {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
+          "format": "s",
+          "label": "",
+          "logBase": 2,
           "max": null,
           "min": null,
           "show": true
@@ -1249,7 +1751,7 @@
     "list": []
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -1280,5 +1782,5 @@
   "timezone": "",
   "title": "Archivematica",
   "uid": "WQLPaE7Zk",
-  "version": 5
+  "version": 11
 }
