@@ -15,6 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
+  "iteration": 1564508030070,
   "links": [],
   "panels": [
     {
@@ -75,7 +76,7 @@
       "tableColumn": "__name__",
       "targets": [
         {
-          "expr": "mcpclient_aips_stored_timestamp * 1000",
+          "expr": "mcpclient_aips_stored_timestamp{job=~\"[[job]]\", instance=~\"[[instance]]\"} * 1000",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 1,
@@ -165,7 +166,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "mcpclient_dips_stored_timestamp * 1000",
+          "expr": "mcpclient_dips_stored_timestamp{job=~\"[[job]]\", instance=~\"[[instance]]\"} * 1000",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -219,13 +220,20 @@
       },
       "lines": true,
       "linewidth": 1,
-      "links": [],
+      "links": [
+        {
+          "includeVars": false,
+          "type": "dashboard"
+        }
+      ],
       "nullPointMode": "null",
       "options": {},
       "percentage": false,
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "v",
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -247,14 +255,14 @@
           "refId": "B"
         },
         {
-          "expr": "rate(mcpclient_sip_started_total[$__range]) * $__range_s",
+          "expr": "rate(mcpclient_sip_started_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__range]) * $__range_s",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "SIPs ingested  ({{instance}})",
           "refId": "C"
         },
         {
-          "expr": "rate(mcpclient_transfer_started_total[$__range]) * $__range_s",
+          "expr": "rate(mcpclient_transfer_started_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__range]) * $__range_s",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Transfers started ({{instance}})",
@@ -315,7 +323,7 @@
       "datasource": "Prometheus",
       "decimals": null,
       "description": "In progress, failed, or aborted",
-      "format": "short",
+      "format": "none",
       "gauge": {
         "maxValue": 100,
         "minValue": 0,
@@ -367,7 +375,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "mcpclient_transfer_started_total - mcpclient_aips_stored_total",
+          "expr": "mcpclient_transfer_started_total{job=~\"[[job]]\", instance=~\"[[instance]]\"} - mcpclient_aips_stored_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}",
           "format": "time_series",
           "instant": false,
           "interval": "",
@@ -384,8 +392,13 @@
       "valueMaps": [
         {
           "op": "=",
-          "text": "0",
+          "text": "N/A",
           "value": "null"
+        },
+        {
+          "op": "=",
+          "text": "",
+          "value": ""
         }
       ],
       "valueName": "current"
@@ -453,7 +466,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "mcpserver_gearman_pending_jobs",
+          "expr": "mcpserver_gearman_pending_jobs{job=~\"[[job]]\", instance=~\"[[instance]]\"}",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -538,7 +551,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "mcpserver_gearman_active_jobs",
+          "expr": "mcpserver_gearman_active_jobs{job=~\"[[job]]\", instance=~\"[[instance]]\"}",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -623,7 +636,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "mcpserver_active_task_groups",
+          "expr": "mcpserver_active_task_groups{job=~\"[[job]]\", instance=~\"[[instance]]\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -683,7 +696,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(django_http_requests_total_by_method_total[30s])",
+          "expr": "rate(django_http_requests_total_by_method_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[30s])",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ method }} ({{ instance }})",
@@ -714,7 +727,7 @@
           "label": "reqs / sec",
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
@@ -770,14 +783,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(mcpclient_sip_error_total[$__range]) * $__range_s",
+          "expr": "rate(mcpclient_sip_error_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__range]) * $__range_s",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "SIP error (type: {{ failure_type }}, {{ instance }})",
           "refId": "A"
         },
         {
-          "expr": "rate(mcpclient_transfer_error_total[$__range]) * $__range_s",
+          "expr": "rate(mcpclient_transfer_error_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__range]) * $__range_s",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Transfer error (type: {{ failure_type }}, {{ instance }})",
@@ -867,7 +880,7 @@
       },
       "targets": [
         {
-          "expr": "topk(10, sort_desc(sum(mcpserver_task_duration_seconds_sum) by (task_group_name)))",
+          "expr": "topk(10, sort_desc(sum(mcpserver_task_duration_seconds_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}) by (task_group_name)))",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -920,7 +933,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(mcpclient_aip_processing_seconds_sum[30s]) / rate(mcpclient_aip_processing_seconds_count[30s])",
+          "expr": "rate(mcpclient_aip_processing_seconds_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[30s]) / rate(mcpclient_aip_processing_seconds_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[30s])",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -1009,7 +1022,7 @@
       },
       "targets": [
         {
-          "expr": "topk(10, sort_desc(sum(mcpserver_task_duration_seconds_sum) by (task_name)))",
+          "expr": "topk(10, sort_desc(sum(mcpserver_task_duration_seconds_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}) by (task_name)))",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -1067,7 +1080,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(mcpserver_task_duration_seconds_sum[30s])) by (instance)",
+          "expr": "sum(rate(mcpserver_task_duration_seconds_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[30s])) by (instance)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ instance }}",
@@ -1156,7 +1169,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(mcpserver_task_duration_seconds_sum) by (script_name) - sum(mcpclient_task_execution_time_seconds_sum) by (script_name)",
+          "expr": "sum(mcpserver_task_duration_seconds_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}) by (script_name) - sum(mcpclient_task_execution_time_seconds_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}) by (script_name)",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 1,
@@ -1245,14 +1258,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(mcpclient_job_total[1m]) * 60) by (instance)",
+          "expr": "sum(rate(mcpclient_job_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]) * 60) by (instance)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Completed ({{instance}})",
           "refId": "A"
         },
         {
-          "expr": "sum(rate(mcpclient_job_error_total[1m]) * 60) by (instance)",
+          "expr": "sum(rate(mcpclient_job_error_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]) * 60) by (instance)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Errored ({{instance}})",
@@ -1338,7 +1351,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(django_http_exceptions_total_by_type_total[30s])) by (instance, type)",
+          "expr": "sum(rate(django_http_exceptions_total_by_type_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[30s])) by (instance, type)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ type }} ({{ instance }})",
@@ -1427,14 +1440,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(mcpserver_task_total[1m]) * 60)",
+          "expr": "sum(rate(mcpserver_task_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]) * 60)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Completed",
           "refId": "A"
         },
         {
-          "expr": "sum(rate(mcpserver_task_error_total[1m]) * 60)",
+          "expr": "sum(rate(mcpserver_task_error_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]) * 60)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Failed",
@@ -1465,7 +1478,7 @@
           "label": "tasks / min",
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
@@ -1521,7 +1534,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(django_model_save_total[30s])",
+          "expr": "rate(django_model_save_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[30s])",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ model }} ({{ instance }})",
@@ -1608,7 +1621,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(django_http_requests_latency_seconds_by_view_method_sum{instance=\"archivematica-dashboard:8000\"}[5m]) / rate(django_http_requests_latency_seconds_by_view_method_count{instance=\"archivematica-dashboard:8000\"}[5m])",
+          "expr": "rate(django_http_requests_latency_seconds_by_view_method_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[5m]) / rate(django_http_requests_latency_seconds_by_view_method_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[5m])",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ method}}: {{ view}}",
@@ -1619,7 +1632,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Average request latency (Dashboard)",
+      "title": "Average HTTP request latency by view",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1637,92 +1650,6 @@
         {
           "format": "s",
           "label": null,
-          "logBase": 2,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "Prometheus",
-      "fill": 1,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 54
-      },
-      "id": 24,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {},
-      "percentage": false,
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "rate(django_http_requests_latency_seconds_by_view_method_sum{instance=\"archivematica-storage-service:8000\"}[5m]) / rate(django_http_requests_latency_seconds_by_view_method_count{instance=\"archivematica-storage-service:8000\"}[5m])",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "{{ method}}: {{ view}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Average request latency (SS)",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "s",
-          "label": "",
           "logBase": 2,
           "max": null,
           "min": null,
@@ -1748,10 +1675,64 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "allValue": ".*",
+        "current": {
+          "text": "archivematica",
+          "value": "archivematica"
+        },
+        "datasource": "Prometheus",
+        "definition": "label_values(job)",
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": true,
+        "name": "job",
+        "options": [],
+        "query": "label_values(job)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": ".*",
+        "current": {
+          "tags": [],
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": "Prometheus",
+        "definition": "label_values(instance)",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "instance",
+        "options": [],
+        "query": "label_values(instance)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {
@@ -1782,5 +1763,5 @@
   "timezone": "",
   "title": "Archivematica",
   "uid": "WQLPaE7Zk",
-  "version": 11
+  "version": 14
 }
