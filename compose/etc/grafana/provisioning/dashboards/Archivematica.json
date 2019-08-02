@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1564692181760,
+  "iteration": 1564762335144,
   "links": [],
   "panels": [
     {
@@ -76,7 +76,7 @@
       "tableColumn": "__name__",
       "targets": [
         {
-          "expr": "mcpclient_aips_stored_timestamp{job=~\"[[job]]\", instance=~\"[[instance]]\"} * 1000",
+          "expr": "max(mcpclient_aips_stored_timestamp{job=~\"[[job]]\", instance=~\"[[instance]]\"}) * 1000",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 1,
@@ -166,7 +166,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "mcpclient_dips_stored_timestamp{job=~\"[[job]]\", instance=~\"[[instance]]\"} * 1000",
+          "expr": "max(mcpclient_dips_stored_timestamp{job=~\"[[job]]\", instance=~\"[[instance]]\"}) * 1000",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -374,7 +374,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "mcpserver_gearman_pending_jobs{job=~\"[[job]]\", instance=~\"[[instance]]\"}",
+          "expr": "sum(mcpserver_gearman_pending_jobs{job=~\"[[job]]\", instance=~\"[[instance]]\"})",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -459,7 +459,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "mcpserver_gearman_active_jobs{job=~\"[[job]]\", instance=~\"[[instance]]\"}",
+          "expr": "sum(mcpserver_gearman_active_jobs{job=~\"[[job]]\", instance=~\"[[instance]]\"})",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -544,7 +544,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "mcpserver_active_task_groups{job=~\"[[job]]\", instance=~\"[[instance]]\"}",
+          "expr": "sum(mcpserver_active_task_groups{job=~\"[[job]]\", instance=~\"[[instance]]\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -1948,5 +1948,5 @@
   "timezone": "",
   "title": "Archivematica",
   "uid": "WQLPaE7Zk",
-  "version": 15
+  "version": 16
 }
