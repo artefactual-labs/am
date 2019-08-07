@@ -113,7 +113,7 @@ restart-am-services:  ## Restart Archivematica services: MCPServer, MCPClient, D
 
 compile-requirements:  ## Run pip-compile
 	docker-compose run --workdir /src/MCPServer/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm  --no-deps --user=root --entrypoint make archivematica-mcp-server all
-	docker-compose run --workdir /src/MCPClient/requirements --volume "tmpfs:/pip-cache:rw" --rm --no-deps --user=root --entrypoint make archivematica-mcp-client all
+	docker-compose run --workdir /src/MCPClient/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm --no-deps --user=root --entrypoint make archivematica-mcp-client all
 	docker-compose run --workdir /src/dashboard/src/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm --no-deps --user=root --entrypoint make archivematica-dashboard all
 	docker-compose run --workdir /src/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm  --no-deps --user=root --entrypoint make archivematica-storage-service all
 
