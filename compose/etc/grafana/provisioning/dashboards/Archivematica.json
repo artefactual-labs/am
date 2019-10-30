@@ -363,7 +363,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "mcpserver_active_packages",
+          "expr": "sum(mcpserver_active_packages{instance=~\"[[instance]]\"})",
           "format": "time_series",
           "instant": true,
           "interval": "",
