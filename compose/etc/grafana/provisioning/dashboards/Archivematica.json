@@ -1224,7 +1224,7 @@
           "expr": "sum by (job)(round(increase(mcpclient_transfer_error_total{job=~\"[[job]]\", failure_type=\"fail\"}[1m])))",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "Transfer error - {{ job }}",
+          "legendFormat": "Transfer error",
           "refId": "B"
         },
         {
