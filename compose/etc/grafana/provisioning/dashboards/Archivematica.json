@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1572890714771,
+  "iteration": 1573059724002,
   "links": [],
   "panels": [
     {
@@ -3024,12 +3024,12 @@
         "displayMode": "gradient",
         "fieldOptions": {
           "calcs": [
-            "mean"
+            "last"
           ],
           "defaults": {
             "max": 100,
             "min": 0,
-            "unit": "s"
+            "unit": "dtdurations"
           },
           "mappings": [],
           "override": {},
@@ -3050,7 +3050,7 @@
               "value": 80
             }
           ],
-          "values": true
+          "values": false
         },
         "orientation": "horizontal"
       },
@@ -3063,7 +3063,7 @@
       },
       "targets": [
         {
-          "expr": "topk(5, sum(increase(mcpclient_task_execution_time_seconds_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__range])) by (script_name))",
+          "expr": "topk(5, sum by (script_name) (increase(mcpclient_task_execution_time_seconds_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__range])))",
           "format": "time_series",
           "instant": true,
           "interval": "1m",
@@ -3087,6 +3087,7 @@
         "y": 106
       },
       "id": 73,
+      "interval": "",
       "links": [],
       "options": {
         "displayMode": "gradient",
@@ -3097,7 +3098,7 @@
           "defaults": {
             "max": 100,
             "min": 0,
-            "unit": "s"
+            "unit": "dtdurations"
           },
           "mappings": [
             {
@@ -4181,5 +4182,5 @@
   "timezone": "",
   "title": "Archivematica",
   "uid": "WQLPaE7Zk",
-  "version": 11
+  "version": 12
 }
