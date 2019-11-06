@@ -64,8 +64,9 @@
         "x": 0,
         "y": 1
       },
+      "hideTimeOverride": false,
       "id": 20,
-      "interval": null,
+      "interval": "",
       "links": [],
       "mappingType": 1,
       "mappingTypes": [
@@ -888,25 +889,25 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (job)(round(increase(mcpclient_transfer_started_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])))",
+          "expr": "sum by (job)(round(increase(mcpclient_transfer_started_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])))",
           "format": "time_series",
-          "interval": "",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "Transfers started",
           "refId": "A"
         },
         {
-          "expr": "sum by (job)(round(increase(mcpclient_transfer_error_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])))",
+          "expr": "sum by (job)(round(increase(mcpclient_transfer_error_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])))",
           "format": "time_series",
-          "interval": "",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "Transfer errors",
           "refId": "B"
         },
         {
-          "expr": "sum by (job)(round(increase(mcpclient_transfer_completed_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])))",
+          "expr": "sum by (job)(round(increase(mcpclient_transfer_completed_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])))",
           "format": "time_series",
-          "interval": "",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "Transfers completed",
           "refId": "D"
@@ -934,7 +935,7 @@
         {
           "decimals": 0,
           "format": "short",
-          "label": "transfers / min",
+          "label": "transfers",
           "logBase": 1,
           "max": null,
           "min": "0",
@@ -1005,16 +1006,17 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (job)(round(increase(mcpclient_aips_stored_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])))",
+          "expr": "sum by (job)(round(increase(mcpclient_aips_stored_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])))",
           "format": "time_series",
-          "interval": "",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "AIPs stored",
           "refId": "A"
         },
         {
-          "expr": "sum by (job)(round(increase(mcpclient_dips_stored_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])))",
+          "expr": "sum by (job)(round(increase(mcpclient_dips_stored_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])))",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "DIPs stored ",
           "refId": "B"
@@ -1042,7 +1044,7 @@
         {
           "decimals": 0,
           "format": "short",
-          "label": "packages / min",
+          "label": "packages",
           "logBase": 1,
           "max": null,
           "min": "0",
@@ -1109,7 +1111,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (job)(increase(mcpclient_aip_size_bytes_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) or sum by (job)(increase(mcpclient_aip_size_bytes_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]))",
+          "expr": "sum by (job)(increase(mcpclient_aip_size_bytes_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) or sum by (job)(increase(mcpclient_aip_size_bytes_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]))",
           "format": "time_series",
           "interval": "1m",
           "intervalFactor": 1,
@@ -1117,7 +1119,7 @@
           "refId": "A"
         },
         {
-          "expr": "sum by (job)(increase(mcpclient_dip_size_bytes_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) or sum by (job)(increase(mcpclient_dip_size_bytes_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]))",
+          "expr": "sum by (job)(increase(mcpclient_dip_size_bytes_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) or sum by (job)(increase(mcpclient_dip_size_bytes_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]))",
           "format": "time_series",
           "interval": "1m",
           "intervalFactor": 1,
@@ -1125,7 +1127,7 @@
           "refId": "B"
         },
         {
-          "expr": "sum by (job)(increase(mcpclient_transfer_size_bytes_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]))",
+          "expr": "sum by (job)(increase(mcpclient_transfer_size_bytes_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))",
           "format": "time_series",
           "interval": "1m",
           "intervalFactor": 1,
@@ -1154,7 +1156,7 @@
       "yaxes": [
         {
           "format": "decbytes",
-          "label": "bytes / min",
+          "label": "bytes",
           "logBase": 1,
           "max": null,
           "min": "0",
@@ -1228,22 +1230,25 @@
           "refId": "B"
         },
         {
-          "expr": "sum by (job)(round(increase(mcpclient_transfer_error_total{job=~\"[[job]]\", instance=~\"[[instance]]\", failure_type=\"reject\"}[1m])))",
+          "expr": "sum by (job)(round(increase(mcpclient_transfer_error_total{job=~\"[[job]]\", instance=~\"[[instance]]\", failure_type=\"reject\"}[$__interval])))",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "Transfer rejected",
           "refId": "D"
         },
         {
-          "expr": "sum by (job)(round(increase(mcpclient_sip_error_total{job=~\"[[job]]\", instance=~\"[[instance]]\", failure_type=\"fail\"}[1m])))",
+          "expr": "sum by (job)(round(increase(mcpclient_sip_error_total{job=~\"[[job]]\", instance=~\"[[instance]]\", failure_type=\"fail\"}[$__interval])))",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "SIP error",
           "refId": "A"
         },
         {
-          "expr": "sum by (job)(round(increase(mcpclient_sip_error_total{job=~\"[[job]]\", instance=~\"[[instance]]\", failure_type=\"reject\"}[1m])))",
+          "expr": "sum by (job)(round(increase(mcpclient_sip_error_total{job=~\"[[job]]\", instance=~\"[[instance]]\", failure_type=\"reject\"}[$__interval])))",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "SIP rejected",
           "refId": "C"
@@ -1271,7 +1276,7 @@
         {
           "decimals": 0,
           "format": "short",
-          "label": "errors / min",
+          "label": "errors",
           "logBase": 1,
           "max": null,
           "min": "0",
@@ -1305,7 +1310,7 @@
         "y": 24
       },
       "id": 39,
-      "interval": "1m",
+      "interval": "",
       "legend": {
         "avg": false,
         "current": false,
@@ -1337,17 +1342,17 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (job)(round(increase(mcpclient_aip_files_stored_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]))) or sum by (job)(round(increase(mcpclient_aip_files_stored_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])))",
+          "expr": "sum by (job)(round(increase(mcpclient_aip_files_stored_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))) or sum by (job)(round(increase(mcpclient_aip_files_stored_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])))",
           "format": "time_series",
-          "interval": "",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "AIP files stored",
           "refId": "A"
         },
         {
-          "expr": "sum by (job)(round(increase(mcpclient_transfer_files_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])))",
+          "expr": "sum by (job)(round(increase(mcpclient_transfer_files_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])))",
           "format": "time_series",
-          "interval": "",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "Transfer files ingested",
           "refId": "B"
@@ -1375,7 +1380,7 @@
         {
           "decimals": null,
           "format": "short",
-          "label": "files / min",
+          "label": "files",
           "logBase": 1,
           "max": null,
           "min": "0",
@@ -1430,7 +1435,7 @@
         "y": 33
       },
       "id": 62,
-      "interval": "1m",
+      "interval": "",
       "legend": {
         "avg": false,
         "current": false,
@@ -1464,8 +1469,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "  sum by (job) (rate(mcpclient_aip_files_stored_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]) / rate(mcpclient_aip_files_stored_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) or sum by (job) (rate(mcpclient_aip_files_stored_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) / sum by (job) (rate(mcpclient_aips_stored_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]))",
+          "expr": "  sum by (job) (rate(mcpclient_aip_files_stored_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]) / rate(mcpclient_aip_files_stored_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) or sum by (job) (rate(mcpclient_aip_files_stored_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) / sum by (job) (rate(mcpclient_aips_stored_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]))",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "{{ job }}",
           "refId": "A"
@@ -1560,8 +1566,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (transfer_type) (rate(mcpclient_transfer_files_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]) / rate(mcpclient_transfer_files_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]))",
+          "expr": "sum by (transfer_type) (rate(mcpclient_transfer_files_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]) / rate(mcpclient_transfer_files_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]))",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "{{ transfer_type }}",
           "refId": "A"
@@ -1650,7 +1657,7 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(mcpclient_aip_files_stored_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) by (le)",
+          "expr": "sum(increase(mcpclient_aip_files_stored_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (le)",
           "format": "heatmap",
           "interval": "1m",
           "intervalFactor": 1,
@@ -1725,7 +1732,7 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(mcpclient_transfer_files_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) by (le)",
+          "expr": "sum(increase(mcpclient_transfer_files_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (le)",
           "format": "heatmap",
           "interval": "1m",
           "intervalFactor": 1,
@@ -1806,8 +1813,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (job) (rate(mcpclient_aip_size_bytes_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]) / rate(mcpclient_aip_size_bytes_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) or sum by (job)(rate(mcpclient_aip_size_bytes_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) / sum by (job)(rate(mcpclient_aips_stored_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]))",
+          "expr": "sum by (job) (rate(mcpclient_aip_size_bytes_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]) / rate(mcpclient_aip_size_bytes_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) or sum by (job)(rate(mcpclient_aip_size_bytes_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) / sum by (job)(rate(mcpclient_aips_stored_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "{{ job }}",
           "refId": "A"
@@ -1902,8 +1910,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (transfer_type)(rate(mcpclient_transfer_size_bytes_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]) / rate(mcpclient_transfer_size_bytes_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]))",
+          "expr": "sum by (transfer_type)(rate(mcpclient_transfer_size_bytes_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]) / rate(mcpclient_transfer_size_bytes_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "{{ transfer_type }}",
           "refId": "A"
@@ -1992,7 +2001,7 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(mcpclient_aip_size_bytes_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) by (le)",
+          "expr": "sum(increase(mcpclient_aip_size_bytes_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (le)",
           "format": "heatmap",
           "interval": "1m",
           "intervalFactor": 1,
@@ -2067,7 +2076,7 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(mcpclient_transfer_size_bytes_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) by (le)",
+          "expr": "sum(increase(mcpclient_transfer_size_bytes_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (le)",
           "format": "heatmap",
           "interval": "1m",
           "intervalFactor": 1,
@@ -2147,8 +2156,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (format_name,job)(round(increase(mcpclient_aip_files_stored_by_file_group_and_format_total{job=~\"[[job]]\", instance=~\"[[instance]]\", file_group=\"derivative\"}[1m])))",
+          "expr": "sum by (format_name,job)(round(increase(mcpclient_aip_files_stored_by_file_group_and_format_total{job=~\"[[job]]\", instance=~\"[[instance]]\", file_group=\"derivative\"}[$__interval])))",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "{{ format_name }}",
           "refId": "A"
@@ -2176,7 +2186,7 @@
         {
           "decimals": 0,
           "format": "none",
-          "label": "files / min",
+          "label": "files",
           "logBase": 1,
           "max": null,
           "min": "0",
@@ -2243,8 +2253,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (job,format_name) (round(increase(mcpclient_aip_files_stored_by_file_group_and_format_total{job=~\"[[job]]\", instance=~\"[[instance]]\", file_group=\"original\"}[1m])))",
+          "expr": "sum by (job,format_name) (round(increase(mcpclient_aip_files_stored_by_file_group_and_format_total{job=~\"[[job]]\", instance=~\"[[instance]]\", file_group=\"original\"}[$__interval])))",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "{{ format_name }}",
           "refId": "A"
@@ -2338,8 +2349,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (format_name,job)(round(increase(mcpclient_aip_files_stored_by_file_group_and_format_total{job=~\"[[job]]\", instance=~\"[[instance]]\", file_group=\"metadata\"}[1m])))",
+          "expr": "sum by (format_name,job)(round(increase(mcpclient_aip_files_stored_by_file_group_and_format_total{job=~\"[[job]]\", instance=~\"[[instance]]\", file_group=\"metadata\"}[$__interval])))",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "{{ format_name }}",
           "refId": "A"
@@ -2367,7 +2379,7 @@
         {
           "decimals": 0,
           "format": "none",
-          "label": "files / min",
+          "label": "files",
           "logBase": 1,
           "max": null,
           "min": "0",
@@ -2428,7 +2440,7 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(mcpclient_aip_original_file_timestamps_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) by (le)",
+          "expr": "sum(increase(mcpclient_aip_original_file_timestamps_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (le)",
           "format": "heatmap",
           "interval": "1m",
           "intervalFactor": 1,
@@ -2530,8 +2542,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (job)(rate(mcpclient_aip_processing_seconds_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) / sum by (job)(rate(mcpclient_aip_processing_seconds_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]))",
+          "expr": "sum by (job)(rate(mcpclient_aip_processing_seconds_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) / sum by (job)(rate(mcpclient_aip_processing_seconds_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "{{ job }}",
           "refId": "A"
@@ -2557,7 +2570,8 @@
       },
       "yaxes": [
         {
-          "format": "s",
+          "decimals": 0,
+          "format": "dtdurations",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -2625,10 +2639,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (job)(rate(mcpclient_dip_processing_seconds_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) / sum by (job)(rate(mcpclient_dip_processing_seconds_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]))",
+          "expr": "sum by (job)(rate(mcpclient_dip_processing_seconds_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) / sum by (job)(rate(mcpclient_dip_processing_seconds_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
-          "legendFormat": "{{ job }}",
+          "legendFormat": "DIP processing time",
           "refId": "A"
         }
       ],
@@ -2652,7 +2667,8 @@
       },
       "yaxes": [
         {
-          "format": "s",
+          "decimals": 0,
+          "format": "dtdurations",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -2713,7 +2729,7 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(mcpclient_aip_processing_seconds_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) by (le)",
+          "expr": "sum(increase(mcpclient_aip_processing_seconds_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (le)",
           "format": "heatmap",
           "interval": "1m",
           "intervalFactor": 1,
@@ -2736,7 +2752,7 @@
       "xBucketSize": null,
       "yAxis": {
         "decimals": 0,
-        "format": "s",
+        "format": "dtdurations",
         "logBase": 1,
         "max": null,
         "min": "0",
@@ -2787,7 +2803,7 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(mcpclient_dip_processing_seconds_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) by (le)",
+          "expr": "sum(increase(mcpclient_dip_processing_seconds_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (le)",
           "format": "heatmap",
           "interval": "1m",
           "intervalFactor": 1,
@@ -2810,7 +2826,7 @@
       "xBucketSize": null,
       "yAxis": {
         "decimals": 0,
-        "format": "s",
+        "format": "dtdurations",
         "logBase": 1,
         "max": null,
         "min": "0",
@@ -2867,8 +2883,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase(django_http_requests_total_by_method_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])",
+          "expr": "increase(django_http_requests_total_by_method_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "{{ method }} ({{ instance }})",
           "refId": "A"
@@ -2895,7 +2912,7 @@
       "yaxes": [
         {
           "format": "short",
-          "label": "reqs / min",
+          "label": "requests",
           "logBase": 1,
           "max": null,
           "min": "0",
@@ -2929,6 +2946,7 @@
         "y": 98
       },
       "id": 16,
+      "interval": "1m",
       "legend": {
         "avg": false,
         "current": false,
@@ -2960,8 +2978,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (type, instance)(rate(django_http_exceptions_total_by_type_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]))",
+          "expr": "sum by (type, instance)(rate(django_http_exceptions_total_by_type_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "{{ type }} ({{ instance }})",
           "refId": "A"
@@ -2987,9 +3006,9 @@
       },
       "yaxes": [
         {
-          "decimals": null,
+          "decimals": 0,
           "format": "short",
-          "label": "Errors",
+          "label": "errors",
           "logBase": 1,
           "max": null,
           "min": "0",
@@ -3480,6 +3499,7 @@
       "hideZeroBuckets": true,
       "highlightCards": true,
       "id": 2,
+      "interval": "",
       "legend": {
         "show": false
       },
@@ -3496,7 +3516,7 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(mcpserver_task_duration_seconds_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) by (le)",
+          "expr": "sum(increase(mcpserver_task_duration_seconds_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (le)",
           "format": "heatmap",
           "interval": "1m",
           "intervalFactor": 1,
@@ -3518,8 +3538,8 @@
       "xBucketNumber": null,
       "xBucketSize": null,
       "yAxis": {
-        "decimals": null,
-        "format": "s",
+        "decimals": 0,
+        "format": "dtdurations",
         "logBase": 1,
         "max": null,
         "min": null,
@@ -3577,15 +3597,17 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(mcpserver_task_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) by (job)",
+          "expr": "sum(increase(mcpserver_task_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (job)",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "Completed",
           "refId": "A"
         },
         {
-          "expr": "sum(increase(mcpserver_task_error_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) by (job)",
+          "expr": "sum(increase(mcpserver_task_error_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (job)",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "Failed",
           "refId": "B"
@@ -3612,7 +3634,7 @@
       "yaxes": [
         {
           "format": "short",
-          "label": "tasks / min",
+          "label": "tasks",
           "logBase": 1,
           "max": null,
           "min": "0",
@@ -3674,7 +3696,7 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(mcpclient_task_execution_time_seconds_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) by (le)",
+          "expr": "sum(increase(mcpclient_task_execution_time_seconds_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (le)",
           "format": "heatmap",
           "interval": "1m",
           "intervalFactor": 1,
@@ -3696,8 +3718,8 @@
       "xBucketNumber": null,
       "xBucketSize": null,
       "yAxis": {
-        "decimals": null,
-        "format": "s",
+        "decimals": 0,
+        "format": "dtdurations",
         "logBase": 1,
         "max": null,
         "min": null,
@@ -3755,15 +3777,17 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(mcpclient_job_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) by (instance)",
+          "expr": "sum(increase(mcpclient_job_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (instance)",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "Completed - {{instance}}",
           "refId": "A"
         },
         {
-          "expr": "sum(increase(mcpclient_job_error_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) by (instance)",
+          "expr": "sum(increase(mcpclient_job_error_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (instance)",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "Errored - {{instance}}",
           "refId": "B"
@@ -3789,8 +3813,9 @@
       },
       "yaxes": [
         {
+          "decimals": 0,
           "format": "short",
-          "label": "jobs / min",
+          "label": "jobs",
           "logBase": 1,
           "max": null,
           "min": "0",
@@ -3855,8 +3880,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(django_http_requests_latency_seconds_by_view_method_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[5m]) / rate(django_http_requests_latency_seconds_by_view_method_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[5m])",
+          "expr": "rate(django_http_requests_latency_seconds_by_view_method_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]) / rate(django_http_requests_latency_seconds_by_view_method_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "{{ method}}: {{ view}}",
           "refId": "A"
@@ -3882,11 +3908,12 @@
       },
       "yaxes": [
         {
-          "format": "s",
+          "decimals": 0,
+          "format": "dtdurations",
           "label": null,
-          "logBase": 2,
+          "logBase": 10,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
@@ -3924,8 +3951,8 @@
         "max": false,
         "min": false,
         "show": true,
-        "total": false,
-        "values": false
+        "total": true,
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -3949,10 +3976,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(django_model_save_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) by (job,model)",
+          "expr": "sum(increase(django_model_save_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (model)",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
-          "legendFormat": "{{job}} - {{ model }}",
+          "legendFormat": "{{ model }}",
           "refId": "A"
         }
       ],
@@ -3978,7 +4006,7 @@
         {
           "decimals": null,
           "format": "short",
-          "label": "saves / min",
+          "label": "saves",
           "logBase": 2,
           "max": null,
           "min": null,
@@ -4004,7 +4032,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "fill": 1,
+      "fill": 6,
       "gridPos": {
         "h": 8,
         "w": 12,
@@ -4012,6 +4040,7 @@
         "y": 139
       },
       "id": 85,
+      "interval": "1m",
       "legend": {
         "avg": false,
         "current": false,
@@ -4039,14 +4068,15 @@
       },
       "seriesOverrides": [],
       "spaceLength": 10,
-      "stack": false,
+      "stack": true,
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase(process_cpu_seconds_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[5m])",
+          "expr": "avg by (instance)(irate(process_cpu_seconds_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))",
           "format": "time_series",
+          "interval": "1m",
           "intervalFactor": 1,
-          "legendFormat": "{{ job }} - {{ instance }}",
+          "legendFormat": "{{ instance }}",
           "refId": "A"
         }
       ],
@@ -4054,7 +4084,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "CPU seconds by python process",
+      "title": "CPU time by python process",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -4070,7 +4100,8 @@
       },
       "yaxes": [
         {
-          "format": "s",
+          "decimals": 0,
+          "format": "percentunit",
           "label": null,
           "logBase": 1,
           "max": null,
