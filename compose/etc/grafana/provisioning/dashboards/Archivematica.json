@@ -1469,7 +1469,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "  sum by (job) (rate(mcpclient_aip_files_stored_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]) / rate(mcpclient_aip_files_stored_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) or sum by (job) (rate(mcpclient_aip_files_stored_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m])) / sum by (job) (rate(mcpclient_aips_stored_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]))",
+          "expr": "  (sum by (job) (rate(mcpclient_aip_files_stored_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) / sum by (job) (rate(mcpclient_aip_files_stored_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))) or (sum by (job) (rate(mcpclient_aip_files_stored_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) / sum by (job) (rate(mcpclient_aips_stored_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])))",
           "format": "time_series",
           "interval": "1m",
           "intervalFactor": 1,
@@ -1533,7 +1533,7 @@
         "y": 33
       },
       "id": 78,
-      "interval": "1m",
+      "interval": "",
       "legend": {
         "avg": false,
         "current": false,
@@ -1566,7 +1566,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (transfer_type) (rate(mcpclient_transfer_files_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]) / rate(mcpclient_transfer_files_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[1m]))",
+          "expr": "sum by (transfer_type) (rate(mcpclient_transfer_files_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) / sum by (transfer_type) (rate(mcpclient_transfer_files_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))",
           "format": "time_series",
           "interval": "1m",
           "intervalFactor": 1,
@@ -1618,15 +1618,16 @@
     },
     {
       "cards": {
-        "cardPadding": null,
+        "cardPadding": 0,
         "cardRound": null
       },
       "color": {
-        "cardColor": "#b4ff00",
-        "colorScale": "sqrt",
+        "cardColor": "#DEB6F2",
+        "colorScale": "linear",
         "colorScheme": "interpolateMagma",
         "exponent": 0.5,
-        "mode": "spectrum"
+        "min": 0,
+        "mode": "opacity"
       },
       "dataFormat": "tsbuckets",
       "datasource": "Prometheus",
@@ -1638,7 +1639,7 @@
         "y": 41
       },
       "heatmap": {},
-      "hideZeroBuckets": true,
+      "hideZeroBuckets": false,
       "highlightCards": true,
       "id": 81,
       "interval": "",
@@ -1657,7 +1658,7 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(mcpclient_aip_files_stored_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (le)",
+          "expr": "sum(round(increase(mcpclient_aip_files_stored_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))) by (le)",
           "format": "heatmap",
           "interval": "1m",
           "intervalFactor": 1,
@@ -1693,15 +1694,16 @@
     },
     {
       "cards": {
-        "cardPadding": null,
+        "cardPadding": 0,
         "cardRound": null
       },
       "color": {
-        "cardColor": "#b4ff00",
+        "cardColor": "#DEB6F2",
         "colorScale": "sqrt",
         "colorScheme": "interpolateMagma",
         "exponent": 0.5,
-        "mode": "spectrum"
+        "min": 0,
+        "mode": "opacity"
       },
       "dataFormat": "tsbuckets",
       "datasource": "Prometheus",
@@ -1713,7 +1715,7 @@
         "y": 41
       },
       "heatmap": {},
-      "hideZeroBuckets": true,
+      "hideZeroBuckets": false,
       "highlightCards": true,
       "id": 82,
       "interval": "",
@@ -1732,7 +1734,7 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(mcpclient_transfer_files_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (le)",
+          "expr": "sum(round(increase(mcpclient_transfer_files_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))) by (le)",
           "format": "heatmap",
           "interval": "1m",
           "intervalFactor": 1,
@@ -1813,7 +1815,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (job) (rate(mcpclient_aip_size_bytes_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]) / rate(mcpclient_aip_size_bytes_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) or sum by (job)(rate(mcpclient_aip_size_bytes_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) / sum by (job)(rate(mcpclient_aips_stored_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))",
+          "expr": "(sum by (job) (rate(mcpclient_aip_size_bytes_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) / sum by (job) (rate(mcpclient_aip_size_bytes_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))) or (sum by (job)(rate(mcpclient_aip_size_bytes_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) / sum by (job)(rate(mcpclient_aips_stored_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])))",
           "format": "time_series",
           "interval": "1m",
           "intervalFactor": 1,
@@ -1910,7 +1912,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (transfer_type)(rate(mcpclient_transfer_size_bytes_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]) / rate(mcpclient_transfer_size_bytes_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))",
+          "expr": "sum by (transfer_type)(rate(mcpclient_transfer_size_bytes_sum{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) / sum by (transfer_type)(rate(mcpclient_transfer_size_bytes_count{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))",
           "format": "time_series",
           "interval": "1m",
           "intervalFactor": 1,
@@ -1962,15 +1964,16 @@
     },
     {
       "cards": {
-        "cardPadding": null,
+        "cardPadding": 0,
         "cardRound": null
       },
       "color": {
-        "cardColor": "#b4ff00",
-        "colorScale": "sqrt",
+        "cardColor": "#DEB6F2",
+        "colorScale": "linear",
         "colorScheme": "interpolateMagma",
         "exponent": 0.5,
-        "mode": "spectrum"
+        "min": 0,
+        "mode": "opacity"
       },
       "dataFormat": "tsbuckets",
       "datasource": "Prometheus",
@@ -1982,7 +1985,7 @@
         "y": 57
       },
       "heatmap": {},
-      "hideZeroBuckets": true,
+      "hideZeroBuckets": false,
       "highlightCards": true,
       "id": 83,
       "interval": "",
@@ -2001,7 +2004,7 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(mcpclient_aip_size_bytes_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (le)",
+          "expr": "sum(round(increase(mcpclient_aip_size_bytes_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))) by (le)",
           "format": "heatmap",
           "interval": "1m",
           "intervalFactor": 1,
@@ -2037,15 +2040,16 @@
     },
     {
       "cards": {
-        "cardPadding": null,
+        "cardPadding": 0,
         "cardRound": null
       },
       "color": {
-        "cardColor": "#b4ff00",
-        "colorScale": "sqrt",
+        "cardColor": "#DEB6F2",
+        "colorScale": "linear",
         "colorScheme": "interpolateMagma",
         "exponent": 0.5,
-        "mode": "spectrum"
+        "min": 0,
+        "mode": "opacity"
       },
       "dataFormat": "tsbuckets",
       "datasource": "Prometheus",
@@ -2057,7 +2061,7 @@
         "y": 57
       },
       "heatmap": {},
-      "hideZeroBuckets": true,
+      "hideZeroBuckets": false,
       "highlightCards": true,
       "id": 84,
       "interval": "",
@@ -2076,7 +2080,7 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(mcpclient_transfer_size_bytes_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (le)",
+          "expr": "sum(round(increase(mcpclient_transfer_size_bytes_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))) by (le)",
           "format": "heatmap",
           "interval": "1m",
           "intervalFactor": 1,
@@ -2137,7 +2141,7 @@
       "lines": true,
       "linewidth": 1,
       "links": [],
-      "nullPointMode": "null",
+      "nullPointMode": "connected",
       "options": {},
       "percentage": false,
       "pointradius": 2,
@@ -2233,7 +2237,7 @@
       "lines": true,
       "linewidth": 1,
       "links": [],
-      "nullPointMode": "null",
+      "nullPointMode": "connected",
       "options": {},
       "percentage": false,
       "pointradius": 2,
@@ -2330,7 +2334,7 @@
       "lines": true,
       "linewidth": 1,
       "links": [],
-      "nullPointMode": "null",
+      "nullPointMode": "connected",
       "options": {},
       "percentage": false,
       "pointradius": 2,
@@ -2401,15 +2405,16 @@
     },
     {
       "cards": {
-        "cardPadding": null,
+        "cardPadding": 0,
         "cardRound": null
       },
       "color": {
-        "cardColor": "#b4ff00",
-        "colorScale": "sqrt",
+        "cardColor": "#DEB6F2",
+        "colorScale": "linear",
         "colorScheme": "interpolateMagma",
         "exponent": 0.5,
-        "mode": "spectrum"
+        "min": 0,
+        "mode": "opacity"
       },
       "dataFormat": "tsbuckets",
       "datasource": "Prometheus",
@@ -2440,7 +2445,7 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(mcpclient_aip_original_file_timestamps_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (le)",
+          "expr": "sum(round(increase(mcpclient_aip_original_file_timestamps_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))) by (le)",
           "format": "heatmap",
           "interval": "1m",
           "intervalFactor": 1,
@@ -2691,15 +2696,16 @@
     },
     {
       "cards": {
-        "cardPadding": null,
+        "cardPadding": 0,
         "cardRound": null
       },
       "color": {
-        "cardColor": "#b4ff00",
-        "colorScale": "sqrt",
+        "cardColor": "#DEB6F2",
+        "colorScale": "linear",
         "colorScheme": "interpolateMagma",
         "exponent": 0.5,
-        "mode": "spectrum"
+        "min": 0,
+        "mode": "opacity"
       },
       "dataFormat": "tsbuckets",
       "datasource": "Prometheus",
@@ -2710,7 +2716,7 @@
         "y": 90
       },
       "heatmap": {},
-      "hideZeroBuckets": true,
+      "hideZeroBuckets": false,
       "highlightCards": true,
       "id": 29,
       "interval": "",
@@ -2729,7 +2735,7 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(mcpclient_aip_processing_seconds_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (le)",
+          "expr": "sum(round(increase(mcpclient_aip_processing_seconds_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))) by (le)",
           "format": "heatmap",
           "interval": "1m",
           "intervalFactor": 1,
@@ -2744,6 +2750,7 @@
         "show": true,
         "showHistogram": false
       },
+      "tooltipDecimals": 0,
       "type": "heatmap",
       "xAxis": {
         "show": true
@@ -2765,15 +2772,16 @@
     },
     {
       "cards": {
-        "cardPadding": null,
+        "cardPadding": 0,
         "cardRound": null
       },
       "color": {
-        "cardColor": "#b4ff00",
-        "colorScale": "sqrt",
+        "cardColor": "#DEB6F2",
+        "colorScale": "linear",
         "colorScheme": "interpolateMagma",
         "exponent": 0.5,
-        "mode": "spectrum"
+        "min": 0,
+        "mode": "opacity"
       },
       "dataFormat": "tsbuckets",
       "datasource": "Prometheus",
@@ -2784,7 +2792,7 @@
         "y": 90
       },
       "heatmap": {},
-      "hideZeroBuckets": true,
+      "hideZeroBuckets": false,
       "highlightCards": true,
       "id": 67,
       "interval": "",
@@ -2803,7 +2811,7 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(mcpclient_dip_processing_seconds_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (le)",
+          "expr": "sum(round(increase(mcpclient_dip_processing_seconds_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))) by (le)",
           "format": "heatmap",
           "interval": "1m",
           "intervalFactor": 1,
@@ -3046,30 +3054,30 @@
             "last"
           ],
           "defaults": {
-            "max": 100,
             "min": 0,
+            "title": "$__field_name",
             "unit": "dtdurations"
           },
           "mappings": [],
           "override": {},
           "thresholds": [
             {
-              "color": "green",
+              "color": "semi-dark-green",
               "index": 0,
               "value": null
             },
             {
-              "color": "#EAB839",
+              "color": "light-green",
               "index": 1,
               "value": 50
             },
             {
-              "color": "red",
+              "color": "super-light-green",
               "index": 2,
-              "value": 80
+              "value": 75
             }
           ],
-          "values": false
+          "values": true
         },
         "orientation": "horizontal"
       },
@@ -3115,8 +3123,8 @@
             "mean"
           ],
           "defaults": {
-            "max": 100,
             "min": 0,
+            "title": "$__field_name",
             "unit": "dtdurations"
           },
           "mappings": [
@@ -3133,19 +3141,19 @@
           "override": {},
           "thresholds": [
             {
-              "color": "green",
+              "color": "semi-dark-green",
               "index": 0,
               "value": null
             },
             {
-              "color": "#EAB839",
+              "color": "light-green",
               "index": 1,
               "value": 50
             },
             {
-              "color": "red",
+              "color": "super-light-green",
               "index": 2,
-              "value": 80
+              "value": 75
             }
           ],
           "values": true
@@ -3476,15 +3484,16 @@
     {
       "cacheTimeout": null,
       "cards": {
-        "cardPadding": null,
+        "cardPadding": 0,
         "cardRound": null
       },
       "color": {
-        "cardColor": "#b4ff00",
+        "cardColor": "#FA6400",
         "colorScale": "sqrt",
         "colorScheme": "interpolateBlues",
         "exponent": 0.5,
-        "mode": "spectrum"
+        "min": 0,
+        "mode": "opacity"
       },
       "dataFormat": "tsbuckets",
       "datasource": "Prometheus",
@@ -3501,7 +3510,7 @@
       "id": 2,
       "interval": "",
       "legend": {
-        "show": false
+        "show": true
       },
       "links": [],
       "options": {},
@@ -3516,7 +3525,7 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(mcpserver_task_duration_seconds_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (le)",
+          "expr": "sum(round(increase(mcpserver_task_duration_seconds_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))) by (le)",
           "format": "heatmap",
           "interval": "1m",
           "intervalFactor": 1,
@@ -3597,7 +3606,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(mcpserver_task_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (job)",
+          "expr": "sum(round(increase(mcpserver_task_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))) by (job)",
           "format": "time_series",
           "interval": "1m",
           "intervalFactor": 1,
@@ -3605,7 +3614,7 @@
           "refId": "A"
         },
         {
-          "expr": "sum(increase(mcpserver_task_error_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (job)",
+          "expr": "sum(round(increase(mcpserver_task_error_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))) by (job)",
           "format": "time_series",
           "interval": "1m",
           "intervalFactor": 1,
@@ -3657,15 +3666,16 @@
     {
       "cacheTimeout": null,
       "cards": {
-        "cardPadding": null,
+        "cardPadding": 0,
         "cardRound": null
       },
       "color": {
-        "cardColor": "#b4ff00",
+        "cardColor": "#FA6400",
         "colorScale": "sqrt",
         "colorScheme": "interpolateBlues",
         "exponent": 0.5,
-        "mode": "spectrum"
+        "min": 0,
+        "mode": "opacity"
       },
       "dataFormat": "tsbuckets",
       "datasource": "Prometheus",
@@ -3677,11 +3687,11 @@
         "y": 123
       },
       "heatmap": {},
-      "hideZeroBuckets": true,
+      "hideZeroBuckets": false,
       "highlightCards": true,
       "id": 66,
       "legend": {
-        "show": false
+        "show": true
       },
       "links": [],
       "options": {},
@@ -3696,7 +3706,7 @@
       },
       "targets": [
         {
-          "expr": "sum(increase(mcpclient_task_execution_time_seconds_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (le)",
+          "expr": "sum(round(increase(mcpclient_task_execution_time_seconds_bucket{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))) by (le)",
           "format": "heatmap",
           "interval": "1m",
           "intervalFactor": 1,
@@ -3777,7 +3787,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(mcpclient_job_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (instance)",
+          "expr": "sum(round(increase(mcpclient_job_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))) by (instance)",
           "format": "time_series",
           "interval": "1m",
           "intervalFactor": 1,
@@ -3785,7 +3795,7 @@
           "refId": "A"
         },
         {
-          "expr": "sum(increase(mcpclient_job_error_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval])) by (instance)",
+          "expr": "sum(round(increase(mcpclient_job_error_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__interval]))) by (instance)",
           "format": "time_series",
           "interval": "1m",
           "intervalFactor": 1,
@@ -4182,7 +4192,7 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {
