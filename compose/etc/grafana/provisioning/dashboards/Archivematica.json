@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1573059724002,
+  "iteration": 1573078826569,
   "links": [],
   "panels": [
     {
@@ -114,6 +114,7 @@
           "expr": "max(mcpclient_aips_stored_timestamp{job=~\"[[job]]\", instance=~\"[[instance]]\"}) * 1000",
           "format": "time_series",
           "instant": true,
+          "interval": "1m",
           "intervalFactor": 1,
           "refId": "A"
         }
@@ -136,7 +137,7 @@
           "value": "0"
         }
       ],
-      "valueName": "current"
+      "valueName": "max"
     },
     {
       "cacheTimeout": null,
@@ -210,6 +211,8 @@
         {
           "expr": "max(mcpclient_transfer_started_timestamp{job=~\"[[job]]\", instance=~\"[[instance]]\"}) * 1000",
           "format": "time_series",
+          "instant": true,
+          "interval": "1m",
           "intervalFactor": 1,
           "refId": "A"
         }
@@ -306,6 +309,7 @@
         {
           "expr": "max(mcpclient_dips_stored_timestamp{job=~\"[[job]]\", instance=~\"[[instance]]\"}) * 1000",
           "format": "time_series",
+          "instant": true,
           "intervalFactor": 1,
           "refId": "A"
         }
@@ -501,6 +505,7 @@
         {
           "expr": "round(sum(increase(mcpclient_aips_stored_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__range])))",
           "format": "time_series",
+          "instant": false,
           "interval": "",
           "intervalFactor": 1,
           "legendFormat": "AIPs stored",
@@ -600,7 +605,7 @@
         {
           "expr": "round(sum(increase(mcpclient_transfer_started_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__range])))",
           "format": "time_series",
-          "instant": true,
+          "instant": false,
           "interval": "",
           "intervalFactor": 1,
           "legendFormat": "",
@@ -700,6 +705,7 @@
         {
           "expr": "round(sum(increase(mcpclient_dips_stored_total{job=~\"[[job]]\", instance=~\"[[instance]]\"}[$__range])))",
           "format": "time_series",
+          "instant": false,
           "interval": "",
           "intervalFactor": 1,
           "legendFormat": "AIPs stored",
@@ -2132,6 +2138,8 @@
       "legend": {
         "avg": false,
         "current": false,
+        "hideEmpty": false,
+        "hideZero": false,
         "max": false,
         "min": false,
         "show": true,
@@ -2160,7 +2168,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (format_name,job)(round(increase(mcpclient_aip_files_stored_by_file_group_and_format_total{job=~\"[[job]]\", instance=~\"[[instance]]\", file_group=\"derivative\"}[$__interval])))",
+          "expr": "sum by (format_name) (round(increase(mcpclient_aip_files_stored_by_file_group_and_format_total{job=~\"[[job]]\", instance=~\"[[instance]]\", file_group=\"derivative\"}[$__range])) != 0)",
           "format": "time_series",
           "interval": "1m",
           "intervalFactor": 1,
@@ -2228,6 +2236,8 @@
       "legend": {
         "avg": false,
         "current": false,
+        "hideEmpty": false,
+        "hideZero": false,
         "max": false,
         "min": false,
         "show": true,
@@ -2257,8 +2267,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (job,format_name) (round(increase(mcpclient_aip_files_stored_by_file_group_and_format_total{job=~\"[[job]]\", instance=~\"[[instance]]\", file_group=\"original\"}[$__interval])))",
+          "expr": "sum by (format_name) (round(increase(mcpclient_aip_files_stored_by_file_group_and_format_total{job=~\"[[job]]\", instance=~\"[[instance]]\", file_group=\"original\"}[$__range])) != 0)",
           "format": "time_series",
+          "instant": false,
           "interval": "1m",
           "intervalFactor": 1,
           "legendFormat": "{{ format_name }}",
@@ -2287,7 +2298,7 @@
         {
           "decimals": 0,
           "format": "none",
-          "label": "files / min",
+          "label": "files ",
           "logBase": 1,
           "max": null,
           "min": "0",
@@ -2353,7 +2364,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (format_name,job)(round(increase(mcpclient_aip_files_stored_by_file_group_and_format_total{job=~\"[[job]]\", instance=~\"[[instance]]\", file_group=\"metadata\"}[$__interval])))",
+          "expr": "sum by (format_name) (round(increase(mcpclient_aip_files_stored_by_file_group_and_format_total{job=~\"[[job]]\", instance=~\"[[instance]]\", file_group=\"metadata\"}[$__range])) != 0)",
           "format": "time_series",
           "interval": "1m",
           "intervalFactor": 1,
@@ -3054,6 +3065,7 @@
             "last"
           ],
           "defaults": {
+            "max": 100,
             "min": 0,
             "title": "$__field_name",
             "unit": "dtdurations"
@@ -3123,6 +3135,7 @@
             "mean"
           ],
           "defaults": {
+            "max": 100,
             "min": 0,
             "title": "$__field_name",
             "unit": "dtdurations"
@@ -4223,5 +4236,5 @@
   "timezone": "",
   "title": "Archivematica",
   "uid": "WQLPaE7Zk",
-  "version": 12
+  "version": 18
 }
