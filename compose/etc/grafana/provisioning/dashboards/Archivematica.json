@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1573078826569,
+  "iteration": 1573251667362,
   "links": [],
   "panels": [
     {
@@ -2168,7 +2168,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (format_name) (round(increase(mcpclient_aip_files_stored_by_file_group_and_format_total{job=~\"[[job]]\", instance=~\"[[instance]]\", file_group=\"derivative\"}[$__range])) != 0)",
+          "expr": "sum by (format_name) (round(increase(mcpclient_aip_files_stored_by_file_group_and_format_total{job=~\"[[job]]\", instance=~\"[[instance]]\", file_group=\"derivative\"}[$__interval])) != 0)",
           "format": "time_series",
           "interval": "1m",
           "intervalFactor": 1,
@@ -2267,7 +2267,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (format_name) (round(increase(mcpclient_aip_files_stored_by_file_group_and_format_total{job=~\"[[job]]\", instance=~\"[[instance]]\", file_group=\"original\"}[$__range])) != 0)",
+          "expr": "sum by (format_name) (round(increase(mcpclient_aip_files_stored_by_file_group_and_format_total{job=~\"[[job]]\", instance=~\"[[instance]]\", file_group=\"original\"}[$__interval])) != 0)",
           "format": "time_series",
           "instant": false,
           "interval": "1m",
@@ -2364,7 +2364,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (format_name) (round(increase(mcpclient_aip_files_stored_by_file_group_and_format_total{job=~\"[[job]]\", instance=~\"[[instance]]\", file_group=\"metadata\"}[$__range])) != 0)",
+          "expr": "sum by (format_name) (round(increase(mcpclient_aip_files_stored_by_file_group_and_format_total{job=~\"[[job]]\", instance=~\"[[instance]]\", file_group=\"metadata\"}[$__interval])) != 0)",
           "format": "time_series",
           "interval": "1m",
           "intervalFactor": 1,
@@ -4236,5 +4236,5 @@
   "timezone": "",
   "title": "Archivematica",
   "uid": "WQLPaE7Zk",
-  "version": 18
+  "version": 20
 }
