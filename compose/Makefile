@@ -71,6 +71,16 @@ manage-ss:  ## Run Django /manage.py on Storage Service, suppling <command> [opt
 			archivematica-storage-service \
 				$(ARG)
 
+make-messages:  ## Build Django translation files
+	docker-compose run --workdir /src/dashboard/src \
+		--rm --no-deps --user=root \
+		--entrypoint /src/dashboard/src/manage.py archivematica-dashboard makemessages
+
+compile-messages: 	## Build Django translation files
+	docker-compose run \
+		--rm --no-deps --user=root \
+		--entrypoint /src/dashboard/src/manage.py archivematica-dashboard compilemessages
+
 bootstrap-dashboard-db:  ## Bootstrap Dashboard (new database).
 	docker-compose exec mysql mysql -hlocalhost -uroot -p12345 -e "\
 		DROP DATABASE IF EXISTS MCP; \
