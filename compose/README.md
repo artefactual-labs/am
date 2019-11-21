@@ -447,13 +447,10 @@ again and continue with the install process.
 To install frontend Bootstrap dependencies manually:
 
 ```
-cd src/archivematica/src/dashboard/frontend/transfer-browser
-yarn install
-cd ../appraisal-tab
-yarn install
+yarn --cwd src/archivematica/src/dashboard/frontend install
 ```
 
-Instead of `yarn`, `npm` can also be used, using the same commands.
+`npm` should also work fine.
 
 ##### Bootstrap seems to run but the Dashboard and Elasticsearch are still down
 
