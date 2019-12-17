@@ -14,7 +14,9 @@
 - [Ports](#ports)
 - [Tests](#tests)
 - [Cleaning up](#cleaning-up)
-- [Instrumentation](#instrumentation-running-prometheus-and-grafana)
+- [Instrumentation](#instrumentation)
+  - [Running Prometheus and Grafana](#running-prometheus-and-grafana)
+  - [Percona Monitoring and Management](#percona-monitoring-and-management)
 - [Troubleshooting](#troubleshooting)
   - [Nginx returns 502 Bad Gateway](#nginx-returns-502-bad-gateway)
   - [MCPClient osdeps cannot be updated](#mcpclient-osdeps-cannot-be-updated)
@@ -23,6 +25,7 @@
   - [make bootstrap fails to run](#make-bootstrap-fails-to-run)
   - [Bootstrap seems to run but the Dashboard and Elasticsearch are still down][intro-1]
   - [My environment is still broken](#my-environment-is-still-broken)
+  - [PMM client service doesn't start](#pmm-client-service-doesnt-start)
 
 [intro-0]: #upgrading-to-the-latest-version-of-archivematica
 [intro-1]: #Bootstrap-seems-to-run-but-the-Dashboard-and-Elasticsearch-are-still-down
@@ -315,7 +318,9 @@ Optionally you may also want to delete the directories:
 
     $ rm -rf $HOME/.am/am-pipeline-data $HOME/.am/ss-location-data
 
-## Instrumentation: Running Prometheus and Grafana
+## Instrumentation
+
+### Running Prometheus and Grafana
 
 [Prometheus][instrumentation-0] and [Grafana][instrumentation-1] can be used
 to monitor Archivematica processes.
@@ -331,6 +336,23 @@ Prometheus will start on [localhost:9090][instrumentation-2]; Grafana on
 [instrumentation-1]: https://grafana.com/
 [instrumentation-2]: http://localhost:9090
 [instrumentation-3]: http://localhost:3000
+
+### Percona Monitoring and Management
+
+Extending the default environment, you can deploy an instance of
+[Percona Monitoring and Management][instrumentation-4] configured by default to
+collect metrics and query analytics data from the `mysql` service. To set up the
+PMM server and client services alongside all the others you'll need to indicate
+two Docker Compose files:
+
+    $ docker-compose -f docker-compose.yml -f docker-compose.pmm.yml up -d
+
+To access the PMM server interface, visit http://localhost:62007:
+
+* Username: ``pmm``
+* Password: ``pmm``
+
+[instrumentation-4]: https://www.percona.com/doc/percona-monitoring-and-management
 
 ## Troubleshooting
 
@@ -500,6 +522,18 @@ environment is not working? Here are some tips:
   where you may find them: [artefactual/archivematica][am1-issues],
   [artefactual-labs/am][am2-issues] and [archivematica/issues][am3-issues].
 - [Get support](https://www.archivematica.org/community/support/).
+
+##### PMM client service doesn't start
+
+In some cases the `pmm_client` service fails to start reporting the following
+error:
+
+    [main] app already is running, exiting
+
+You'll need to fully recreate the container to make it work:
+
+    docker-compose -f docker-compose.yml -f docker-compose.pmm.yml rm pmm_client
+    docker-compose -f docker-compose.yml -f docker-compose.pmm.yml up -d
 
 [am0-issues]: https://github.com/artefactual-labs/am/tree/5984aee49a53d127ec8628747352395d1c6a247f/compose
 [am1-issues]: https://github.com/artefactual/archivematica/issues
