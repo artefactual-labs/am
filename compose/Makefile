@@ -126,7 +126,7 @@ ifneq ($(strip $(SUDO_UID)),)
 endif
 
 reset-permissions-to-user:
-	@echo "Running recipe 'reset-permissions-to-user' as ${CALLER_UID} -- if eq 1000 this should be your USER"
+	@echo "Running recipe 'reset-permissions-to-user' and setting ownership to ${CALLER_UID} -- if eq 1000 this should be your USER"
 	find ../src/ -user root -path "*/requirements/*" -exec sudo chmod 644 '{}' +
 	find ../src/ -user root -path "*/requirements/*" -exec sudo chown -R ${CALLER_UID}:${CALLER_UID} {} +
 
