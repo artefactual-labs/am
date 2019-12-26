@@ -4,6 +4,8 @@
 AM_PIPELINE_DATA ?= $(HOME)/.am/am-pipeline-data
 SS_LOCATION_DATA ?= $(HOME)/.am/ss-location-data
 
+CALLER_UID=$(shell id -u)
+CALLER_GID=$(shell id -g)
 
 define compose_amauat
 	docker-compose -f docker-compose.yml -f docker-compose.acceptance-tests.yml $(1)
@@ -111,12 +113,45 @@ restart-am-services:  ## Restart Archivematica services: MCPServer, MCPClient, D
 	docker-compose restart archivematica-dashboard
 	docker-compose restart archivematica-storage-service
 
-compile-requirements:  ## Run pip-compile
-	docker-compose run --workdir /src/archivematicaCommon/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm  --no-deps --user=root --entrypoint make archivematica-mcp-server all
-	docker-compose run --workdir /src/MCPServer/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm  --no-deps --user=root --entrypoint make archivematica-mcp-server all
-	docker-compose run --workdir /src/MCPClient/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm --no-deps --user=root --entrypoint make archivematica-mcp-client all
-	docker-compose run --workdir /src/dashboard/src/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm --no-deps --user=root --entrypoint make archivematica-dashboard all
-	docker-compose run --workdir /src/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm  --no-deps --user=root --entrypoint make archivematica-storage-service all
+compile-requirements-am:  ## Run pip-compile for Archivematica
+	docker-compose run --workdir /src/MCPServer/requirements \
+		-e XDG_CACHE_HOME=/tmp/pip-cache \
+		--rm  \
+		--no-deps \
+		--user=$(CALLER_UID):$(CALLER_GID) \
+		--entrypoint bash archivematica-mcp-server \
+			-c "make clean && make all"
+
+	docker-compose run --workdir /src/MCPClient/requirements \
+		-e XDG_CACHE_HOME=/tmp/pip-cache \
+		--rm \
+		--no-deps \
+		--user=$(CALLER_UID):$(CALLER_GID) \
+		--entrypoint bash archivematica-mcp-client \
+			-c "make clean && make all"
+	docker-compose run --workdir /src/dashboard/src/requirements \
+		-e XDG_CACHE_HOME=/tmp/pip-cache \
+		--rm \
+		--no-deps \
+		--user=$(CALLER_UID):$(CALLER_GID) \
+		--entrypoint bash archivematica-dashboard \
+			-c "make clean && make all"
+	docker-compose run --workdir /src/archivematicaCommon/requirements \
+		-e XDG_CACHE_HOME=/tmp/pip-cache \
+		--rm \
+		--no-deps \
+		--user=$(CALLER_UID):$(CALLER_GID) \
+		--entrypoint bash archivematica-dashboard \
+			-c "make clean && make all"
+
+compile-requirements-ss:  ## Run pip-compile for Storage Service
+	docker-compose run --workdir /src/requirements \
+		-e XDG_CACHE_HOME=/tmp/pip-cache \
+		--rm  \
+		--no-deps \
+		--user=$(CALLER_UID):$(CALLER_GID) \
+		--entrypoint bash archivematica-storage-service \
+			-c "make clean && make all"
 
 db:  ## Connect to the MySQL server using the CLI.
 	docker-compose exec mysql mysql -hlocalhost -uroot -p12345
