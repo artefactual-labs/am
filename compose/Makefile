@@ -111,11 +111,28 @@ restart-am-services:  ## Restart Archivematica services: MCPServer, MCPClient, D
 	docker-compose restart archivematica-dashboard
 	docker-compose restart archivematica-storage-service
 
-compile-requirements:  ## Run pip-compile
+compile-requirements-am:
 	docker-compose run --workdir /src/MCPServer/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm  --no-deps --user=root --entrypoint make archivematica-mcp-server all
 	docker-compose run --workdir /src/MCPClient/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm --no-deps --user=root --entrypoint make archivematica-mcp-client all
 	docker-compose run --workdir /src/dashboard/src/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm --no-deps --user=root --entrypoint make archivematica-dashboard all
 	docker-compose run --workdir /src/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm  --no-deps --user=root --entrypoint make archivematica-storage-service all
+
+compile-requirements-ss:
+	docker-compose run --workdir /src/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm  --no-deps --user=root --entrypoint make archivematica-storage-service all
+
+CALLER_UID=${USER}
+ifneq ($(strip $(SUDO_UID)),)
+	CALLER_UID=$(SUDO_UID)
+endif
+
+reset-permissions-to-user:
+	@echo "Running recipe 'reset-permissions-to-user' as ${CALLER_UID} -- if eq 1000 this should be your USER"
+	find ../src/ -user root -path "*/requirements/*" -exec sudo chmod 644 '{}' +
+	find ../src/ -user root -path "*/requirements/*" -exec sudo chown -R ${CALLER_UID}:${CALLER_UID} {} +
+
+compile-am-requirements: compile-requirements-am reset-permissions-to-user 	## Run pip-compile for Archivematica
+
+compile-ss-requirements: compile-requirements-ss reset-permissions-to-user 	## Run pip-compile for Storage Service
 
 db:  ## Connect to the MySQL server using the CLI.
 	docker-compose exec mysql mysql -hlocalhost -uroot -p12345
