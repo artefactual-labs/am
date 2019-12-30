@@ -81,6 +81,16 @@ compile-messages: 	## Build Django translation files
 		--rm --no-deps --user=root \
 		--entrypoint /src/dashboard/src/manage.py archivematica-dashboard compilemessages
 
+make-messages-ss:  ## Build Django translation files for the storage service
+	docker-compose run \
+		--rm --user=root \
+		--entrypoint /src/storage_service/manage.py archivematica-storage-service makemessages
+
+compile-messages-ss: 	## Build Django translation files for the storage service
+	docker-compose run \
+		--rm --user=root \
+		--entrypoint /src/storage_service/manage.py archivematica-storage-service compilemessages
+
 bootstrap-dashboard-db:  ## Bootstrap Dashboard (new database).
 	docker-compose exec mysql mysql -hlocalhost -uroot -p12345 -e "\
 		DROP DATABASE IF EXISTS MCP; \
