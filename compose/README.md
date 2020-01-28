@@ -318,6 +318,14 @@ Optionally you may also want to delete the directories:
 
     $ rm -rf $HOME/.am/am-pipeline-data $HOME/.am/ss-location-data
 
+## Percona tuning
+
+To use different settings on the MySQL container, please edit the
+`etc/mysql/tunning.conf` file and rebuild the container with:
+
+    $ docker down
+    $ docker-compose up -d
+
 ## Instrumentation
 
 ### Running Prometheus and Grafana
