@@ -32,6 +32,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: "12345"
     volumes:
+      - "./etc/mysql/tuning.cnf:/etc/my.cnf.d/tuning.cnf:ro"
       - "mysql_data:/var/lib/mysql"
     ports:
       - "127.0.0.1:62001:3306"
