@@ -76,6 +76,11 @@ translate-make-messages-am:  ## Translation: Export message files for translatio
 		--rm --no-deps --user=root \
 		--entrypoint /src/dashboard/src/manage.py archivematica-dashboard makemessages
 
+translate-make-messages-am-js:  ## Translation: Export message files for translation from Archivematica
+	docker-compose run --workdir /src/dashboard/src \
+		--rm --no-deps --user=root \
+		--entrypoint /src/dashboard/src/manage.py archivematica-dashboard makemessages -d djangojs
+
 translate-compile-messages-am: 	## Translation: Compile message files for Archivematica's use at runtime
 	docker-compose run \
 		--rm --no-deps --user=root \
@@ -85,6 +90,11 @@ translate-make-messages-ss:  ## Translation: Export message files for translatio
 	docker-compose run \
 		--rm --user=root \
 		--entrypoint /src/storage_service/manage.py archivematica-storage-service makemessages
+
+translate-make-messages-js:  ## Translation: Export message files for translation from the Storage Service
+	docker-compose run \
+		--rm --user=root \
+		--entrypoint /src/storage_service/manage.py archivematica-storage-service makemessages -d djangojs
 
 translate-compile-messages-ss: 	## Translation: Compile message files for the Storage Service's use at runtime
 	docker-compose run \
