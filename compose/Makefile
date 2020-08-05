@@ -114,24 +114,89 @@ restart-am-services:  ## Restart Archivematica services: MCPServer, MCPClient, D
 CALLER_GID=$(shell id -u)
 
 compile-am-requirements-am: 	## Run pip-compile for Archivematica
-	docker-compose run --workdir /src/MCPServer/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm  --no-deps --user=root --entrypoint bash archivematica-mcp-server -c "make clean && make all"
-	docker-compose run --workdir /src/MCPClient/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm --no-deps --user=root --entrypoint bash archivematica-mcp-client -c "make clean && make all"
-	docker-compose run --workdir /src/dashboard/src/requirements --volume "tmpfs:/tmp/pip-cache:rw" -e XDG_CACHE_HOME=/tmp//pip-cache --rm --no-deps --user=root --entrypoint bash archivematica-dashboard -c "make clean && make all"
-	docker-compose run --workdir /src/archivematicaCommon/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm --no-deps --user=root --entrypoint bash archivematica-dashboard -c "make clean && make all"
+	docker-compose run --workdir /src/MCPServer/requirements \
+		--volume "tmpfs:/pip-cache:rw" \
+		-e XDG_CACHE_HOME=/pip-cache \
+		--rm  \
+		--no-deps \
+		--user=root \
+		--entrypoint bash archivematica-mcp-server \
+			-c "make clean && make all"
+	docker-compose run --workdir /src/MCPClient/requirements \
+		--volume "tmpfs:/pip-cache:rw" \
+		-e XDG_CACHE_HOME=/pip-cache \
+		--rm \
+		--no-deps \
+		--user=root \
+		--entrypoint bash archivematica-mcp-client \
+			-c "make clean && make all"
+	docker-compose run --workdir /src/dashboard/src/requirements \
+		--volume "tmpfs:/tmp/pip-cache:rw" \
+		-e XDG_CACHE_HOME=/tmp//pip-cache \
+		--rm \
+		--no-deps \
+		--user=root \
+		--entrypoint bash archivematica-dashboard \
+			-c "make clean && make all"
+	docker-compose run --workdir /src/archivematicaCommon/requirements \
+		--volume "tmpfs:/pip-cache:rw" \
+		-e XDG_CACHE_HOME=/pip-cache \
+		--rm \
+		--no-deps \
+		--user=root \
+		--entrypoint bash archivematica-dashboard \
+			-c "make clean && make all"
 	@$(MAKE) --no-print-directory reset-permissions-to-user-am
 
 compile-am-requirements-ss: 	## Run pip-compile for Storage Service
-	docker-compose run --workdir /src/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm  --no-deps --user=root --entrypoint bash archivematica-storage-service -c "make clean && make all"
+	docker-compose run --workdir /src/requirements \
+		--volume "tmpfs:/pip-cache:rw" \
+		-e XDG_CACHE_HOME=/pip-cache \
+		--rm  \
+		--no-deps \
+		--user=root \
+		--entrypoint bash archivematica-storage-service \
+			-c "make clean && make all"
 	@$(MAKE) --no-print-directory reset-permissions-to-user-ss
 
 reset-permissions-to-user-am:
-	docker-compose run --workdir /src/MCPServer/ --rm  --no-deps --user=root --entrypoint 'chown -R ${CALLER_GID}:${CALLER_GID} requirements/'  archivematica-mcp-server
-	docker-compose run --workdir /src/MCPClient/ --rm --no-deps --user=root --entrypoint 'chown -R ${CALLER_GID}:${CALLER_GID} requirements/' archivematica-mcp-client
-	docker-compose run --workdir /src/dashboard/src/ --rm --no-deps --user=root --entrypoint 'chown -R ${CALLER_GID}:${CALLER_GID} requirements/' archivematica-dashboard
-	docker-compose run --workdir /src/archivematicaCommon/ --rm --no-deps --user=root --entrypoint 'chown -R ${CALLER_GID}:${CALLER_GID} requirements/' archivematica-dashboard
+	docker-compose run --workdir /src/MCPServer/ \
+		--rm  \
+		--no-deps \
+		--user=root \
+		--entrypoint \
+			'chown -R ${CALLER_GID}:${CALLER_GID} requirements/' \
+				archivematica-mcp-server
+	docker-compose run --workdir /src/MCPClient/ \
+		--rm \
+		--no-deps \
+		--user=root \
+		--entrypoint \
+			'chown -R ${CALLER_GID}:${CALLER_GID} requirements/' \
+				archivematica-mcp-client
+	docker-compose run --workdir /src/dashboard/src/ \
+		--rm \
+		--no-deps \
+		--user=root \
+		--entrypoint \
+			'chown -R ${CALLER_GID}:${CALLER_GID} requirements/' \
+				archivematica-dashboard
+	docker-compose run --workdir /src/archivematicaCommon/ \
+		--rm \
+		--no-deps \
+		--user=root \
+		--entrypoint \
+			'chown -R ${CALLER_GID}:${CALLER_GID} requirements/' \
+				archivematica-dashboard
 
 reset-permissions-to-user-ss:
-	docker-compose run --workdir /src/ --rm  --no-deps --user=root --entrypoint 'chown -R ${CALLER_GID}:${CALLER_GID} requirements/' archivematica-storage-service
+	docker-compose run --workdir /src/ \
+		--rm  \
+		--no-deps \
+		--user=root \
+		--entrypoint \
+			'chown -R ${CALLER_GID}:${CALLER_GID} requirements/' \
+				archivematica-storage-service
 
 db:  ## Connect to the MySQL server using the CLI.
 	docker-compose exec mysql mysql -hlocalhost -uroot -p12345
