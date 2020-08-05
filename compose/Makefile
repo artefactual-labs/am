@@ -111,28 +111,29 @@ restart-am-services:  ## Restart Archivematica services: MCPServer, MCPClient, D
 	docker-compose restart archivematica-dashboard
 	docker-compose restart archivematica-storage-service
 
-compile-requirements-am:
-	docker-compose run --workdir /src/MCPServer/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm  --no-deps --user=root --entrypoint make archivematica-mcp-server all
-	docker-compose run --workdir /src/MCPClient/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm --no-deps --user=root --entrypoint make archivematica-mcp-client all
-	docker-compose run --workdir /src/dashboard/src/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm --no-deps --user=root --entrypoint make archivematica-dashboard all
-	docker-compose run --workdir /src/archivematicaCommon/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm --no-deps --user=root --entrypoint make archivematica-dashboard all
+CALLER_GID=$(shell id -u)
 
-compile-requirements-ss:
-	docker-compose run --workdir /src/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm  --no-deps --user=root --entrypoint make archivematica-storage-service all
+compile-am-requirements:
+	docker-compose run --workdir /src/MCPServer/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm  --no-deps --user=root --entrypoint bash archivematica-mcp-server -c "make clean && make all"
+	docker-compose run --workdir /src/MCPClient/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm --no-deps --user=root --entrypoint bash archivematica-mcp-client -c "make clean && make all"
+	docker-compose run --workdir /src/dashboard/src/requirements --volume "tmpfs:/tmp/pip-cache:rw" -e XDG_CACHE_HOME=/tmp//pip-cache --rm --no-deps --user=root --entrypoint bash archivematica-dashboard -c "make clean && make all"
+	docker-compose run --workdir /src/archivematicaCommon/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm --no-deps --user=root --entrypoint bash archivematica-dashboard -c "make clean && make all"
 
-CALLER_UID=${USER}
-ifneq ($(strip $(SUDO_UID)),)
-	CALLER_UID=$(SUDO_UID)
-endif
+compile-ss-requirements:
+	docker-compose run --workdir /src/requirements --volume "tmpfs:/pip-cache:rw" -e XDG_CACHE_HOME=/pip-cache --rm  --no-deps --user=root --entrypoint bash archivematica-storage-service -c "make clean && make all"
 
-reset-permissions-to-user:
-	@echo "Running recipe 'reset-permissions-to-user' and setting ownership to ${CALLER_UID} -- if eq 1000 this should be your USER"
-	find ../src/ -user root -path "*/requirements/*" -exec sudo chmod 644 '{}' +
-	find ../src/ -user root -path "*/requirements/*" -exec sudo chown -R ${CALLER_UID}:${CALLER_UID} {} +
+reset-permissions-to-user-am:
+	docker-compose run --workdir /src/MCPServer/ --rm  --no-deps --user=root --entrypoint 'chown -R ${CALLER_GID}:${CALLER_GID} requirements/'  archivematica-mcp-server
+	docker-compose run --workdir /src/MCPClient/ --rm --no-deps --user=root --entrypoint 'chown -R ${CALLER_GID}:${CALLER_GID} requirements/' archivematica-mcp-client
+	docker-compose run --workdir /src/dashboard/src/ --rm --no-deps --user=root --entrypoint 'chown -R ${CALLER_GID}:${CALLER_GID} requirements/' archivematica-dashboard
+	docker-compose run --workdir /src/archivematicaCommon/ --rm --no-deps --user=root --entrypoint 'chown -R ${CALLER_GID}:${CALLER_GID} requirements/' archivematica-dashboard
 
-compile-am-requirements: compile-requirements-am reset-permissions-to-user 	## Run pip-compile for Archivematica
+reset-permissions-to-user-ss:
+	docker-compose run --workdir /src/ --rm  --no-deps --user=root --entrypoint 'chown -R ${CALLER_GID}:${CALLER_GID} requirements/' archivematica-storage-service
 
-compile-ss-requirements: compile-requirements-ss reset-permissions-to-user 	## Run pip-compile for Storage Service
+compile-requirements-am: compile-am-requirements reset-permissions-to-user-am 	## Run pip-compile for Archivematica
+
+compile-requirements-ss: compile-ss-requirements reset-permissions-to-user-ss	## Run pip-compile for Storage Service
 
 db:  ## Connect to the MySQL server using the CLI.
 	docker-compose exec mysql mysql -hlocalhost -uroot -p12345
