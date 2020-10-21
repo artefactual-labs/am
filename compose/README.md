@@ -129,9 +129,10 @@ For more information, please consult the Elasticsearch `6.x`
 ## Installation
 
 If you haven't already, create a directory to store this repository using git
-clone:
+clone, and pull all the submodules:
 
     $ git clone https://github.com/artefactual-labs/am.git
+    $ git submodule update --init --recursive
 
 Run the installation (and all Docker Compose) commands from within the compose
 directory:
@@ -140,7 +141,6 @@ directory:
 
 These are the commands you need to run when starting from scratch:
 
-    $ git submodule update --init --recursive
     $ make create-volumes
     $ docker-compose up -d --build
     $ make bootstrap
