@@ -7,6 +7,8 @@ SS_LOCATION_DATA ?= $(HOME)/.am/ss-location-data
 CALLER_UID=$(shell id -u)
 CALLER_GID=$(shell id -g)
 
+SRCDIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/../src)
+
 define compose_amauat
 	docker-compose -f docker-compose.yml -f docker-compose.acceptance-tests.yml $(1)
 endef
@@ -188,6 +190,9 @@ test-dashboard:  ## Run Dashboard tests.
 
 test-storage-service:  ## Run Storage Service tests.
 	docker-compose run --workdir /src --rm --no-deps --entrypoint py.test -e "DJANGO_SETTINGS_MODULE=storage_service.settings.test" archivematica-storage-service -p no:cacheprovider --reuse-db -v
+
+test-storage-service-integration:  ## Run Storage Service tests (including integration tests) using MySQL.
+	$(SRCDIR)/archivematica-storage-service/integration/run.sh
 
 test-archivematica-common:  ## Run Archivematica Common tests.
 	docker-compose run --workdir /src/archivematicaCommon --rm --entrypoint py.test archivematica-mcp-client -p no:cacheprovider -p no:warnings --reuse-db -v
