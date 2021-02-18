@@ -177,25 +177,25 @@ flush-logs:  ## Delete container logs - requires root privileges.
 flush-test-dbs:
 	docker-compose exec mysql mysql -hlocalhost -uroot -p12345 -e "DROP DATABASE IF EXISTS test_MCP; DROP DATABASE IF EXISTS test_SS;"
 
-test-all: test-mcp-server test-mcp-client test-dashboard test-storage-service  ## Run all tests.
+test-all: test-mcp-server test-mcp-client test-dashboard test-storage-service test-archivematica-common  ## Run all tests.
 
 test-mcp-server:  ## Run MCPServer tests.
-	docker-compose run --workdir /src/MCPServer --rm --entrypoint=py.test archivematica-mcp-server -p no:cacheprovider --reuse-db -v
+	docker-compose run --workdir /src/MCPServer --rm --user=$(CALLER_UID):$(CALLER_GID) --entrypoint=py.test -e "DJANGO_SETTINGS_MODULE=settings.test" -e "LOGNAME=user" archivematica-mcp-server -p no:cacheprovider --reuse-db -v
 
 test-mcp-client:  ## Run MCPClient tests.
-	docker-compose run --workdir /src/MCPClient --rm --entrypoint=py.test archivematica-mcp-client -p no:cacheprovider --reuse-db -v
+	docker-compose run --workdir /src/MCPClient --rm --user=$(CALLER_UID):$(CALLER_GID) --entrypoint=py.test -e "DJANGO_SETTINGS_MODULE=settings.test" archivematica-mcp-client -p no:cacheprovider --reuse-db -v
 
 test-dashboard:  ## Run Dashboard tests.
-	docker-compose run --workdir /src/dashboard --rm --entrypoint=py.test archivematica-dashboard -p no:cacheprovider --reuse-db -v
+	docker-compose run --workdir /src/dashboard --rm --user=$(CALLER_UID):$(CALLER_GID) --entrypoint=py.test -e "DJANGO_SETTINGS_MODULE=settings.test" archivematica-dashboard -p no:cacheprovider --reuse-db -v
 
 test-storage-service:  ## Run Storage Service tests.
-	docker-compose run --workdir /src --rm --no-deps --entrypoint py.test -e "DJANGO_SETTINGS_MODULE=storage_service.settings.test" archivematica-storage-service -p no:cacheprovider --reuse-db -v
+	docker-compose run --workdir /src --rm --user=$(CALLER_UID):$(CALLER_GID) --no-deps --entrypoint py.test -e "DJANGO_SETTINGS_MODULE=storage_service.settings.test" archivematica-storage-service -p no:cacheprovider --reuse-db -v
 
 test-storage-service-integration:  ## Run Storage Service tests (including integration tests) using MySQL.
 	$(SRCDIR)/archivematica-storage-service/integration/run.sh
 
 test-archivematica-common:  ## Run Archivematica Common tests.
-	docker-compose run --workdir /src/archivematicaCommon --rm --entrypoint py.test archivematica-mcp-client -p no:cacheprovider -p no:warnings --reuse-db -v
+	docker-compose run --workdir /src/archivematicaCommon --rm --user=$(CALLER_UID):$(CALLER_GID) --entrypoint py.test -e "DJANGO_SETTINGS_MODULE=settings.test" archivematica-mcp-client -p no:cacheprovider -p no:warnings --reuse-db -v
 
 test-at-build:  ## AMAUAT: build image.
 	$(call compose_amauat, \
